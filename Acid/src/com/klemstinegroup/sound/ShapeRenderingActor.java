@@ -18,8 +18,8 @@ public class ShapeRenderingActor extends Actor {
 
 	public ShapeRenderingActor(final int id) {
 		this.id = id;
-		this.setWidth(40);
-		this.setHeight(40);
+		this.setWidth(60);
+		this.setHeight(60);
 		this.addListener(new InputListener() {
 			private float distx;
 
@@ -37,7 +37,7 @@ public class ShapeRenderingActor extends Actor {
 					int pointer) {
 				// (ShapeRenderingActor.this).rotate((distx - x));
 				int cc = (int) ((int) (((ShapeRenderingActor.this)
-						.getRotation() * (127f / 360f) + 127) % 127) + (distx - x));
+						.getRotation() * (127f / 360f) + 127+127/2) % 127) - (distx - x));
 
 				switch (id) {
 				case 0:
@@ -85,12 +85,12 @@ public class ShapeRenderingActor extends Actor {
 			break;
 		case 1:
 			rotation =(float) ((((BasslineSynthesizer) Sound.output.getTrack(0)).cutoff
-					.getInstancedValue() - 1200) * 5.0f) /50f;
+					.getValue() - 1200) * 5.0f) /50f;
 			break;
 
 		case 2:
 			rotation = (float) (((BasslineSynthesizer) Sound.output.getTrack(0)).resonance
-					.getInstancedValue()*500f)-100f;
+					.getValue()*500f)-100f;
 			break;
 
 		case 3:
@@ -115,19 +115,19 @@ public class ShapeRenderingActor extends Actor {
 
 		Sound.renderer.begin(ShapeType.FilledCircle);
 		Sound.renderer.setColor(Color.WHITE);
-		Sound.renderer.filledCircle(0, 0, 10, 20);
+		Sound.renderer.filledCircle(20, 20, 10, 20);
 		Sound.renderer.end();
 
 		Sound.renderer.begin(ShapeType.Circle);
 		Sound.renderer.setColor(Color.BLACK);
-		Sound.renderer.circle(0, 0, 10, 20);
+		Sound.renderer.circle(20, 20, 10, 20);
 		Sound.renderer.end();
 
 		Sound.renderer.begin(ShapeType.FilledCircle);
 		Sound.renderer.setColor(Color.RED);
 		for (float i = 2; i < 12; i += 2) {
-			Sound.renderer.filledCircle(MathUtils.cosDeg(rotation) *- i,
-					MathUtils.sinDeg(rotation) * i, 2, 5);
+			Sound.renderer.filledCircle(20+MathUtils.cosDeg(rotation) *- i,
+					20+MathUtils.sinDeg(rotation) * i, 2, 5);
 		}
 		Sound.renderer.end();
 

@@ -64,7 +64,7 @@ public class Sound implements ApplicationListener {
 
 			}
 		});
-		touch1.setPosition(120, 200);
+		touch1.setPosition(10, 200);
 		stage.addActor(touch1);
 		
 		final Touchpad touch2 = new Touchpad(20, skin);
@@ -77,7 +77,7 @@ public class Sound implements ApplicationListener {
 
 			}
 		});
-		touch2.setPosition(10, 200);
+		touch2.setPosition(230, 200);
 		stage.addActor(touch2);
 
 		final Touchpad touch3 = new Touchpad(20, skin);
@@ -89,7 +89,7 @@ public class Sound implements ApplicationListener {
 				 output.getSequencer().setBpm(output.getSequencer().bpm);
 			}
 		});
-		touch3.setPosition(330, 200);
+		touch3.setPosition(120, 200);
 		stage.addActor(touch3);
 
 		
@@ -106,8 +106,8 @@ public class Sound implements ApplicationListener {
 		mya[5] = new ShapeRenderingActor(5);
 		stage.addActor(mya[5]);
 
-		int hj = 140;
-		int gh = 140;
+		int hj = 120;
+		int gh = 120;
 		mya[0].setPosition(hj, gh);
 		mya[1].setPosition(hj += 56, gh);
 		mya[2].setPosition(hj += 56, gh);
