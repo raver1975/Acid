@@ -32,6 +32,7 @@ public class Sound implements ApplicationListener {
 	Synthesizer drumsss;
 	private Stage stage;
 	ShapeRenderingActor[] mya = new ShapeRenderingActor[10];
+
 	public Sound() {
 	}
 
@@ -48,60 +49,83 @@ public class Sound implements ApplicationListener {
 				FileType.Internal), false);
 		output.start();
 		synth = (BasslineSynthesizer) output.getTrack(0);
-//		Table table = new Table();
-//		table.setFillParent(true);
-//		stage.addActor(table);
+		// Table table = new Table();
+		// table.setFillParent(true);
+		// stage.addActor(table);
 		TextureRegionActor my = new TextureRegionActor();
-		 stage.addActor(my);
-		final Touchpad touch = new Touchpad(20, skin);
-		touch.setBounds(15, 15, 100, 100);
-		touch.addListener(new ChangeListener() {
+		stage.addActor(my);
+		final Touchpad touch1 = new Touchpad(20, skin);
+		touch1.setBounds(15, 15, 100, 100);
+		touch1.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				System.out.println(touch.getKnobX() + "," + touch.getKnobY());
-//				output.getSequencer().randomize();
-//				output.getSequencer().setBpm(output.getSequencer().bpm);
-				synth.controlChange(35, (int) (touch.getKnobX()));
-				synth.controlChange(34, (int) (touch.getKnobY()));
-				
+				synth.controlChange(35, (int) (touch1.getKnobX()));
+				synth.controlChange(34, (int) (touch1.getKnobY()));
+
 			}
 		});
-		touch.setPosition(370, 200);
+		touch1.setPosition(120, 200);
+		stage.addActor(touch1);
 		
-		stage.addActor(touch);
-		mya[0]=new ShapeRenderingActor(0);
+		final Touchpad touch2 = new Touchpad(20, skin);
+		touch2.setBounds(15, 15, 100, 100);
+		touch2.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				synth.controlChange(36, (int) (touch2.getKnobX()));
+				synth.controlChange(37, (int) (touch2.getKnobY()));
+
+			}
+		});
+		touch2.setPosition(10, 200);
+		stage.addActor(touch2);
+
+		final Touchpad touch3 = new Touchpad(20, skin);
+		touch3.setBounds(15, 15, 100, 100);
+		touch3.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				 output.getSequencer().randomize();
+				 output.getSequencer().setBpm(output.getSequencer().bpm);
+			}
+		});
+		touch3.setPosition(330, 200);
+		stage.addActor(touch3);
+
+		
+		mya[0] = new ShapeRenderingActor(0);
 		stage.addActor(mya[0]);
-		mya[1]=new ShapeRenderingActor(1);
+		mya[1] = new ShapeRenderingActor(1);
 		stage.addActor(mya[1]);
-		mya[2]=new ShapeRenderingActor(2);
+		mya[2] = new ShapeRenderingActor(2);
 		stage.addActor(mya[2]);
-		mya[3]=new ShapeRenderingActor(3);
+		mya[3] = new ShapeRenderingActor(3);
 		stage.addActor(mya[3]);
-		mya[4]=new ShapeRenderingActor(4);
+		mya[4] = new ShapeRenderingActor(4);
 		stage.addActor(mya[4]);
-		mya[5]=new ShapeRenderingActor(5);
+		mya[5] = new ShapeRenderingActor(5);
 		stage.addActor(mya[5]);
-		
-				int hj=140;
-				int gh=140;
+
+		int hj = 140;
+		int gh = 140;
 		mya[0].setPosition(hj, gh);
-		mya[1].setPosition(hj+=56, gh);
-		mya[2].setPosition(hj+=56, gh);
-		mya[3].setPosition(hj+=56, gh);
-		mya[4].setPosition(hj+=56, gh);
-		mya[5].setPosition(hj+=56, gh);
-		
-//		stage.addListener(new InputListener() {
-//			public boolean touchDown(InputEvent event, float x, float y,
-//					int pointer, int button) {
-//				return super.touchDown(event, x, y, pointer, button);
-//			}
-//
-//			public void touchUp(InputEvent event, float x, float y,
-//					int pointer, int button) {
-//				super.touchUp(event, x, y, pointer, button);
-//			}
-//		});
+		mya[1].setPosition(hj += 56, gh);
+		mya[2].setPosition(hj += 56, gh);
+		mya[3].setPosition(hj += 56, gh);
+		mya[4].setPosition(hj += 56, gh);
+		mya[5].setPosition(hj += 56, gh);
+
+		// stage.addListener(new InputListener() {
+		// public boolean touchDown(InputEvent event, float x, float y,
+		// int pointer, int button) {
+		// return super.touchDown(event, x, y, pointer, button);
+		// }
+		//
+		// public void touchUp(InputEvent event, float x, float y,
+		// int pointer, int button) {
+		// super.touchUp(event, x, y, pointer, button);
+		// }
+		// });
 
 	}
 
@@ -113,7 +137,7 @@ public class Sound implements ApplicationListener {
 
 	@Override
 	public void render() {
-//		mya.rotate(10);
+		// mya.rotate(10);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();

@@ -3,6 +3,7 @@ package com.klemstinegroup.sound;
 import synth.BasslineSynthesizer;
 import synth.Output;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -78,33 +79,36 @@ public class ShapeRenderingActor extends Actor {
 		float rotation = 0f;
 		switch (id) {
 		case 0:
-			rotation = (float) (((BasslineSynthesizer) Sound.output.getTrack(0)).tune * 360f);
+			rotation = (int) (((((BasslineSynthesizer) Sound.output
+					.getTrack(0)).tune - .5f) * 400.0) / 1.5f);
+			
 			break;
 		case 1:
-			rotation = (float) (((BasslineSynthesizer) Sound.output.getTrack(0)).cutoff
-					.getInstancedValue()*100f);
-			System.out.println(rotation);
+			rotation =(float) ((((BasslineSynthesizer) Sound.output.getTrack(0)).cutoff
+					.getInstancedValue() - 1200) * 5.0f) /50f;
 			break;
 
 		case 2:
 			rotation = (float) (((BasslineSynthesizer) Sound.output.getTrack(0)).resonance
-					.getInstancedValue()*360f);
+					.getInstancedValue()*500f)-100f;
 			break;
 
 		case 3:
-			rotation = (float) ((BasslineSynthesizer) Sound.output.getTrack(0)).envMod*360f;
+			rotation =  (int) ((((BasslineSynthesizer) Sound.output
+					.getTrack(0)).envMod * 500) -100);
 			break;
 
 		case 4:
-			rotation=(float) ((BasslineSynthesizer) Sound.output.getTrack(0)).decay*360f;
+			rotation= (float) ((((20 - ((BasslineSynthesizer) Sound.output
+					.getTrack(0)).decay)) * Gdx.graphics.getWidth()) / 20.0f)-100f;
 			break;
 
 		case 5:
 			rotation=(float) ((BasslineSynthesizer) Sound.output.getTrack(0)).accent*360f;
 			break;
 		}
-		rotation=(rotation+360)%360;
-		System.out.println(rotation);
+//		rotation=(rotation+360)%360;
+//		System.out.println(rotation);
 		Sound.renderer.setProjectionMatrix(batch.getProjectionMatrix());
 		Sound.renderer.setTransformMatrix(batch.getTransformMatrix());
 		Sound.renderer.translate(getX(), getY(), 0);
@@ -122,7 +126,7 @@ public class ShapeRenderingActor extends Actor {
 		Sound.renderer.begin(ShapeType.FilledCircle);
 		Sound.renderer.setColor(Color.RED);
 		for (float i = 2; i < 12; i += 2) {
-			Sound.renderer.filledCircle(MathUtils.cosDeg(rotation) * i,
+			Sound.renderer.filledCircle(MathUtils.cosDeg(rotation) *- i,
 					MathUtils.sinDeg(rotation) * i, 2, 5);
 		}
 		Sound.renderer.end();
