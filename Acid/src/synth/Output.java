@@ -1,0 +1,159 @@
+package synth;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.AudioDevice;
+
+public class Output implements Runnable {
+	private static Thread thread = null;
+	public static Synthesizer[] tracks;
+	private AcidSequencer sequencer;
+	private static double left;
+	private static double right;
+	private static double volume = 1D;
+	public static final double SAMPLE_RATE = 44100;
+	// public static final double SAMPLE_RATE = 2050;
+	public static final int BUFFER_SIZE = 8192;
+	float[] buffer = new float[BUFFER_SIZE];
+	public static boolean running = false;
+	private static boolean pause = false;
+	private static boolean paused = false;
+	private static Reverb reverb;
+	private static Delay delay;
+
+	private AudioDevice ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE,false);
+
+	public static Delay getDelay() {
+		return delay;
+	}
+
+	public static Reverb getReverb() {
+		return reverb;
+	}
+
+	public Output() {
+		tracks = new Synthesizer[2];
+		BasslineSynthesizer tb = new BasslineSynthesizer();
+		tracks[0] = tb;
+		RhythmSynthesizer tr = new RhythmSynthesizer();
+		tracks[1] = tr;
+
+		delay = new Delay();
+		reverb = new Reverb();
+
+		this.sequencer = new AcidSequencer(tb, tr, this);
+
+		thread = new Thread(this);
+		thread.setPriority(10);
+
+	}
+
+	public void start() {
+  	running = true;
+		thread.start();
+	}
+
+	public void stop() {
+		running = false;
+	}
+
+	public boolean isRunning() {
+		return running;
+	}
+
+	public static void setVolume(double value) {
+		volume = value;
+	}
+
+	public static void unlock() {
+		pause = false;
+		paused = false;
+	}
+
+	public static void lock() {
+		pause = true;
+		while (!paused)
+			;
+	}
+
+	public static boolean isPaused() {
+		return paused;
+	}
+
+	public static void pause() {
+		pause = true;
+	}
+
+	public static void resume() {
+		unlock();
+	}
+
+	public void run() {
+		while (running) {
+			// Long time=System.currentTimeMillis();
+			if (pause) {
+				paused = true;
+				try {
+					Thread.sleep(25L);
+				} catch (InterruptedException e) {
+				}
+				continue;
+			}
+			for (int i = 0; i < buffer.length; i += 2) {
+				left = Output.right = 0.0D;
+
+				this.sequencer.tick();
+
+				for (Synthesizer channel : tracks) {
+					double[] tmp=null;
+					tmp = channel.stereoOutput();
+
+					delay.input(tmp[2]);
+					reverb.input(tmp[3]);
+
+					left += tmp[0];
+					right += tmp[1];
+				}
+
+				double[] del = delay.output();
+				left += del[0];
+				right += del[1];
+
+				double[] rev = reverb.process();
+				left += rev[0];
+				right += rev[1];
+
+				if (left > 1.0D)
+					left = 1.0D;
+				else if (left < -1.0D)
+					left = -1.0D;
+				if (right > 1.0D)
+					right = 1.0D;
+				else if (right < -1.0D) {
+					right = -1.0D;
+				}
+				buffer[i] = (float) (left * volume);
+				buffer[i + 1] = (float) (right * volume);
+			}
+			ad.writeSamples(buffer, 0, BUFFER_SIZE);
+			// System.out.println(System.currentTimeMillis()-time);
+			// line.write(buffer, 0, 16384);
+		}
+
+		dispose();
+	}
+
+	public void dispose() {
+		running = false;
+		ad.dispose();
+
+	}
+
+	public Synthesizer getTrack(int i) {
+		return tracks[i];
+	}
+
+	public AcidSequencer getSequencer() {
+		return this.sequencer;
+	}
+
+}
