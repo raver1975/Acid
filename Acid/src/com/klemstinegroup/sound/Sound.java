@@ -8,6 +8,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -44,9 +45,9 @@ public class Sound implements ApplicationListener {
 				FileType.Internal), false);
 		output.start();
 		synth = (BasslineSynthesizer) output.getTrack(0);
-		 Table table = new Table();
-		 table.setFillParent(true);
-		 stage.addActor(table);
+		Table table = new Table();
+		table.setFillParent(true);
+		stage.addActor(table);
 		TextureRegionActor my = new TextureRegionActor();
 		table.addActor(my);
 		final Touchpad touch1 = new Touchpad(0, skin);
@@ -59,9 +60,9 @@ public class Sound implements ApplicationListener {
 
 			}
 		});
-		touch1.setPosition(10, 200);
-		stage.addActor(touch1);
-		
+		touch1.setPosition(10, 180);
+		table.addActor(touch1);
+
 		final Touchpad touch2 = new Touchpad(0, skin);
 		touch2.setBounds(15, 15, 100, 100);
 		touch2.addListener(new ChangeListener() {
@@ -72,22 +73,24 @@ public class Sound implements ApplicationListener {
 
 			}
 		});
-		touch2.setPosition(230, 200);
-		stage.addActor(touch2);
+		touch2.setPosition(230, 180);
+		table.addActor(touch2);
 
 		final Touchpad touch3 = new Touchpad(0, skin);
 		touch3.setBounds(15, 15, 100, 100);
 		touch3.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				 output.getSequencer().randomize();
-				 output.getSequencer().setBpm(output.getSequencer().bpm);
+				output.getSequencer().randomize();
+				output.getSequencer().setBpm(output.getSequencer().bpm);
 			}
 		});
-		touch3.setPosition(120, 200);
-		stage.addActor(touch3);
+		touch3.setPosition(120, 180);
+		table.addActor(touch3);
+		table.setPosition(Gdx.graphics.getWidth() / 2-280,
+				Gdx.graphics.getHeight() / 2-150);
+		((OrthographicCamera)stage.getCamera()).zoom-=.3f;
 
-		
 		mya[0] = new KnobActor(0);
 		table.addActor(mya[0]);
 		mya[1] = new KnobActor(1);
@@ -109,11 +112,25 @@ public class Sound implements ApplicationListener {
 		mya[3].setPosition(hj += 56, gh);
 		mya[4].setPosition(hj += 56, gh);
 		mya[5].setPosition(hj += 56, gh);
-		
+
 		MatrixActor matrixa = new MatrixActor(0);
 		table.addActor(matrixa);
-		matrixa.setPosition(600, 300);
+		matrixa.setPosition(350, 180);
+		// ((OrthographicCamera)stage.getCamera()).zoom-=.1f;
+		// ((OrthographicCamera)stage.getCamera()).lookAt(0, 0, 0);
+		// stage.setViewport (800, 600, true)
+		// OrthographicCamera GameCamera = new OrthographicCamera(400, 300);
+		// GameCamera.setToOrtho(false, 400, 300);
+		//
+		// stage.setCamera(GameCamera);
+		// stage.setViewport(400, 300, true);
+		//
+		// stage.getCamera().translate(-100, -100, -100);
+		// stage.getCamera().update();
 
+		// ((OrthographicCamera)stage.getCamera()).update();
+		// stage.getCamera().translate(-1000, -1000, 0);
+		// stage.getCamera().update();
 		// stage.addListener(new InputListener() {
 		// public boolean touchDown(InputEvent event, float x, float y,
 		// int pointer, int button) {
@@ -125,7 +142,6 @@ public class Sound implements ApplicationListener {
 		// super.touchUp(event, x, y, pointer, button);
 		// }
 		// });
-
 	}
 
 	@Override
