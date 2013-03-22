@@ -14,7 +14,7 @@ import java.util.Arrays;
    private boolean shuffle;
    private int samplesPerSequencerUpdate;
    private int tick = 0;
-   private int step = 0;
+   public int step = 0;
    private boolean sixteenth_note = true;
  
    private int patternLength = 16;

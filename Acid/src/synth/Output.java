@@ -2,6 +2,7 @@ package synth;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
+import com.klemstinegroup.sound.Sound;
 
 public class Output implements Runnable {
 	private static Thread thread = null;
@@ -12,7 +13,7 @@ public class Output implements Runnable {
 	private static double volume = 1D;
 	public static final double SAMPLE_RATE = 44100;
 	// public static final double SAMPLE_RATE = 2050;
-	public static final int BUFFER_SIZE = 8192;
+	public static final int BUFFER_SIZE = 8192/4;
 	float[] buffer = new float[BUFFER_SIZE];
 	public static boolean running = false;
 	private static boolean pause = false;
@@ -31,11 +32,11 @@ public class Output implements Runnable {
 	}
 
 	public Output() {
-		tracks = new Synthesizer[2];
+		tracks = new Synthesizer[Sound.drums?2:1];
 		BasslineSynthesizer tb = new BasslineSynthesizer();
 		tracks[0] = tb;
 		RhythmSynthesizer tr = new RhythmSynthesizer();
-		tracks[1] = tr;
+		if(Sound.drums)tracks[1] = tr;
 
 		delay = new Delay();
 		reverb = new Reverb();
@@ -99,7 +100,8 @@ public class Output implements Runnable {
 				continue;
 			}
 			for (int i = 0; i < buffer.length; i += 2) {
-				left = Output.right = 0.0D;
+				left =0.0D;
+				right = 0.0D;
 
 				this.sequencer.tick();
 
@@ -120,7 +122,7 @@ public class Output implements Runnable {
 
 				double[] rev = reverb.process();
 				left += rev[0];
-				right += rev[1];
+//				right += rev[1];
 
 				if (left > 1.0D)
 					left = 1.0D;

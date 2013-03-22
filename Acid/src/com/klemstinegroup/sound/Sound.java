@@ -3,6 +3,7 @@ package com.klemstinegroup.sound;
 import synth.BasslineSynthesizer;
 import synth.Output;
 import synth.RhythmSynthesizer;
+import synth.Synthesizer;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
@@ -12,12 +13,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class Sound implements ApplicationListener {
+	public static final boolean grid = false;
 	public static Output output;
 	BitmapFont font;
 	public static boolean drums = true;
@@ -25,7 +30,7 @@ public class Sound implements ApplicationListener {
 	static BasslineSynthesizer synth;
 	static int[] maxValue = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	static int[] scale = new int[] { 0, 2, 4, 5, 7, 9, 11 };
-	static RhythmSynthesizer drumsss;
+	protected static boolean mutate;
 	private Stage stage;
 	KnobActor[] mya = new KnobActor[10];
 
@@ -38,7 +43,6 @@ public class Sound implements ApplicationListener {
 		stage = new Stage();
 		renderer = new ShapeRenderer();
 		output = new Output();
-		drumsss = (RhythmSynthesizer) Output.tracks[1];
 		Gdx.input.setInputProcessor(stage);
 
 		font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",
@@ -60,7 +64,7 @@ public class Sound implements ApplicationListener {
 
 			}
 		});
-		touch1.setPosition(10, 180);
+		touch1.setPosition(20, 190);
 		table.addActor(touch1);
 
 		final Touchpad touch2 = new Touchpad(0, skin);
@@ -73,23 +77,13 @@ public class Sound implements ApplicationListener {
 
 			}
 		});
-		touch2.setPosition(230, 180);
+		touch2.setPosition(20, 300);
 		table.addActor(touch2);
 
-		final Touchpad touch3 = new Touchpad(0, skin);
-		touch3.setBounds(15, 15, 100, 100);
-		touch3.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				output.getSequencer().randomize();
-				output.getSequencer().setBpm(output.getSequencer().bpm);
-			}
-		});
-		touch3.setPosition(120, 180);
-		table.addActor(touch3);
+		
 		table.setPosition(Gdx.graphics.getWidth() / 2-280,
-				Gdx.graphics.getHeight() / 2-150);
-		((OrthographicCamera)stage.getCamera()).zoom-=.3f;
+				Gdx.graphics.getHeight() / 2-280);
+		((OrthographicCamera)stage.getCamera()).zoom-=.30f;
 
 		mya[0] = new KnobActor(0);
 		table.addActor(mya[0]);
@@ -115,33 +109,56 @@ public class Sound implements ApplicationListener {
 
 		MatrixActor matrixa = new MatrixActor(0);
 		table.addActor(matrixa);
-		matrixa.setPosition(350, 180);
-		// ((OrthographicCamera)stage.getCamera()).zoom-=.1f;
-		// ((OrthographicCamera)stage.getCamera()).lookAt(0, 0, 0);
-		// stage.setViewport (800, 600, true)
-		// OrthographicCamera GameCamera = new OrthographicCamera(400, 300);
-		// GameCamera.setToOrtho(false, 400, 300);
-		//
-		// stage.setCamera(GameCamera);
-		// stage.setViewport(400, 300, true);
-		//
-		// stage.getCamera().translate(-100, -100, -100);
-		// stage.getCamera().update();
+		matrixa.setPosition(130, 180);
+		
+		TextButton tb4=new TextButton("WaveForm",skin);
+		table.addActor(tb4);
+		tb4.setPosition(7.5f, 130);
+		tb4.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				Sound.output.getSequencer().bass.switchWaveform();
+				return true;
+			}
+		});
+		TextButton tb1=new TextButton("Mutate",skin);
+		table.addActor(tb1);
+		tb1.setPosition(470, 260);
+		tb1.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				Sound.mutate=!Sound.mutate;
+				return true;
+			}
+		});
+		
+		TextButton tb3=new TextButton("Random",skin);
+		table.addActor(tb3);
+		tb3.setPosition(470, 300);
+		tb3.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				output.getSequencer().randomize();
+				output.getSequencer().setBpm(output.getSequencer().bpm);
+				return true;
+			}
+		});
 
-		// ((OrthographicCamera)stage.getCamera()).update();
-		// stage.getCamera().translate(-1000, -1000, 0);
-		// stage.getCamera().update();
-		// stage.addListener(new InputListener() {
-		// public boolean touchDown(InputEvent event, float x, float y,
-		// int pointer, int button) {
-		// return super.touchDown(event, x, y, pointer, button);
-		// }
-		//
-		// public void touchUp(InputEvent event, float x, float y,
-		// int pointer, int button) {
-		// super.touchUp(event, x, y, pointer, button);
-		// }
-		// });
+		
+		TextButton tb2=new TextButton("Drums",skin);
+		table.addActor(tb2);
+		tb2.setPosition(470,220);
+		tb2.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				Sound.drums=!Sound.drums;
+				Sound.output.tracks = new Synthesizer[Sound.drums?2:1];
+				Sound.output.tracks[0] = Sound.output.getSequencer().bass;
+				RhythmSynthesizer tr = new RhythmSynthesizer();
+				if(Sound.drums)Sound.output.tracks[1] = Sound.output.getSequencer().drums;
+				return true;
+			}
+		});
 	}
 
 	@Override
@@ -160,7 +177,7 @@ public class Sound implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
-		stage.setViewport(width, height, true);
+//		stage.setViewport(width, height, true);
 	}
 
 	@Override
