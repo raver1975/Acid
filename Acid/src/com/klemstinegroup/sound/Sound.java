@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class Sound implements ApplicationListener {
-	public static final boolean grid = false;
+	public static final boolean grid = !false;
 	public static Output output;
 	BitmapFont font;
 	public static boolean drums = true;
