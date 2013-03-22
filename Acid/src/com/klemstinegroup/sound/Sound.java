@@ -2,23 +2,18 @@ package com.klemstinegroup.sound;
 
 import synth.BasslineSynthesizer;
 import synth.Output;
-import synth.Synthesizer;
+import synth.RhythmSynthesizer;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class Sound implements ApplicationListener {
@@ -29,9 +24,9 @@ public class Sound implements ApplicationListener {
 	static BasslineSynthesizer synth;
 	static int[] maxValue = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	static int[] scale = new int[] { 0, 2, 4, 5, 7, 9, 11 };
-	Synthesizer drumsss;
+	static RhythmSynthesizer drumsss;
 	private Stage stage;
-	ShapeRenderingActor[] mya = new ShapeRenderingActor[10];
+	KnobActor[] mya = new KnobActor[10];
 
 	public Sound() {
 	}
@@ -42,19 +37,19 @@ public class Sound implements ApplicationListener {
 		stage = new Stage();
 		renderer = new ShapeRenderer();
 		output = new Output();
-		drumsss = Output.tracks[1];
+		drumsss = (RhythmSynthesizer) Output.tracks[1];
 		Gdx.input.setInputProcessor(stage);
 
 		font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",
 				FileType.Internal), false);
 		output.start();
 		synth = (BasslineSynthesizer) output.getTrack(0);
-		// Table table = new Table();
-		// table.setFillParent(true);
-		// stage.addActor(table);
+		 Table table = new Table();
+		 table.setFillParent(true);
+		 stage.addActor(table);
 		TextureRegionActor my = new TextureRegionActor();
-		stage.addActor(my);
-		final Touchpad touch1 = new Touchpad(20, skin);
+		table.addActor(my);
+		final Touchpad touch1 = new Touchpad(0, skin);
 		touch1.setBounds(15, 15, 100, 100);
 		touch1.addListener(new ChangeListener() {
 			@Override
@@ -67,7 +62,7 @@ public class Sound implements ApplicationListener {
 		touch1.setPosition(10, 200);
 		stage.addActor(touch1);
 		
-		final Touchpad touch2 = new Touchpad(20, skin);
+		final Touchpad touch2 = new Touchpad(0, skin);
 		touch2.setBounds(15, 15, 100, 100);
 		touch2.addListener(new ChangeListener() {
 			@Override
@@ -80,7 +75,7 @@ public class Sound implements ApplicationListener {
 		touch2.setPosition(230, 200);
 		stage.addActor(touch2);
 
-		final Touchpad touch3 = new Touchpad(20, skin);
+		final Touchpad touch3 = new Touchpad(0, skin);
 		touch3.setBounds(15, 15, 100, 100);
 		touch3.addListener(new ChangeListener() {
 			@Override
@@ -93,18 +88,18 @@ public class Sound implements ApplicationListener {
 		stage.addActor(touch3);
 
 		
-		mya[0] = new ShapeRenderingActor(0);
-		stage.addActor(mya[0]);
-		mya[1] = new ShapeRenderingActor(1);
-		stage.addActor(mya[1]);
-		mya[2] = new ShapeRenderingActor(2);
-		stage.addActor(mya[2]);
-		mya[3] = new ShapeRenderingActor(3);
-		stage.addActor(mya[3]);
-		mya[4] = new ShapeRenderingActor(4);
-		stage.addActor(mya[4]);
-		mya[5] = new ShapeRenderingActor(5);
-		stage.addActor(mya[5]);
+		mya[0] = new KnobActor(0);
+		table.addActor(mya[0]);
+		mya[1] = new KnobActor(1);
+		table.addActor(mya[1]);
+		mya[2] = new KnobActor(2);
+		table.addActor(mya[2]);
+		mya[3] = new KnobActor(3);
+		table.addActor(mya[3]);
+		mya[4] = new KnobActor(4);
+		table.addActor(mya[4]);
+		mya[5] = new KnobActor(5);
+		table.addActor(mya[5]);
 
 		int hj = 120;
 		int gh = 120;
@@ -114,6 +109,10 @@ public class Sound implements ApplicationListener {
 		mya[3].setPosition(hj += 56, gh);
 		mya[4].setPosition(hj += 56, gh);
 		mya[5].setPosition(hj += 56, gh);
+		
+		MatrixActor matrixa = new MatrixActor(0);
+		table.addActor(matrixa);
+		matrixa.setPosition(600, 300);
 
 		// stage.addListener(new InputListener() {
 		// public boolean touchDown(InputEvent event, float x, float y,

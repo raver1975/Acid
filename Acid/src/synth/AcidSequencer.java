@@ -8,7 +8,7 @@ import java.util.Arrays;
    public BasslineSynthesizer bass;
    public BasslinePattern bassline;
    public RhythmSynthesizer drums;
-   private int[][] rhythm;
+   public int[][] rhythm;
    private Output output;
    public double bpm;
    private boolean shuffle;
@@ -43,8 +43,6 @@ import java.util.Arrays;
  
    public void randomize() {
      this.rhythm = createRhythm(this.patternLength);
-     System.out.println(Arrays.deepToString(this.rhythm));
- 
      double[] basicCoeffs = { 0.5D, 0.5D, 0.5D, 0.5D };
      double[] bassCoeffs = new double[16];
      boolean preferBassDrum = Math.random() > 0.5D;
@@ -70,8 +68,6 @@ import java.util.Arrays;
      markov.addKid(new Markov(Harmony.SCALE_MAJOR, 1.0D));
      markov.addKid(new Markov(Harmony.SCALE_HUNGARIAN_MINOR, 0.5D));
      this.bassline = createBassline(this.patternLength, (int[])(int[])markov.getKid().getContent(), bassCoeffs);
- System.out.println(Arrays.toString(bassline.note));
- this.bassline.note=new byte[]{1, 2, 3, 4, 5, 6, 7, 8,9, 10, 0, 0, 1, 1, 0, 0};
      this.bass.randomize();
      this.drums.randomize();
  

@@ -12,11 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-public class ShapeRenderingActor extends Actor {
+public class KnobActor extends Actor {
 
 	private int id = 0;
 
-	public ShapeRenderingActor(final int id) {
+	public KnobActor(final int id) {
 		this.id = id;
 		this.setWidth(60);
 		this.setHeight(60);
@@ -36,7 +36,7 @@ public class ShapeRenderingActor extends Actor {
 			public void touchDragged(InputEvent event, float x, float y,
 					int pointer) {
 				// (ShapeRenderingActor.this).rotate((distx - x));
-				int cc = (int) ((int) (((ShapeRenderingActor.this)
+				int cc = (int) ((int) (((KnobActor.this)
 						.getRotation() * (127f / 360f) + 127+127/2) % 127) - (distx - x));
 
 				switch (id) {

@@ -89,7 +89,6 @@ public class Output implements Runnable {
 
 	public void run() {
 		while (running) {
-			// Long time=System.currentTimeMillis();
 			if (pause) {
 				paused = true;
 				try {
@@ -135,8 +134,6 @@ public class Output implements Runnable {
 				buffer[i + 1] = (float) (right * volume);
 			}
 			ad.writeSamples(buffer, 0, BUFFER_SIZE);
-			// System.out.println(System.currentTimeMillis()-time);
-			// line.write(buffer, 0, 16384);
 		}
 
 		dispose();
