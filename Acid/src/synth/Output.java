@@ -1,5 +1,7 @@
 package synth;
 
+import java.util.Arrays;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.klemstinegroup.sound.Sound;
@@ -9,19 +11,19 @@ public class Output implements Runnable {
 	public static Synthesizer[] tracks;
 	private AcidSequencer sequencer;
 	private static double left;
-	private static double right;
+	// private static double right;
 	private static double volume = 1D;
 	public static final double SAMPLE_RATE = 44100;
 	// public static final double SAMPLE_RATE = 2050;
-	public static final int BUFFER_SIZE = 8192/4;
-	float[] buffer = new float[BUFFER_SIZE];
+	public static final int BUFFER_SIZE = 2050;
+	float[] buffer1 = new float[BUFFER_SIZE];
 	public static boolean running = false;
 	private static boolean pause = false;
 	private static boolean paused = false;
 	private static Reverb reverb;
 	private static Delay delay;
 
-	private AudioDevice ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE,false);
+	private AudioDevice ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, true);
 
 	public static Delay getDelay() {
 		return delay;
@@ -32,11 +34,12 @@ public class Output implements Runnable {
 	}
 
 	public Output() {
-		tracks = new Synthesizer[Sound.drums?2:1];
+		tracks = new Synthesizer[Sound.drums ? 2 : 1];
 		BasslineSynthesizer tb = new BasslineSynthesizer();
 		tracks[0] = tb;
 		RhythmSynthesizer tr = new RhythmSynthesizer();
-		if(Sound.drums)tracks[1] = tr;
+		if (Sound.drums)
+			tracks[1] = tr;
 
 		delay = new Delay();
 		reverb = new Reverb();
@@ -49,7 +52,7 @@ public class Output implements Runnable {
 	}
 
 	public void start() {
-  	running = true;
+		running = true;
 		thread.start();
 	}
 
@@ -99,48 +102,45 @@ public class Output implements Runnable {
 				}
 				continue;
 			}
-			for (int i = 0; i < buffer.length; i += 2) {
-				left =0.0D;
-				right = 0.0D;
+			for (int i = 0; i < buffer1.length; i += 1) {
+				left = 0.0D;
+				// right = 0.0D;
 
 				this.sequencer.tick();
 
 				for (Synthesizer channel : tracks) {
-					double[] tmp=null;
+					double[] tmp = null;
 					tmp = channel.stereoOutput();
 
 					delay.input(tmp[2]);
 					reverb.input(tmp[3]);
 
 					left += tmp[0];
-					right += tmp[1];
+					// right += tmp[1];
 				}
 
 				double[] del = delay.output();
 				left += del[0];
-				right += del[1];
+				// right += del[1];
 
 				double[] rev = reverb.process();
 				left += rev[0];
-//				right += rev[1];
+				// right += rev[1];
 
 				if (left > 1.0D)
 					left = 1.0D;
 				else if (left < -1.0D)
 					left = -1.0D;
-				if (right > 1.0D)
-					right = 1.0D;
-				else if (right < -1.0D) {
-					right = -1.0D;
-				}
-				buffer[i] = (float) (left * volume);
-				buffer[i + 1] = (float) (right * volume);
+				// if (right > 1.0D)
+				// right = 1.0D;
+				// else if (right < -1.0D) {
+				// right = -1.0D;
+				// }
+				buffer1[i] = (float) (left * volume);
+				// buffer[i + 1] = (float) (right * volume);
 			}
-			ad.writeSamples(buffer, 0, BUFFER_SIZE);
-			// System.out.println(System.currentTimeMillis()-time);
-			// line.write(buffer, 0, 16384);
+			ad.writeSamples(buffer1, 0, BUFFER_SIZE);
 		}
-
 		dispose();
 	}
 
