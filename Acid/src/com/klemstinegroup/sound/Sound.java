@@ -31,6 +31,7 @@ public class Sound implements ApplicationListener {
 	static int[] maxValue = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	static int[] scale = new int[] { 0, 2, 4, 5, 7, 9, 11 };
 	protected static boolean mutate;
+	protected static Synthesizer drumzz;
 	private Stage stage;
 	KnobActor[] mya = new KnobActor[10];
 
@@ -49,6 +50,7 @@ public class Sound implements ApplicationListener {
 				FileType.Internal), false);
 		output.start();
 		synth = (BasslineSynthesizer) output.getTrack(0);
+		drumzz= (RhythmSynthesizer) output.getTrack(1);
 		Table table = new Table();
 		table.setFillParent(true);
 		stage.addActor(table);
@@ -153,9 +155,8 @@ public class Sound implements ApplicationListener {
 					int pointer, int button) {
 				Sound.drums=!Sound.drums;
 				Sound.output.tracks = new Synthesizer[Sound.drums?2:1];
-				Sound.output.tracks[0] = Sound.output.getSequencer().bass;
-				RhythmSynthesizer tr = new RhythmSynthesizer();
-				if(Sound.drums)Sound.output.tracks[1] = Sound.output.getSequencer().drums;
+				Sound.output.tracks[0] = Sound.synth;
+				if(Sound.drums)Sound.output.tracks[1] = Sound.drumzz;
 				return true;
 			}
 		});
