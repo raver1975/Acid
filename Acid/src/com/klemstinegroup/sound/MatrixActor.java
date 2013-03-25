@@ -12,6 +12,8 @@ public class MatrixActor extends Actor {
 
 	private int id = 0;
 	public boolean fl;
+	private float y2;
+	private float x2;
 
 	public MatrixActor(final int id) {
 		this.id = id;
@@ -20,8 +22,11 @@ public class MatrixActor extends Actor {
 		this.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				ttouch(x, y);
+				int x1 = (int) (x / ((getWidth() / 16)));
+				int y1 = (int) (y / (getHeight() / 31)) - 16;
+				x2=x1;y2=y1;
 
+				ttouch(x1, y1);
 				return true;
 			}
 
@@ -31,14 +36,17 @@ public class MatrixActor extends Actor {
 
 			public void touchDragged(InputEvent event, float x, float y,
 					int pointer) {
-				ttouch(x, y);
+				int x1 = (int) (x / ((getWidth() / 16)));
+				int y1 = (int) (y / (getHeight() / 31)) - 16;
+				if (x1!=x2||y1!=y2){
+					ttouch(x1,y1);
+					x2=x1;y2=y1;
+				}
 			}
 		});
 	}
 
-	protected void ttouch(float x, float y) {
-		int x1 = (int) (x / ((getWidth() / 16)));
-		int y1 = (int) (y / (getHeight() / 31)) - 16;
+	protected void ttouch(int x1, int y1) {
 		if (x1 < 16 && x1 > -1) {
 			Sound.output.getSequencer().bassline.note[x1] = (byte) y1;
 			// int ran = (int) (Math.random() * 3.f);
@@ -47,13 +55,13 @@ public class MatrixActor extends Actor {
 				Sound.output.getSequencer().bassline.pause[x1] = false;
 //			} else if (Sound.output.getSequencer().bassline.accent[x1]) {
 //				Sound.output.getSequencer().bassline.accent[x1] = false;
-			} else if (Sound.output.getSequencer().bassline.slide[x1]) {
-				Sound.output.getSequencer().bassline.slide[x1] = false;
+			} else if (!Sound.output.getSequencer().bassline.slide[x1]) {
+				Sound.output.getSequencer().bassline.slide[x1] = true;
 			}
 			else{
 				Sound.output.getSequencer().bassline.pause[x1] = true;
 				Sound.output.getSequencer().bassline.accent[x1] =!Sound.output.getSequencer().bassline.accent[x1] ;
-				Sound.output.getSequencer().bassline.slide[x1] = true;
+				Sound.output.getSequencer().bassline.slide[x1] = false;
 			}
 		}
 
@@ -61,8 +69,7 @@ public class MatrixActor extends Actor {
 
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		if (Sound.mutate && Math.random() < .01) {
-			ttouch(MathUtils.random() * getWidth(), MathUtils.random()
-					* getHeight());
+			ttouch((int)(MathUtils.random() * 16),(int)(MathUtils.random() * 31)-16);
 		}
 		batch.end();
 		Sound.renderer.setProjectionMatrix(batch.getProjectionMatrix());

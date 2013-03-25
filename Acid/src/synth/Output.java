@@ -34,11 +34,11 @@ public class Output implements Runnable {
 	}
 
 	public Output() {
-		tracks = new Synthesizer[Sound.drums ? 2 : 1];
+		tracks = new Synthesizer[Sound.drumzzz ? 2 : 1];
 		BasslineSynthesizer tb = new BasslineSynthesizer();
 		tracks[0] = tb;
 		RhythmSynthesizer tr = new RhythmSynthesizer();
-		if (Sound.drums)
+		if (Sound.drumzzz)
 			tracks[1] = tr;
 
 		delay = new Delay();
@@ -107,10 +107,19 @@ public class Output implements Runnable {
 				// right = 0.0D;
 
 				this.sequencer.tick();
-
-				for (Synthesizer channel : tracks) {
+				if (Sound.drumzzz) {
 					double[] tmp = null;
-					tmp = channel.stereoOutput();
+					tmp = tracks[1].stereoOutput();
+
+					delay.input(tmp[2]);
+					reverb.input(tmp[3]);
+
+					left += tmp[0];
+					// right += tmp[1];
+				}
+				if (Sound.zzzynth) {
+					double[] tmp = null;
+					tmp = tracks[0].stereoOutput();
 
 					delay.input(tmp[2]);
 					reverb.input(tmp[3]);

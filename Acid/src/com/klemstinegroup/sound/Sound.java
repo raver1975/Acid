@@ -25,13 +25,14 @@ public class Sound implements ApplicationListener {
 	public static final boolean grid = !false;
 	public static Output output;
 	BitmapFont font;
-	public static boolean drums = true;
+	public static boolean drumzzz = true;
+	public static boolean zzzynth = true;
 	public static ShapeRenderer renderer;
 	static BasslineSynthesizer synth;
 	static int[] maxValue = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 	static int[] scale = new int[] { 0, 2, 4, 5, 7, 9, 11 };
 	protected static boolean mutate;
-	protected static Synthesizer drumzz;
+	protected static Synthesizer drums;
 	private Stage stage;
 	KnobActor[] mya = new KnobActor[10];
 
@@ -50,7 +51,7 @@ public class Sound implements ApplicationListener {
 				FileType.Internal), false);
 		output.start();
 		synth = (BasslineSynthesizer) output.getTrack(0);
-		drumzz= (RhythmSynthesizer) output.getTrack(1);
+		drums= (RhythmSynthesizer) output.getTrack(1);
 		Table table = new Table();
 		table.setFillParent(true);
 		stage.addActor(table);
@@ -147,16 +148,25 @@ public class Sound implements ApplicationListener {
 		});
 
 		
+		
+		TextButton tb5=new TextButton("Synth",skin);
+		table.addActor(tb5);
+		tb5.setPosition(470,180);
+		tb5.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				Sound.zzzynth=!Sound.zzzynth;
+				return true;
+			}
+		});
+		
 		TextButton tb2=new TextButton("Drums",skin);
 		table.addActor(tb2);
 		tb2.setPosition(470,220);
 		tb2.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				Sound.drums=!Sound.drums;
-				Sound.output.tracks = new Synthesizer[Sound.drums?2:1];
-				Sound.output.tracks[0] = Sound.synth;
-				if(Sound.drums)Sound.output.tracks[1] = Sound.drumzz;
+				Sound.drumzzz=!Sound.drumzzz;
 				return true;
 			}
 		});
