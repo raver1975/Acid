@@ -42,30 +42,30 @@ public class KnobActor extends Actor {
 				switch (id) {
 				case 0:
 					// tune
-					Sound.synth.controlChange(33, cc);
+					Statics.synth.controlChange(33, cc);
 					break;
 				case 1:
 					//cutoff
-					Sound.synth.controlChange(34, cc);
+					Statics.synth.controlChange(34, cc);
 					break;
 
 				case 2:
 					//resonance
-					Sound.synth.controlChange(35, cc);
+					Statics.synth.controlChange(35, cc);
 					break;
 
 				case 3:
-					 Sound.synth.controlChange(36, cc);
+					 Statics.synth.controlChange(36, cc);
 					break;
 
 				case 4:
 					//decay
-					 Sound.synth.controlChange(37, cc);
+					 Statics.synth.controlChange(37, cc);
 					break;
 
 				case 5:
 					//accent
-					 Sound.synth.controlChange(38, cc);
+					 Statics.synth.controlChange(38, cc);
 					break;
 				}
 
@@ -79,57 +79,57 @@ public class KnobActor extends Actor {
 		float rotation = 0f;
 		switch (id) {
 		case 0:
-			rotation = (int) (((((BasslineSynthesizer) Sound.output
+			rotation = (int) (((((BasslineSynthesizer) Statics.output
 					.getTrack(0)).tune - .5f) * 400.0) / 1.5f);
 			
 			break;
 		case 1:
-			rotation =(float) ((((BasslineSynthesizer) Sound.output.getTrack(0)).cutoff
+			rotation =(float) ((((BasslineSynthesizer) Statics.output.getTrack(0)).cutoff
 					.getValue() - 1200) * 5.0f) /50f;
 			break;
 
 		case 2:
-			rotation = (float) (((BasslineSynthesizer) Sound.output.getTrack(0)).resonance
+			rotation = (float) (((BasslineSynthesizer) Statics.output.getTrack(0)).resonance
 					.getValue()*500f)-100f;
 			break;
 
 		case 3:
-			rotation =  (int) ((((BasslineSynthesizer) Sound.output
+			rotation =  (int) ((((BasslineSynthesizer) Statics.output
 					.getTrack(0)).envMod * 500) -100);
 			break;
 
 		case 4:
-			rotation= (float) ((((20 - ((BasslineSynthesizer) Sound.output
+			rotation= (float) ((((20 - ((BasslineSynthesizer) Statics.output
 					.getTrack(0)).decay)) * Gdx.graphics.getWidth()) / 20.0f)-100f;
 			break;
 
 		case 5:
-			rotation=(float) ((BasslineSynthesizer) Sound.output.getTrack(0)).accent*360f;
+			rotation=(float) ((BasslineSynthesizer) Statics.output.getTrack(0)).accent*360f;
 			break;
 		}
 //		rotation=(rotation+360)%360;
 //		System.out.println(rotation);
-		Sound.renderer.setProjectionMatrix(batch.getProjectionMatrix());
-		Sound.renderer.setTransformMatrix(batch.getTransformMatrix());
-		Sound.renderer.translate(getX(), getY(), 0);
+		Statics.renderer.setProjectionMatrix(batch.getProjectionMatrix());
+		Statics.renderer.setTransformMatrix(batch.getTransformMatrix());
+		Statics.renderer.translate(getX(), getY(), 0);
 
-		Sound.renderer.begin(ShapeType.FilledCircle);
-		Sound.renderer.setColor(Color.WHITE);
-		Sound.renderer.filledCircle(20, 20, 10, 20);
-		Sound.renderer.end();
+		Statics.renderer.begin(ShapeType.FilledCircle);
+		Statics.renderer.setColor(Color.WHITE);
+		Statics.renderer.filledCircle(20, 20, 10, 20);
+		Statics.renderer.end();
 
-		Sound.renderer.begin(ShapeType.Circle);
-		Sound.renderer.setColor(Color.BLACK);
-		Sound.renderer.circle(20, 20, 10, 20);
-		Sound.renderer.end();
+		Statics.renderer.begin(ShapeType.Circle);
+		Statics.renderer.setColor(Color.BLACK);
+		Statics.renderer.circle(20, 20, 10, 20);
+		Statics.renderer.end();
 
-		Sound.renderer.begin(ShapeType.FilledCircle);
-		Sound.renderer.setColor(Color.RED);
+		Statics.renderer.begin(ShapeType.FilledCircle);
+		Statics.renderer.setColor(Color.RED);
 		for (float i = 2; i < 12; i += 2) {
-			Sound.renderer.filledCircle(20+MathUtils.cosDeg(rotation) *- i,
+			Statics.renderer.filledCircle(20+MathUtils.cosDeg(rotation) *- i,
 					20+MathUtils.sinDeg(rotation) * i, 2, 5);
 		}
-		Sound.renderer.end();
+		Statics.renderer.end();
 
 		batch.begin();
 	}

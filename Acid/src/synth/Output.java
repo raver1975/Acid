@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
-import com.klemstinegroup.sound.Sound;
+import com.klemstinegroup.sound.Statics;
 
 public class Output implements Runnable {
 	private static Thread thread = null;
@@ -34,11 +34,11 @@ public class Output implements Runnable {
 	}
 
 	public Output() {
-		tracks = new Synthesizer[Sound.drumzzz ? 2 : 1];
+		tracks = new Synthesizer[Statics.drumzzz ? 2 : 1];
 		BasslineSynthesizer tb = new BasslineSynthesizer();
 		tracks[0] = tb;
 		RhythmSynthesizer tr = new RhythmSynthesizer();
-		if (Sound.drumzzz)
+		if (Statics.drumzzz)
 			tracks[1] = tr;
 
 		delay = new Delay();
@@ -107,7 +107,7 @@ public class Output implements Runnable {
 				// right = 0.0D;
 
 				this.sequencer.tick();
-				if (Sound.drumzzz) {
+				if (Statics.drumzzz) {
 					double[] tmp = null;
 					tmp = tracks[1].stereoOutput();
 
@@ -117,7 +117,7 @@ public class Output implements Runnable {
 					left += tmp[0];
 					// right += tmp[1];
 				}
-				if (Sound.zzzynth) {
+				if (Statics.zzzynth) {
 					double[] tmp = null;
 					tmp = tracks[0].stereoOutput();
 

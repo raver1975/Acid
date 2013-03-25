@@ -3,7 +3,6 @@ package com.klemstinegroup.sound;
 import synth.BasslineSynthesizer;
 import synth.Output;
 import synth.RhythmSynthesizer;
-import synth.Synthesizer;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
@@ -22,19 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class Sound implements ApplicationListener {
-	public static final boolean grid = !false;
-	public static Output output;
 	BitmapFont font;
-	public static boolean drumzzz = true;
-	public static boolean zzzynth = true;
-	public static ShapeRenderer renderer;
-	static BasslineSynthesizer synth;
-	static int[] maxValue = new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-	static int[] scale = new int[] { 0, 2, 4, 5, 7, 9, 11 };
-	protected static boolean mutate;
-	protected static Synthesizer drums;
 	private Stage stage;
-	KnobActor[] mya = new KnobActor[10];
 
 	public Sound() {
 	}
@@ -43,15 +31,15 @@ public class Sound implements ApplicationListener {
 	public void create() {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		stage = new Stage();
-		renderer = new ShapeRenderer();
-		output = new Output();
+		Statics.renderer = new ShapeRenderer();
+		Statics.output = new Output();
 		Gdx.input.setInputProcessor(stage);
 
 		font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",
 				FileType.Internal), false);
-		output.start();
-		synth = (BasslineSynthesizer) output.getTrack(0);
-		drums= (RhythmSynthesizer) output.getTrack(1);
+		Statics.output.start();
+		Statics.synth = (BasslineSynthesizer) Statics.output.getTrack(0);
+		Statics.drums= (RhythmSynthesizer) Statics.output.getTrack(1);
 		Table table = new Table();
 		table.setFillParent(true);
 		stage.addActor(table);
@@ -62,8 +50,8 @@ public class Sound implements ApplicationListener {
 		touch1.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				synth.controlChange(35, (int) (touch1.getKnobX()));
-				synth.controlChange(34, (int) (touch1.getKnobY()));
+				Statics.synth.controlChange(35, (int) (touch1.getKnobX()));
+				Statics.synth.controlChange(34, (int) (touch1.getKnobY()));
 
 			}
 		});
@@ -75,8 +63,8 @@ public class Sound implements ApplicationListener {
 		touch2.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				synth.controlChange(36, (int) (touch2.getKnobX()));
-				synth.controlChange(37, (int) (touch2.getKnobY()));
+				Statics.synth.controlChange(36, (int) (touch2.getKnobX()));
+				Statics.synth.controlChange(37, (int) (touch2.getKnobY()));
 
 			}
 		});
@@ -87,7 +75,7 @@ public class Sound implements ApplicationListener {
 		table.setPosition(Gdx.graphics.getWidth() / 2-280,
 				Gdx.graphics.getHeight() / 2-280);
 		((OrthographicCamera)stage.getCamera()).zoom-=.30f;
-
+		KnobActor[] mya = new KnobActor[10];
 		mya[0] = new KnobActor(0);
 		table.addActor(mya[0]);
 		mya[1] = new KnobActor(1);
@@ -120,7 +108,7 @@ public class Sound implements ApplicationListener {
 		tb4.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				Sound.output.getSequencer().bass.switchWaveform();
+				Statics.output.getSequencer().bass.switchWaveform();
 				return true;
 			}
 		});
@@ -130,7 +118,7 @@ public class Sound implements ApplicationListener {
 		tb1.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				Sound.mutate=!Sound.mutate;
+				Statics.mutate=!Statics.mutate;
 				return true;
 			}
 		});
@@ -141,8 +129,8 @@ public class Sound implements ApplicationListener {
 		tb3.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				output.getSequencer().randomize();
-				output.getSequencer().setBpm(output.getSequencer().bpm);
+				Statics.output.getSequencer().randomize();
+				Statics.output.getSequencer().setBpm(Statics.output.getSequencer().bpm);
 				return true;
 			}
 		});
@@ -155,18 +143,28 @@ public class Sound implements ApplicationListener {
 		tb5.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				Sound.zzzynth=!Sound.zzzynth;
+				Statics.zzzynth=!Statics.zzzynth;
 				return true;
 			}
 		});
 		
+		TextButton tb6=new TextButton("Instrument",skin);
+		table.addActor(tb6);
+		tb6.setPosition(470,340);
+		tb6.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				Statics.drumdisplay=!Statics.drumdisplay;
+				return true;
+			}
+		});
 		TextButton tb2=new TextButton("Drums",skin);
 		table.addActor(tb2);
 		tb2.setPosition(470,220);
 		tb2.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				Sound.drumzzz=!Sound.drumzzz;
+				Statics.drumzzz=!Statics.drumzzz;
 				return true;
 			}
 		});
@@ -199,6 +197,6 @@ public class Sound implements ApplicationListener {
 	@Override
 	public void dispose() {
 		Output.running = false;
-		output.dispose();
+		Statics.output.dispose();
 	}
 }
