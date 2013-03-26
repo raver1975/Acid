@@ -168,7 +168,7 @@ public class MatrixActor extends Actor {
 				if (Statics.output.getSequencer().bassline.slide[r]
 						&& !Statics.output.getSequencer().bassline.pause[r]) {
 					Statics.renderer
-							.line((r) * skipx + skipx / 2,
+							.line((r) * skipx + skipx / 2, 
 									(Statics.output.getSequencer().bassline.note[r] + 16)
 											* skipy + skipy / 2,
 									(r + 1) * skipx + skipx / 2,
