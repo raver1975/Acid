@@ -7,6 +7,7 @@ import synth.RhythmSynthesizer;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -23,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 public class Sound implements ApplicationListener {
 	BitmapFont font;
 	private Stage stage;
+	LightActor la3 = null;
 
 	public Sound() {
 	}
@@ -31,6 +33,7 @@ public class Sound implements ApplicationListener {
 	public void create() {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		stage = new Stage();
+
 		Statics.renderer = new ShapeRenderer();
 		Statics.output = new Output();
 		Statics.output.getSequencer().setBpm(120);
@@ -42,6 +45,7 @@ public class Sound implements ApplicationListener {
 
 		font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",
 				FileType.Internal), false);
+		font.setScale(.7f);
 		Statics.output.start();
 		Statics.synth = (BasslineSynthesizer) Statics.output.getTrack(0);
 		Statics.drums = (RhythmSynthesizer) Statics.output.getTrack(1);
@@ -128,6 +132,7 @@ public class Sound implements ApplicationListener {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				Statics.mutate = !Statics.mutate;
+				la3.on = Statics.mutate;
 				return true;
 			}
 		});
@@ -150,22 +155,22 @@ public class Sound implements ApplicationListener {
 		tb5.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-//				Statics.zzzynth = !Statics.zzzynth;
-				Statics.drumdisplay=false;
+				// Statics.zzzynth = !Statics.zzzynth;
+				Statics.drumdisplay = false;
 				return true;
 			}
 		});
 
-//		TextButton tb6 = new TextButton("Instrument", skin);
-//		table.addActor(tb6);
-//		tb6.setPosition(470, 380);
-//		tb6.addListener(new InputListener() {
-//			public boolean touchDown(InputEvent event, float x, float y,
-//					int pointer, int button) {
-//				Statics.drumdisplay = !Statics.drumdisplay;
-//				return true;
-//			}
-//		});
+		// TextButton tb6 = new TextButton("Instrument", skin);
+		// table.addActor(tb6);
+		// tb6.setPosition(470, 380);
+		// tb6.addListener(new InputListener() {
+		// public boolean touchDown(InputEvent event, float x, float y,
+		// int pointer, int button) {
+		// Statics.drumdisplay = !Statics.drumdisplay;
+		// return true;
+		// }
+		// });
 
 		TextButton tb7 = new TextButton("Clear", skin);
 		table.addActor(tb7);
@@ -180,8 +185,8 @@ public class Sound implements ApplicationListener {
 						}
 					}
 				} else {
-					for (int i=0;i<16;i++){
-						Statics.output.getSequencer().bassline.pause[i]=true;
+					for (int i = 0; i < 16; i++) {
+						Statics.output.getSequencer().bassline.pause[i] = true;
 					}
 				}
 
@@ -195,11 +200,48 @@ public class Sound implements ApplicationListener {
 		tb2.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-//				Statics.drumzzz = !Statics.drumzzz;
-				Statics.drumdisplay=true;
+				// Statics.drumzzz = !Statics.drumzzz;
+				Statics.drumdisplay = true;
 				return true;
 			}
 		});
+
+		la3 = new LightActor(5, Color.RED, false);
+		table.addActor(la3);
+		la3.setPosition(455, 268);
+		la3.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				la3.on = !la3.on;
+				Statics.mutate = la3.on;
+				return true;
+			}
+		});
+
+		final LightActor la2 = new LightActor(5, Color.RED, true);
+		table.addActor(la2);
+		la2.setPosition(455, 188);
+		la2.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				la2.on = !la2.on;
+				Statics.zzzynth = la2.on;
+				return true;
+			}
+		});
+
+		final LightActor la1 = new LightActor(5, Color.RED, true);
+		table.addActor(la1);
+		la1.setPosition(455, 228);
+		la1.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				la1.on = !la1.on;
+				Statics.drumzzz = la1.on;
+				return true;
+			}
+		});
+
 	}
 
 	@Override
@@ -214,6 +256,13 @@ public class Sound implements ApplicationListener {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+		stage.getSpriteBatch().begin();
+		font.setColor(Color.BLACK);
+		font.draw(stage.getSpriteBatch(), "bpm", 665, 212);
+		font.draw(stage.getSpriteBatch(),
+				(int) Statics.output.getSequencer().bpm + "", 669, 170);
+		stage.getSpriteBatch().end();
+
 	}
 
 	@Override
