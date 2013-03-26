@@ -11,7 +11,7 @@ public class Output implements Runnable {
 	public static Synthesizer[] tracks;
 	private AcidSequencer sequencer;
 	private static double left;
-	// private static double right;
+	private static double right;
 	private static double volume = 1D;
 	public static final double SAMPLE_RATE = 44100;
 	// public static final double SAMPLE_RATE = 2050;
@@ -23,7 +23,7 @@ public class Output implements Runnable {
 	private static Reverb reverb;
 	private static Delay delay;
 
-	private AudioDevice ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, true);
+	private AudioDevice ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
 
 	public static Delay getDelay() {
 		return delay;
@@ -102,9 +102,9 @@ public class Output implements Runnable {
 				}
 				continue;
 			}
-			for (int i = 0; i < buffer1.length; i += 1) {
+			for (int i = 0; i < buffer1.length; i += 2) {
 				left = 0.0D;
-				// right = 0.0D;
+				right = 0.0D;
 
 				this.sequencer.tick();
 				if (Statics.drumzzz) {
@@ -115,7 +115,7 @@ public class Output implements Runnable {
 					reverb.input(tmp[3]);
 
 					left += tmp[0];
-					// right += tmp[1];
+					right += tmp[1];
 				}
 				if (Statics.zzzynth) {
 					double[] tmp = null;
@@ -125,28 +125,28 @@ public class Output implements Runnable {
 					reverb.input(tmp[3]);
 
 					left += tmp[0];
-					// right += tmp[1];
+					right += tmp[1];
 				}
 
 				double[] del = delay.output();
 				left += del[0];
-				// right += del[1];
+				right += del[1];
 
 				double[] rev = reverb.process();
 				left += rev[0];
-				// right += rev[1];
+				right += rev[1];
 
 				if (left > 1.0D)
 					left = 1.0D;
 				else if (left < -1.0D)
 					left = -1.0D;
-				// if (right > 1.0D)
-				// right = 1.0D;
-				// else if (right < -1.0D) {
-				// right = -1.0D;
-				// }
+				if (right > 1.0D)
+					right = 1.0D;
+				else if (right < -1.0D) {
+					right = -1.0D;
+				}
 				buffer1[i] = (float) (left * volume);
-				// buffer[i + 1] = (float) (right * volume);
+				buffer1[i + 1] = (float) (right * volume);
 			}
 			ad.writeSamples(buffer1, 0, BUFFER_SIZE);
 		}

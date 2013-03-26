@@ -1,5 +1,7 @@
 package com.klemstinegroup.sound;
 
+import java.util.Arrays;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -71,8 +73,7 @@ public class MatrixActor extends Actor {
 			}
 		} else {
 			if (x1 < 16 && x1 > -1 && y1 >= 0 && y1 < 7) {
-				System.out.println(y1);
-				if (Statics.output.getSequencer().rhythm[y1][x1] == 127) {
+				if (Statics.output.getSequencer().rhythm[y1][x1] >0) {
 					Statics.output.getSequencer().rhythm[y1][x1] = 0;
 				} else
 					Statics.output.getSequencer().rhythm[y1][x1] = 127;
@@ -181,8 +182,7 @@ public class MatrixActor extends Actor {
 			Statics.renderer.begin(ShapeType.FilledRectangle);
 			Statics.renderer.setColor(Color.YELLOW);
 			for (int r = 0; r < Statics.output.getSequencer().rhythm.length; r++) {
-				if (r%2==0)Statics.renderer.setColor(Color.YELLOW);
-				else Statics.renderer.setColor(Color.RED);
+				Statics.renderer.setColor(Color.YELLOW);
 				for (int r1 = 0; r1 < 16; r1++) {
 					if (Statics.output.getSequencer().rhythm[r][r1] > 0) {
 						Statics.renderer.filledRect(r1 * skipx+2, (r)

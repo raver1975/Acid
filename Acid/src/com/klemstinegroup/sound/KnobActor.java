@@ -67,7 +67,12 @@ public class KnobActor extends Actor {
 					//accent
 					 Statics.synth.controlChange(38, cc);
 					break;
+				case 6:
+					//accent
+					 Statics.output.getSequencer().setBpm(cc+100);
+					break;
 				}
+				
 
 			}
 
@@ -105,6 +110,10 @@ public class KnobActor extends Actor {
 
 		case 5:
 			rotation=(float) ((BasslineSynthesizer) Statics.output.getTrack(0)).accent*360f;
+			break;
+		case 6:
+			//accent
+			rotation=(float)  Statics.output.getSequencer().bpm;
 			break;
 		}
 //		rotation=(rotation+360)%360;
