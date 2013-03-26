@@ -113,7 +113,7 @@ public class Sound implements ApplicationListener {
 
 		MatrixActor matrixa = new MatrixActor(0);
 		table.addActor(matrixa);
-		matrixa.setPosition(130, 180);
+		matrixa.setPosition(130, 178);
 
 		TextButton tb4 = new TextButton("WaveForm", skin);
 		table.addActor(tb4);
