@@ -83,7 +83,7 @@ public class Sound implements ApplicationListener {
 		table.addActor(touch2);
 
 		table.setPosition(Gdx.graphics.getWidth() / 2 - 280,
-				Gdx.graphics.getHeight() / 2 - 280);
+				Gdx.graphics.getHeight() / 2 - 290);
 		((OrthographicCamera) stage.getCamera()).zoom -= .30f;
 		KnobActor[] mya = new KnobActor[10];
 		mya[0] = new KnobActor(0);
