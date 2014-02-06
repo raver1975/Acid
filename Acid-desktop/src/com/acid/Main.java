@@ -11,7 +11,7 @@ public class Main {
 		cfg.useGL20 = false;
 		cfg.width = 480*2;
 		cfg.height = 320*2;
-		
+		    
 		new LwjglApplication(new Sound(), cfg);
 	}
 }

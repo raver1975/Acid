@@ -217,6 +217,54 @@ public class Sound implements ApplicationListener {
 				return true;
 			}
 		});
+		
+		
+		TextButton zi = new TextButton("Zoom +", skin);
+		table.addActor(zi);
+		zi.setPosition(470, 430);
+		zi.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				((OrthographicCamera) stage.getCamera()).zoom -= .05f;
+				return true;
+			}
+		});
+		
+		
+		TextButton zo = new TextButton("Zoom - ", skin);
+		table.addActor(zo);
+		zo.setPosition(470, 400);
+		zo.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				((OrthographicCamera) stage.getCamera()).zoom += .05f;
+				return true;
+			}
+		});
+		
+//		LightActor la4 = new LightActor(10, Color.RED, true);
+//		table.addActor(la4);
+//		la4.setPosition(470, 430);
+//		la4.addListener(new InputListener() {
+//			public boolean touchDown(InputEvent event, float x, float y,
+//					int pointer, int button) {
+//				((OrthographicCamera) stage.getCamera()).zoom -= .05f;
+//				return true;
+//			}
+//		});
+//		
+//		LightActor la5 = new LightActor(10, Color.RED, true);
+//		table.addActor(la5);
+//		la5.setPosition(470, 400);
+//		la5.addListener(new InputListener() {
+//			public boolean touchDown(InputEvent event, float x, float y,
+//					int pointer, int button) {
+//				((OrthographicCamera) stage.getCamera()).zoom += .05f;
+//				return true;
+//			}
+//		});
+
+
 
 		final LightActor la2 = new LightActor(5, Color.RED, true);
 		table.addActor(la2);
