@@ -3,11 +3,15 @@ package com.acid;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -22,10 +26,13 @@ import synth.BasslineSynthesizer;
 import synth.Output;
 import synth.RhythmSynthesizer;
 
+import static com.badlogic.gdx.input.GestureDetector.*;
+
 public class Sound implements ApplicationListener {
 	BitmapFont font;
 	private Stage stage;
 	LightActor la3 = null;
+	private float newZoom;
 
 	public Sound() {
 	}
@@ -43,7 +50,61 @@ public class Sound implements ApplicationListener {
 		Statics.drumdisplay = false;
 		Statics.output.getSequencer().randomize();
 
-		Gdx.input.setInputProcessor(stage);
+		InputMultiplexer mult=new InputMultiplexer();
+		GestureListener gl = new GestureListener() {
+
+			@Override
+			public boolean touchDown(float x, float y, int pointer, int button) {
+				return false;
+			}
+
+			@Override
+			public boolean tap(float x, float y, int count, int button) {
+				return false;
+			}
+
+			@Override
+			public boolean longPress(float x, float y) {
+				return false;
+			}
+
+			@Override
+			public boolean fling(float velocityX, float velocityY, int button) {
+				return false;
+			}
+
+			@Override
+			public boolean pan(float x, float y, float deltaX, float deltaY) {
+				((OrthographicCamera) stage.getCamera()).translate(-deltaX/2f,deltaY/2f);
+				return false;
+			}
+
+			@Override
+			public boolean panStop(float x, float y, int pointer, int button) {
+				return false;
+			}
+
+			@Override
+			public boolean zoom(float initialDistance, float distance) {
+				newZoom=initialDistance/distance;
+//				((OrthographicCamera) stage.getCamera()).zoom =initialDistance/distance;
+				return true;
+			}
+
+			@Override
+			public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+				return false;
+			}
+
+			@Override
+			public void pinchStop() {
+
+			}
+		};
+		GestureDetector gd=new GestureDetector(gl);
+		mult.addProcessor(gd);
+		mult.addProcessor(stage);
+		Gdx.input.setInputProcessor(mult);
 
 		font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",
 				FileType.Internal), false);
@@ -88,6 +149,7 @@ public class Sound implements ApplicationListener {
 		table.setPosition(Gdx.graphics.getWidth() / 2 - 280,
 				Gdx.graphics.getHeight() / 2 - 290);
 		((OrthographicCamera) stage.getCamera()).zoom -= .30f;
+		newZoom = ((OrthographicCamera) stage.getCamera()).zoom;
 		KnobActor[] mya = new KnobActor[10];
 		mya[0] = new KnobActor(0);
 		table.addActor(mya[0]);
@@ -222,52 +284,28 @@ public class Sound implements ApplicationListener {
 		});
 		
 		
-		TextButton zi = new TextButton("Zoom +", skin);
-		table.addActor(zi);
-		zi.setPosition(470, 430);
-		zi.addListener(new InputListener() {
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				((OrthographicCamera) stage.getCamera()).zoom -= .05f;
-				return true;
-			}
-		});
-		
-		
-		TextButton zo = new TextButton("Zoom - ", skin);
-		table.addActor(zo);
-		zo.setPosition(470, 400);
-		zo.addListener(new InputListener() {
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				((OrthographicCamera) stage.getCamera()).zoom += .05f;
-				return true;
-			}
-		});
-		
-//		LightActor la4 = new LightActor(10, Color.RED, true);
-//		table.addActor(la4);
-//		la4.setPosition(470, 430);
-//		la4.addListener(new InputListener() {
+//		TextButton zi = new TextButton("Zoom +", skin);
+//		table.addActor(zi);
+//		zi.setPosition(470, 430);
+//		zi.addListener(new InputListener() {
 //			public boolean touchDown(InputEvent event, float x, float y,
 //					int pointer, int button) {
 //				((OrthographicCamera) stage.getCamera()).zoom -= .05f;
 //				return true;
 //			}
 //		});
-//		
-//		LightActor la5 = new LightActor(10, Color.RED, true);
-//		table.addActor(la5);
-//		la5.setPosition(470, 400);
-//		la5.addListener(new InputListener() {
+//
+//
+//		TextButton zo = new TextButton("Zoom - ", skin);
+//		table.addActor(zo);
+//		zo.setPosition(470, 400);
+//		zo.addListener(new InputListener() {
 //			public boolean touchDown(InputEvent event, float x, float y,
 //					int pointer, int button) {
 //				((OrthographicCamera) stage.getCamera()).zoom += .05f;
 //				return true;
 //			}
 //		});
-
-
 
 		final LightActor la2 = new LightActor(5, Color.RED, true);
 		table.addActor(la2);
@@ -306,6 +344,8 @@ public class Sound implements ApplicationListener {
 		// mya.rotate(10);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
+		if (newZoom<((OrthographicCamera) stage.getCamera()).zoom)((OrthographicCamera) stage.getCamera()).zoom-=.01;
+		if (newZoom>((OrthographicCamera) stage.getCamera()).zoom)((OrthographicCamera) stage.getCamera()).zoom+=.01;
 		stage.draw();
 		stage.getBatch().begin();
 		font.setColor(Color.BLACK);
