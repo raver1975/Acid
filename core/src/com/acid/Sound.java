@@ -47,6 +47,7 @@ public class Sound implements ApplicationListener {
 
 		font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",
 				FileType.Internal), false);
+//		font=new BitmapFont();
 		font.getData().setScale(.7f);
 		Statics.output.start();
 		Statics.synth = (BasslineSynthesizer) Statics.output.getTrack(0);
@@ -308,9 +309,9 @@ public class Sound implements ApplicationListener {
 		stage.draw();
 		stage.getBatch().begin();
 		font.setColor(Color.BLACK);
-		font.draw(stage.getBatch(), "bpm", 665, 212);
+		font.draw(stage.getBatch(), "bpm", 10, 212);
 		font.draw(stage.getBatch(),
-				(int) Statics.output.getSequencer().bpm + "", 669, 170);
+				(int) Statics.output.getSequencer().bpm + "", 10, 170);
 		stage.getBatch().end();
 	}
 
