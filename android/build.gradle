@@ -21,7 +21,7 @@ android {
     }
     defaultConfig {
         applicationId "com.acid"
-        minSdkVersion 8
+        minSdkVersion 9
         targetSdkVersion 23
     }
 }

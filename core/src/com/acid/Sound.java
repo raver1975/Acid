@@ -102,8 +102,9 @@ public class Sound implements ApplicationListener {
 			}
 		};
 		GestureDetector gd=new GestureDetector(gl);
-		mult.addProcessor(gd);
 		mult.addProcessor(stage);
+		mult.addProcessor(gd);
+
 		Gdx.input.setInputProcessor(mult);
 
 		font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",
@@ -335,7 +336,8 @@ public class Sound implements ApplicationListener {
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
+//		Output.running=true;
+		Output.resume();
 
 	}
 
@@ -362,7 +364,7 @@ public class Sound implements ApplicationListener {
 
 	@Override
 	public void pause() {
-		Output.running = false;
+		Output.pause();
 	}
 
 	@Override
