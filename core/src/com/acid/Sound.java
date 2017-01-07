@@ -119,8 +119,8 @@ public class Sound implements ApplicationListener {
 		Table table = new Table(skin);
 		table.setFillParent(true);
 		stage.addActor(table);
-		TextureRegionActor my = new TextureRegionActor();
-		table.addActor(my);
+		//TextureRegionActor my = new TextureRegionActor();
+		//table.addActor(my);
 		final Touchpad touch1 = new Touchpad(0,skin);
 		touch1.setBounds(15, 15, 100, 100);
 		touch1.addListener(new ChangeListener() {
@@ -152,19 +152,19 @@ public class Sound implements ApplicationListener {
 		((OrthographicCamera) stage.getCamera()).zoom -= .30f;
 		newZoom = ((OrthographicCamera) stage.getCamera()).zoom;
 		KnobActor[] mya = new KnobActor[10];
-		mya[0] = new KnobActor(0);
+		mya[0] = new KnobActor("Tune",0);
 		table.addActor(mya[0]);
-		mya[1] = new KnobActor(1);
+		mya[1] = new KnobActor("Cutoff",1);
 		table.addActor(mya[1]);
-		mya[2] = new KnobActor(2);
+		mya[2] = new KnobActor("Reso",2);
 		table.addActor(mya[2]);
-		mya[3] = new KnobActor(3);
+		mya[3] = new KnobActor("Env Mod",3);
 		table.addActor(mya[3]);
-		mya[4] = new KnobActor(4);
+		mya[4] = new KnobActor("Decay",4);
 		table.addActor(mya[4]);
-		mya[5] = new KnobActor(5);
+		mya[5] = new KnobActor("Accent",5);
 		table.addActor(mya[5]);
-		mya[6] = new KnobActor(6);
+		mya[6] = new KnobActor("Tempo",6);
 		table.addActor(mya[6]);
 
 		int hj = 120;

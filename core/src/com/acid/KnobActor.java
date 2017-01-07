@@ -1,8 +1,10 @@
 package com.acid;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
@@ -13,10 +15,16 @@ import synth.BasslineSynthesizer;
 
 public class KnobActor extends Actor {
 
-	private int id = 0;
+	private final BitmapFont font;
+	private final int id;
+	private final String name;
 
-	public KnobActor(final int id) {
+	public KnobActor(String name,final int id) {
+		font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",
+				Files.FileType.Internal), false);
+		font.getData().setScale(.75f);
 		this.id = id;
+		this.name=name;
 		this.setWidth(60);
 		this.setHeight(60);
 		this.addListener(new InputListener() {
@@ -80,6 +88,10 @@ public class KnobActor extends Actor {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
+		font.setColor(Color.WHITE);
+
+		font.draw(batch,name,this.getX(),this.getY()+this.getHeight()-10);
+
 		batch.end();
 		float rotation = 0f;
 		switch (id) {
@@ -141,6 +153,7 @@ public class KnobActor extends Actor {
 		Statics.renderer.end();
 
 		batch.begin();
+
 	}
 
 }
