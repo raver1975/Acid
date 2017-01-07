@@ -188,7 +188,6 @@ public class Acid implements ApplicationListener {
 					int pointer, int button) {
 				Statics.output.getSequencer().bass.switchWaveform();
 				tb4.setChecked(tb4.isChecked());
-				System.out.println("toggle waveform "+tb4.isChecked());
 				tb4.setColor(tb4.isChecked()?Color.WHITE:Color.RED);
 				tb4.invalidate();
 				return true;

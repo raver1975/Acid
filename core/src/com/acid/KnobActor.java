@@ -93,10 +93,7 @@ public class KnobActor extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        font.setColor(Color.WHITE);
-        font.draw(batch, name, this.getX()+25- gl.width/2, this.getY() + this.getHeight() - gl.height);
 
-        batch.end();
         float rotation = 0f;
         switch (id) {
             case 0:
@@ -134,6 +131,11 @@ public class KnobActor extends Actor {
         }
 //		rotation=(rotation+360)%360;
 //		System.out.println(rotation);
+        font.setColor(Color.WHITE);
+        font.draw(batch, name, this.getX()+25- gl.width/2, this.getY() + this.getHeight() - gl.height);
+        font.draw(batch, rotation+"", this.getX()+25- gl.width/2, this.getY() +20- gl.height);
+        batch.end();
+
         Statics.renderer.setProjectionMatrix(batch.getProjectionMatrix());
         Statics.renderer.setTransformMatrix(batch.getTransformMatrix());
         Statics.renderer.translate(getX(), getY(), 0);
