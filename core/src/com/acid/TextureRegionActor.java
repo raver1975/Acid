@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class TextureRegionActor extends Actor {
         TextureRegion region;
 
-        public TextureRegionActor () {
+        public TextureRegionActor (String filename) {
             //Texture.setEnforcePotImages(false);
-        	region= new TextureRegion(new Texture(Gdx.files.internal("data/tr303.png")));
+        	region= new TextureRegion(new Texture(Gdx.files.internal(filename)));
         }
 
 

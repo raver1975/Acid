@@ -28,13 +28,13 @@ import synth.RhythmSynthesizer;
 
 import static com.badlogic.gdx.input.GestureDetector.*;
 
-public class Sound implements ApplicationListener {
+public class Acid implements ApplicationListener {
 	BitmapFont font;
 	private Stage stage;
 	LightActor la3 = null;
 	private float newZoom;
 
-	public Sound() {
+	public Acid() {
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class Sound implements ApplicationListener {
 
 			@Override
 			public boolean pan(float x, float y, float deltaX, float deltaY) {
-				((OrthographicCamera) stage.getCamera()).translate(-deltaX/2f,deltaY/2f);
+				//((OrthographicCamera) stage.getCamera()).translate(-deltaX/2f,deltaY/2f);
 				return false;
 			}
 
@@ -109,7 +109,6 @@ public class Sound implements ApplicationListener {
 
 		font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",
 				FileType.Internal), false);
-//		font=new BitmapFont();
 		font.getData().setScale(.7f);
 		Statics.output.start();
 		Statics.synth = (BasslineSynthesizer) Statics.output.getTrack(0);
@@ -154,17 +153,17 @@ public class Sound implements ApplicationListener {
 		KnobActor[] mya = new KnobActor[10];
 		mya[0] = new KnobActor("Tune",0);
 		table.addActor(mya[0]);
-		mya[1] = new KnobActor("Cutoff",1);
+		mya[1] = new KnobActor("Cut",1);
 		table.addActor(mya[1]);
-		mya[2] = new KnobActor("Reso",2);
+		mya[2] = new KnobActor("Res",2);
 		table.addActor(mya[2]);
-		mya[3] = new KnobActor("Env Mod",3);
+		mya[3] = new KnobActor("Env",3);
 		table.addActor(mya[3]);
-		mya[4] = new KnobActor("Decay",4);
+		mya[4] = new KnobActor("Dec",4);
 		table.addActor(mya[4]);
-		mya[5] = new KnobActor("Accent",5);
+		mya[5] = new KnobActor("Acc",5);
 		table.addActor(mya[5]);
-		mya[6] = new KnobActor("Tempo",6);
+		mya[6] = new KnobActor("BPM",6);
 		table.addActor(mya[6]);
 
 		int hj = 120;
@@ -181,13 +180,17 @@ public class Sound implements ApplicationListener {
 		table.addActor(matrixa);
 		matrixa.setPosition(130, 178);
 
-		TextButton tb4 = new TextButton("WaveForm", skin);
+		final TextButton tb4 = new TextButton("WaveForm", skin);
 		table.addActor(tb4);
 		tb4.setPosition(7.5f, 130);
 		tb4.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				Statics.output.getSequencer().bass.switchWaveform();
+				tb4.setChecked(tb4.isChecked());
+				System.out.println("toggle waveform "+tb4.isChecked());
+				tb4.setColor(tb4.isChecked()?Color.WHITE:Color.RED);
+				tb4.invalidate();
 				return true;
 			}
 		});
@@ -227,17 +230,6 @@ public class Sound implements ApplicationListener {
 			}
 		});
 
-		// TextButton tb6 = new TextButton("Instrument", skin);
-		// table.addActor(tb6);
-		// tb6.setPosition(470, 380);
-		// tb6.addListener(new InputListener() {
-		// public boolean touchDown(InputEvent event, float x, float y,
-		// int pointer, int button) {
-		// Statics.drumdisplay = !Statics.drumdisplay;
-		// return true;
-		// }
-		// });
-
 		TextButton tb7 = new TextButton("Clear", skin);
 		table.addActor(tb7);
 		tb7.setPosition(470, 340);
@@ -266,7 +258,6 @@ public class Sound implements ApplicationListener {
 		tb2.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				// Statics.drumzzz = !Statics.drumzzz;
 				Statics.drumdisplay = true;
 				return true;
 			}
@@ -285,28 +276,28 @@ public class Sound implements ApplicationListener {
 		});
 		
 		
-//		TextButton zi = new TextButton("Zoom +", skin);
-//		table.addActor(zi);
-//		zi.setPosition(470, 430);
-//		zi.addListener(new InputListener() {
-//			public boolean touchDown(InputEvent event, float x, float y,
-//					int pointer, int button) {
-//				((OrthographicCamera) stage.getCamera()).zoom -= .05f;
-//				return true;
-//			}
-//		});
-//
-//
-//		TextButton zo = new TextButton("Zoom - ", skin);
-//		table.addActor(zo);
-//		zo.setPosition(470, 400);
-//		zo.addListener(new InputListener() {
-//			public boolean touchDown(InputEvent event, float x, float y,
-//					int pointer, int button) {
-//				((OrthographicCamera) stage.getCamera()).zoom += .05f;
-//				return true;
-//			}
-//		});
+		TextButton zi = new TextButton("Zoom +", skin);
+		table.addActor(zi);
+		zi.setPosition(470, 430);
+		zi.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				newZoom-= .05f;
+				return true;
+			}
+		});
+
+
+		TextButton zo = new TextButton("Zoom - ", skin);
+		table.addActor(zo);
+		zo.setPosition(470, 400);
+		zo.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				newZoom += .05f;
+				return true;
+			}
+		});
 
 		final LightActor la2 = new LightActor(5, Color.RED, true);
 		table.addActor(la2);

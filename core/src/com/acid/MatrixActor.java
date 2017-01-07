@@ -59,8 +59,8 @@ public class MatrixActor extends Actor {
 				if (Statics.output.getSequencer().bassline.pause[x1]) {
 					Statics.output.getSequencer().bassline.pause[x1] = false;
 					// } else if
-					// (Sound.output.getSequencer().bassline.accent[x1]) {
-					// Sound.output.getSequencer().bassline.accent[x1] = false;
+					// (Acid.output.getSequencer().bassline.accent[x1]) {
+					// Acid.output.getSequencer().bassline.accent[x1] = false;
 				} else if (!Statics.output.getSequencer().bassline.slide[x1]) {
 					Statics.output.getSequencer().bassline.slide[x1] = true;
 				} else {
@@ -126,7 +126,7 @@ public class MatrixActor extends Actor {
 				int skipd = 3;
 				if (Statics.output.getSequencer().bassline.slide[r])
 					skipd = 0;
-				// if (r > 0 && Sound.output.getSequencer().bassline.slide[r -
+				// if (r > 0 && Acid.output.getSequencer().bassline.slide[r -
 				// 1])
 				// skipd = 0;
 				Statics.renderer.rect(r * skipx + skipd,
@@ -143,7 +143,7 @@ public class MatrixActor extends Actor {
 				int skipd = 3;
 				if (Statics.output.getSequencer().bassline.slide[r])
 					skipd = 0;
-				// if (r > 0 && Sound.output.getSequencer().bassline.slide[r -
+				// if (r > 0 && Acid.output.getSequencer().bassline.slide[r -
 				// 1])
 				// skipd = 0;
 
