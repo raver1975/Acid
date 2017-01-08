@@ -1,6 +1,8 @@
 package synth;
 
 
+import com.acid.Statics;
+
 import javax.xml.validation.Validator;
 
 public class BasslineSynthesizer
@@ -24,7 +26,6 @@ public class BasslineSynthesizer
     public double envMod;
     public double decay;
     public double accent;
-    public double volume;
     private double vol_i;
     private double gain_i;
     private static final double DECAY_MAX = 0.125D;
@@ -191,20 +192,25 @@ public class BasslineSynthesizer
                 break;
             case 37:
                 newValue = 1.0D - value / 127.0D;
+
                 if (newValue > 0d && newValue < 10d) {
+                    System.out.println(newValue);
                     this.decay = (newValue * 19.875D + 0.125D);
                     this.feg.setDecay(this.decay);
                 }
 
                 break;
             case 39:
-                this.volume = (value / 127.0D);
-                this.vol_i = (this.volume * 2.0D);
-                if (this.vol_i > 1.0D) {
-                    this.distortion.setGain(1.0D / ((this.vol_i - 1.0D) * 50.0D + 1.0D));
-                    this.vol_i = 1.0D;
-                } else {
-                    this.distortion.setGain(1.0D);
+                newValue = value / 127.0D;
+                if (newValue >= 0d && newValue <= 2d) {
+                    Statics.output.setVolume((value / 127.0D));
+                    this.vol_i = (Statics.output.getVolume() * 2.0D);
+                    if (this.vol_i > 1.0D) {
+                        this.distortion.setGain(1.0D / ((this.vol_i - 1.0D) * 50.0D + 1.0D));
+                        this.vol_i = 1.0D;
+                    } else {
+                        this.distortion.setGain(1.0D);
+                    }
                 }
                 break;
             case 38:

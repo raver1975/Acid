@@ -12,6 +12,8 @@ public class Output implements Runnable {
 	private AcidSequencer sequencer;
 	private static double left;
 	private static double right;
+
+
 	private static double volume = 1D;
 	public static final double SAMPLE_RATE = 44100;
 	// public static final double SAMPLE_RATE = 2050;
@@ -24,6 +26,16 @@ public class Output implements Runnable {
 	private static Delay delay;
 
 	private AudioDevice ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
+
+
+
+	public static double getVolume() {
+		return volume;
+	}
+
+	public static void setVolume(double value) {
+		volume = value;
+	}
 
 	public static Delay getDelay() {
 		return delay;
@@ -64,9 +76,7 @@ public class Output implements Runnable {
 		return running;
 	}
 
-	public static void setVolume(double value) {
-		volume = value;
-	}
+
 
 	public static void unlock() {
 		pause = false;

@@ -165,16 +165,23 @@ public class Acid implements ApplicationListener {
 		table.addActor(mya[5]);
 		mya[6] = new KnobActor("BPM",6);
 		table.addActor(mya[6]);
+		mya[7] = new KnobActor("Vol",7);
+		table.addActor(mya[7]);
 
-		int hj = 120;
-		int gh = 120;
+
+
+		//bottom row of knobs
+		int hj = 130;
+		int gh = 125;
 		mya[0].setPosition(hj, gh);
 		mya[1].setPosition(hj += 56, gh);
 		mya[2].setPosition(hj += 56, gh);
 		mya[3].setPosition(hj += 56, gh);
 		mya[4].setPosition(hj += 56, gh);
 		mya[5].setPosition(hj += 56, gh);
-		mya[6].setPosition(hj += 56, gh);
+
+		mya[6].setPosition(50, 405);
+		mya[7].setPosition(90,405);
 
 		MatrixActor matrixa = new MatrixActor(0);
 		table.addActor(matrixa);
