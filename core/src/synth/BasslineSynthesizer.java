@@ -185,7 +185,7 @@ public class BasslineSynthesizer
                 break;
             case 33:
                 newValue = value / 127.0F * 2.0F - 1.0F;
-                if (newValue > -1.1d && newValue < 4d) {
+                if (newValue > -0.9d && newValue < 4d) {
                     this.tune = Math.pow(2.0D, newValue);
                     this.osc.setFrequency(this.frequency * this.tune);
                 }
@@ -193,8 +193,7 @@ public class BasslineSynthesizer
             case 37:
                 newValue = 1.0D - value / 127.0D;
 
-                if (newValue > 0d && newValue < 10d) {
-                    System.out.println(newValue);
+                if (newValue > 0d && newValue < 1d) {
                     this.decay = (newValue * 19.875D + 0.125D);
                     this.feg.setDecay(this.decay);
                 }

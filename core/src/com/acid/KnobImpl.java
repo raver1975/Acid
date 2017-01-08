@@ -7,7 +7,7 @@ import synth.BasslineSynthesizer;
  * Created by Paul on 1/8/2017.
  */
 public class KnobImpl {
-    public static float getRotation(int id){
+    public static float getRotation(int id) {
         float rotation = 0f;
         switch (id) {
             case 0:
@@ -43,13 +43,13 @@ public class KnobImpl {
                 rotation = (float) Statics.output.getSequencer().bpm;
                 break;
             case 7:
-                rotation=(float)Statics.output.getVolume()*360f;
+                rotation = (float) Statics.output.getVolume() * 360f;
                 break;
         }
         return rotation;
     }
 
-    public static void touchDragged(int id,float rotation,float offset) {
+    public static void touchDragged(int id, float rotation, float offset) {
         int cc = (int) ((int) ((rotation * (127f / 360f) + 127 + 127 / 2) % 127) - offset);
 
         switch (id) {
@@ -82,12 +82,62 @@ public class KnobImpl {
                 break;
             case 6:
                 //bpm
-                if (cc>-100) {
+                if (cc > -100) {
                     Statics.output.getSequencer().setBpm(cc + 100);
                 }
                 break;
             case 7:
-                Statics.synth.controlChange(39,cc);
+                Statics.synth.controlChange(39, cc);
         }
+    }
+
+    static int idd = -1;
+    static float max = Float.MIN_VALUE;
+    static float min = Float.MAX_VALUE;
+
+    public static float percent(int id, float val) {
+        if (id == idd) {
+            max = Math.max(max, val);
+            min = Math.min(min, val);
+            System.out.println("knob:" + id + "\t" + val + "\t" + min + "\t" + max);
+        }
+        float dx = 0;
+        float dy = 0;
+        switch (id) {
+            default:
+                return 0;
+
+            case 0:
+                dx = 10f;
+                dy = 4110f;
+                break;
+            case 1:
+                dx = -118.89f;
+                dy = 277.95f;
+                break;
+            case 2:
+                dx = -198.42f;
+                dy = 400f;
+                break;
+            case 3:
+                dx = -182f;
+                dy = 541f;
+                break;
+            case 4:
+                dx = -85f;
+                dy = 531f;
+                break;
+            case 5:
+                dx = 0f;
+                dy = 360f;
+                break;
+            case 6:
+                dx=1f;
+                dy=4000f;
+            case 7:
+                dx=0f;
+                dy=720f;
+        }
+        return (val - dx) / (dy - dx);
     }
 }
