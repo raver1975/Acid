@@ -49,7 +49,7 @@ public class KnobImpl {
         return rotation;
     }
 
-    public static void touchDragged(int id, int ccpos, float offset) {
+    public static void touchDragged(int id, float offset) {
         int cc = (int)(127f / 2f - offset);
 
         switch (id) {

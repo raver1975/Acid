@@ -6,13 +6,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import synth.BasslineSynthesizer;
 
 public class KnobActor extends Actor {
 
@@ -49,8 +47,9 @@ public class KnobActor extends Actor {
             public void touchDragged(InputEvent event, float x, float y,
                                      int pointer) {
                 // (ShapeRenderingActor.this).rotate((distx - x));
-                ccpos = (int) ((int) ((KnobImpl.getRotation(id) * (127f / 360f) + 127 + 127 / 2) % 127) - 0);
-                KnobImpl.touchDragged(id, ccpos, (distx - x) + (disty - y));
+               // ccpos = (int) ((int) ((KnobImpl.getRotation(id) * (127f / 360f) + 127 + 127 / 2) % 127) - 0);
+
+                KnobImpl.touchDragged(id,(distx - x) + (disty - y));
             }
         });
     }
@@ -93,16 +92,18 @@ public class KnobActor extends Actor {
         Statics.renderer.arc(xc, yc, 13, 180-KnobImpl.percent(id,KnobImpl.getRotation(id))*360,KnobImpl.percent(id,KnobImpl.getRotation(id))*360 );
         Statics.renderer.setColor(Color.WHITE);
         Statics.renderer.circle(xc, yc, 10, 20);
-        Statics.renderer.end();
-
-        Statics.renderer.begin(ShapeType.Line);
-        Statics.renderer.setColor(Color.BLACK);
-        Statics.renderer.circle(xc, yc, 10, 20);
-        Statics.renderer.end();
-
-        Statics.renderer.begin(ShapeType.Filled);
-        Statics.renderer.setColor(Color.RED);
+//        Statics.renderer.end();
+//
+//        Statics.renderer.begin(ShapeType.Line);
+//        Statics.renderer.setColor(Color.BLACK);
+//        Statics.renderer.circle(xc, yc, 10, 20);
+//        Statics.renderer.end();
+//
+//        Statics.renderer.begin(ShapeType.Filled);
+//        Statics.renderer.setColor(Color.RED);
+        Statics.renderer.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(id,KnobImpl.getRotation(id))));
         for (float i = 2; i < 12; i += 2) {
+
             Statics.renderer.circle(xc + MathUtils.cosDeg(rotation) * -i,
                     yc + MathUtils.sinDeg(rotation) * i, 2, 5);
         }
