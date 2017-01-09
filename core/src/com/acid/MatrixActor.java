@@ -106,14 +106,14 @@ public class MatrixActor extends Actor {
 		}
 
 		Statics.renderer.begin(ShapeType.Line);
-		Statics.renderer.setColor(Color.BLUE);
+		Statics.renderer.setColor(ColorHelper.rainbow());
 		Statics.renderer.line(
 				(Statics.output.getSequencer().step) % 16 * skipx, 0,
 				(Statics.output.getSequencer().step) % 16 * skipx, getHeight());
 		Statics.renderer.end();
 
 		Statics.renderer.begin(ShapeType.Line);
-		Statics.renderer.setColor(Color.RED);
+		Statics.renderer.setColor(ColorHelper.rainbow());
 		Statics.renderer.rect(0, 0, this.getWidth(), this.getHeight());
 		Statics.renderer.end();
 		if (!Statics.drumdisplay) {

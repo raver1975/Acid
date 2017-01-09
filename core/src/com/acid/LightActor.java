@@ -28,13 +28,13 @@ public class LightActor extends Actor {
 		Statics.renderer.translate(getX(), getY(), 0);
 		if (on) {
 			Statics.renderer.begin(ShapeType.Filled);
-			Statics.renderer.setColor(color);
+			Statics.renderer.setColor(ColorHelper.rainbow());
 			Statics.renderer.circle(radius, radius, radius, 10);
 			Statics.renderer.end();
 
 		} else {
 			Statics.renderer.begin(ShapeType.Line);
-			Statics.renderer.setColor(color);
+			Statics.renderer.setColor(ColorHelper.rainbow());
 			Statics.renderer.circle(radius, radius, radius, 10);
 			Statics.renderer.end();
 		}

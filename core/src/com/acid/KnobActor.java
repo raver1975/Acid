@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
+
 public class KnobActor extends Actor {
 
     private final BitmapFont font;
@@ -59,7 +60,7 @@ public class KnobActor extends Actor {
         int xc = 20;
         int yc = 20;
         float rotation = KnobImpl.getRotation(id);
-        font.setColor(Color.WHITE);
+        font.setColor(ColorHelper.rainbow());
         GlyphLayout gl1 = new GlyphLayout(font, name);
         font.draw(batch, name, this.getX() + xc - gl1.width / 2, this.getY() + this.getHeight() - gl1.height);
 
@@ -74,7 +75,7 @@ public class KnobActor extends Actor {
         Statics.renderer.translate(getX(), getY(), 0);
 
         Statics.renderer.begin(ShapeType.Filled);
-        Statics.renderer.setColor(Color.DARK_GRAY);
+        Statics.renderer.setColor(ColorHelper.rainbow());
         for (float i = 0, ic = 0; i < Math.PI * 2; ic++, i += Math.PI / 8) {
 //            if (ic % 4 == 2) Statics.renderer.setColor(Color.LIGHT_GRAY);
 //            else if (ic % 4 == 2) Statics.renderer.setColor(Color.YELLOW);
@@ -90,7 +91,7 @@ public class KnobActor extends Actor {
         }
         Statics.renderer.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(id,KnobImpl.getRotation(id))));
         Statics.renderer.arc(xc, yc, 13, 180-KnobImpl.percent(id,KnobImpl.getRotation(id))*360,KnobImpl.percent(id,KnobImpl.getRotation(id))*360 );
-        Statics.renderer.setColor(Color.WHITE);
+        Statics.renderer.setColor(Color.DARK_GRAY);
         Statics.renderer.circle(xc, yc, 10, 20);
 //        Statics.renderer.end();
 //

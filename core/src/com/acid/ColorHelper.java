@@ -128,6 +128,10 @@ public class ColorHelper {
         return value;
     }
 
+    public static Color rainbow() {
+        return numberToColorPercentage(Acid.rainbowFade);
+    }
+
     /**
      * blue-green-red 1276 steps
      *
