@@ -192,7 +192,6 @@ public class BasslineSynthesizer
                 break;
             case 37:
                 newValue = 1.0D - value / 127.0D;
-
                 if (newValue > 0d && newValue < 1d) {
                     this.decay = (newValue * 19.875D + 0.125D);
                     this.feg.setDecay(this.decay);

@@ -37,6 +37,7 @@ public class KnobActor extends Actor {
                                      int pointer, int button) {
                 distx = x;
                 disty = y;
+//                ccpos = (int) ((int) ((KnobImpl.getRotation(id) * (127f / 360f) + 127 + 127 / 2) % 127) - 0);
                 return true;
             }
 

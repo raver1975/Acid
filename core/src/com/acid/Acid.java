@@ -180,8 +180,8 @@ public class Acid implements ApplicationListener {
 		mya[4].setPosition(hj += 56, gh);
 		mya[5].setPosition(hj += 56, gh);
 
-		mya[6].setPosition(50, 405);
-		mya[7].setPosition(90,405);
+		mya[6].setPosition(30, 405);
+		mya[7].setPosition(70,405);
 
 		MatrixActor matrixa = new MatrixActor(0);
 		table.addActor(matrixa);
