@@ -19,6 +19,7 @@ public class KnobActor extends Actor {
     private final BitmapFont font;
     private final int id;
     private final String name;
+    private int ccpos;
 
     public KnobActor(String name, final int id) {
         font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",
@@ -48,7 +49,8 @@ public class KnobActor extends Actor {
             public void touchDragged(InputEvent event, float x, float y,
                                      int pointer) {
                 // (ShapeRenderingActor.this).rotate((distx - x));
-                KnobImpl.touchDragged(id, getRotation(), (distx - x) + (disty - y));
+                ccpos = (int) ((int) ((KnobImpl.getRotation(id) * (127f / 360f) + 127 + 127 / 2) % 127) - 0);
+                KnobImpl.touchDragged(id, ccpos, (distx - x) + (disty - y));
             }
         });
     }
@@ -87,7 +89,7 @@ public class KnobActor extends Actor {
             y2 = MathUtils.sin(i) * 16f + yc;
             Statics.renderer.line(x1, y1, x2, y2);
         }
-        Statics.renderer.setColor(Color.YELLOW);
+        Statics.renderer.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(id,KnobImpl.getRotation(id))));
         Statics.renderer.arc(xc, yc, 13, 180-KnobImpl.percent(id,KnobImpl.getRotation(id))*360,KnobImpl.percent(id,KnobImpl.getRotation(id))*360 );
         Statics.renderer.setColor(Color.WHITE);
         Statics.renderer.circle(xc, yc, 10, 20);
