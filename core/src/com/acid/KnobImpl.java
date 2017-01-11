@@ -82,7 +82,7 @@ public class KnobImpl {
                 break;
             case 6:
                 //bpm
-                if (cc > -100) {
+                if (cc >= -100&cc<=260) {
                     Statics.output.getSequencer().setBpm(cc + 100);
                 }
                 break;
@@ -132,11 +132,13 @@ public class KnobImpl {
                 dy = 360f;
                 break;
             case 6:
-                dx=1f;
-                dy=4000f;
+                dx=0f;
+                dy=360f;
+                break;
             case 7:
                 dx=0f;
                 dy=720f;
+                break;
         }
         return (val - dx) / (dy - dx);
     }

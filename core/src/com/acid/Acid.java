@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,6 +28,8 @@ import synth.BasslineSynthesizer;
 import synth.Output;
 import synth.RhythmSynthesizer;
 
+import java.util.ArrayList;
+
 import static com.badlogic.gdx.input.GestureDetector.*;
 
 public class Acid implements ApplicationListener {
@@ -35,7 +38,10 @@ public class Acid implements ApplicationListener {
     LightActor la3 = null;
     private float newZoom;
     public static float rainbowFade = 0f;
-    private static float rainbowFadeDir = .01f;
+    private static float rainbowFadeDir = .005f;
+
+    public static SequencerData currentSequence;
+
 
     public Acid() {
     }
@@ -107,6 +113,56 @@ public class Acid implements ApplicationListener {
         GestureDetector gd = new GestureDetector(gl);
         mult.addProcessor(stage);
         mult.addProcessor(gd);
+
+        InputProcessor il = new InputProcessor() {
+            @Override
+            public boolean keyDown(int keycode) {
+                return false;
+            }
+
+            @Override
+            public boolean keyUp(int keycode) {
+                return false;
+            }
+
+            @Override
+            public boolean keyTyped(char character) {
+                if (character == 'z') {
+                    if (Acid.currentSequence!=null&&Acid.currentSequence.parent != null) {
+                        Acid.currentSequence = Acid.currentSequence.parent;
+                        Acid.currentSequence.refresh();
+                    }
+                }
+                return true;
+            }
+
+
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                return false;
+            }
+
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                return false;
+            }
+
+            @Override
+            public boolean touchDragged(int screenX, int screenY, int pointer) {
+                return false;
+            }
+
+            @Override
+            public boolean mouseMoved(int screenX, int screenY) {
+                return false;
+            }
+
+            @Override
+            public boolean scrolled(int amount) {
+                return false;
+            }
+        };
+        mult.addProcessor(il);
 
         Gdx.input.setInputProcessor(mult);
 
@@ -185,7 +241,7 @@ public class Acid implements ApplicationListener {
         mya[6].setPosition(30, 405);
         mya[7].setPosition(70, 405);
 
-        MatrixActor matrixa = new MatrixActor(0);
+        MatrixActor matrixa = new MatrixActor();
         table.addActor(matrixa);
         matrixa.setPosition(130, 178);
 
@@ -221,7 +277,7 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 Statics.output.getSequencer().randomize();
-                // Statics.output.getSequencer().setBpm(Statics.output.getSequencer().bpm);
+                Acid.currentSequence = new SequencerData(Acid.currentSequence);
                 return true;
             }
         });
@@ -331,6 +387,8 @@ public class Acid implements ApplicationListener {
             }
         });
 
+        Acid.currentSequence=new SequencerData(null);
+
     }
 
     @Override
@@ -353,13 +411,13 @@ public class Acid implements ApplicationListener {
         stage.getBatch().begin();
         font.setColor(ColorHelper.rainbow());
         font.draw(stage.getBatch(),
-                (int) Statics.output.getSequencer().bpm + "", 80, 365);
+                (int) Statics.output.getSequencer().bpm + "", 80, 360);
         stage.getBatch().end();
         rainbowFade += rainbowFadeDir;
         while (rainbowFade < 0f || rainbowFade > 1f) {
             rainbowFadeDir = -rainbowFadeDir;
             rainbowFade += rainbowFadeDir;
-            rainbowFadeDir+= (Math.random()-.5f)/1000f;
+//            rainbowFadeDir+= (Math.random()-.5f)/10f;
         }
     }
 
