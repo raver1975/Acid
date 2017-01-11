@@ -75,7 +75,7 @@ public class MatrixActor extends Actor {
                     }
                 }
                 else{
-                    Acid.currentSequence=new SequencerData(Acid.currentSequence);
+                    new SequencerData();
                 }
                 Statics.output.getSequencer().bassline.pause[x1]=notePause;
                 Statics.output.getSequencer().bassline.slide[x1]=noteSlide;

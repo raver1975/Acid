@@ -133,6 +133,15 @@ public class Acid implements ApplicationListener {
                         Acid.currentSequence.refresh();
                     }
                 }
+
+                if (character == 'a') {
+                    if (Acid.currentSequence!=null&&Acid.currentSequence.child != null) {
+                        Acid.currentSequence = Acid.currentSequence.child;
+                        Acid.currentSequence.refresh();
+                    }
+                }
+
+
                 return true;
             }
 
@@ -277,7 +286,7 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 Statics.output.getSequencer().randomize();
-                Acid.currentSequence = new SequencerData(Acid.currentSequence);
+                new SequencerData();
                 return true;
             }
         });
@@ -387,7 +396,7 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        Acid.currentSequence=new SequencerData(null);
+        new SequencerData();
 
     }
 
