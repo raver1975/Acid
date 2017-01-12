@@ -132,6 +132,12 @@ public class ColorHelper {
         return numberToColorPercentage(Acid.rainbowFade);
     }
 
+    public static Color rainbowDark() {
+        Color rain=rainbow().cpy();
+        rain=rain.lerp(Color.BLACK,.7f);
+        return rain;
+    }
+
     /**
      * blue-green-red 1276 steps
      *

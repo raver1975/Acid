@@ -11,8 +11,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -22,26 +20,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
 import synth.BasslineSynthesizer;
 import synth.Output;
 import synth.RhythmSynthesizer;
 
-import java.util.ArrayList;
-
 import static com.badlogic.gdx.input.GestureDetector.*;
 
 public class Acid implements ApplicationListener {
+
     BitmapFont font;
     private Stage stage;
     LightActor la3 = null;
     private float newZoom;
     public static float rainbowFade = 0f;
     private static float rainbowFadeDir = .005f;
-
-    public static SequencerData currentSequence;
-
 
     public Acid() {
     }
@@ -56,7 +48,7 @@ public class Acid implements ApplicationListener {
         Statics.output = new Output();
         Statics.output.getSequencer().setBpm(120);
         Statics.output.getSequencer().randomize();
-        Statics.drumdisplay = false;
+        Statics.drumsSelected = false;
         Statics.output.getSequencer().randomize();
 
         InputMultiplexer mult = new InputMultiplexer();
@@ -128,20 +120,21 @@ public class Acid implements ApplicationListener {
             @Override
             public boolean keyTyped(char character) {
                 if (character == 'z') {
-                    if (Acid.currentSequence!=null&&Acid.currentSequence.parent != null) {
-                        Acid.currentSequence = Acid.currentSequence.parent;
-                        Acid.currentSequence.refresh();
-                    }
+                    SequencerData.undo();
                 }
 
                 if (character == 'a') {
-                    if (Acid.currentSequence!=null&&Acid.currentSequence.child != null) {
-                        Acid.currentSequence = Acid.currentSequence.child;
-                        Acid.currentSequence.refresh();
-                    }
+                    SequencerData.redo();
                 }
 
 
+                if (character == 's') {
+                    DrumData.undo();
+                }
+
+                if (character == 'x') {
+                    DrumData.redo();
+                }
                 return true;
             }
 
@@ -286,7 +279,12 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 Statics.output.getSequencer().randomize();
-                new SequencerData();
+                if (Statics.drumsSelected){
+                    new DrumData();
+                }
+                else{
+                    new SequencerData();
+                }
                 return true;
             }
         });
@@ -297,8 +295,8 @@ public class Acid implements ApplicationListener {
         tb5.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                // Statics.zzzynth = !Statics.zzzynth;
-                Statics.drumdisplay = false;
+                // Statics.synthOn = !Statics.synthOn;
+                Statics.drumsSelected = false;
                 return true;
             }
         });
@@ -309,7 +307,7 @@ public class Acid implements ApplicationListener {
         tb7.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                if (Statics.drumdisplay) {
+                if (Statics.drumsSelected) {
                     for (int i = 0; i < Statics.output.getSequencer().rhythm.length; i++) {
                         for (int j = 0; j < Statics.output.getSequencer().rhythm[0].length; j++) {
                             Statics.output.getSequencer().rhythm[i][j] = 0;
@@ -331,7 +329,7 @@ public class Acid implements ApplicationListener {
         tb2.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                Statics.drumdisplay = true;
+                Statics.drumsSelected = true;
                 return true;
             }
         });
@@ -379,7 +377,7 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 la2.on = !la2.on;
-                Statics.zzzynth = la2.on;
+                Statics.synthOn = la2.on;
                 return true;
             }
         });
@@ -391,12 +389,13 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 la1.on = !la1.on;
-                Statics.drumzzz = la1.on;
+                Statics.drumsOn = la1.on;
                 return true;
             }
         });
 
         new SequencerData();
+        new DrumData();
 
     }
 

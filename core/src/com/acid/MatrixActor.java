@@ -1,8 +1,9 @@
 package com.acid;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -28,7 +29,7 @@ public class MatrixActor extends Actor {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 int x1 = (int) (x / ((getWidth() / 16)));
-                int y1 = (int) (y / (getHeight() / (Statics.drumdisplay ? 7 : 31))) - (Statics.drumdisplay ? 0 : 16);
+                int y1 = (int) (y / (getHeight() / (Statics.drumsSelected ? 7 : 31))) - (Statics.drumsSelected ? 0 : 16);
 //                x2 = x1;
 //                y2 = y1;
 
@@ -43,7 +44,7 @@ public class MatrixActor extends Actor {
             public void touchDragged(InputEvent event, float x, float y,
                                      int pointer) {
                 int x1 = (int) (x / ((getWidth() / 16)));
-                int y1 = (int) (y / (getHeight() / (Statics.drumdisplay ? 7 : 31))) - (Statics.drumdisplay ? 0 : 16);
+                int y1 = (int) (y / (getHeight() / (Statics.drumsSelected ? 7 : 31))) - (Statics.drumsSelected ? 0 : 16);
                 if (x1 != x2 || y1 != y2) {
                     ttouch(x1, y1);
 //                    x2 = x1;
@@ -54,32 +55,31 @@ public class MatrixActor extends Actor {
     }
 
     protected void ttouch(int x1, int y1) {
-        if (!Statics.drumdisplay) {
+        if (!Statics.drumsSelected) {
             if (x1 < 16 && x1 > -1) {
                 Statics.output.getSequencer().bassline.note[x1] = (byte) y1;
                 if (x1 == x2 && y1 == y2) {
                     if (notePause) {
 //                        Statics.output.getSequencer().bassline.pause[x1] = false;
-                        notePause=false;
+                        notePause = false;
                     } else if (!noteSlide) {
 //                        Statics.output.getSequencer().bassline.slide[x1] = true;
-                        noteSlide=true;
+                        noteSlide = true;
                     } else {
-                        notePause=true;
-                        noteAccent=!noteAccent;
-                        noteSlide=false;
+                        notePause = true;
+                        noteAccent = !noteAccent;
+                        noteSlide = false;
 //                        Statics.output.getSequencer().bassline.pause[x1] = true;
 //                        Statics.output.getSequencer().bassline.accent[x1] = !Statics.output
 //                                .getSequencer().bassline.accent[x1];
 //                        Statics.output.getSequencer().bassline.slide[x1] = false;
                     }
-                }
-                else{
+                } else {
                     new SequencerData();
                 }
-                Statics.output.getSequencer().bassline.pause[x1]=notePause;
-                Statics.output.getSequencer().bassline.slide[x1]=noteSlide;
-                Statics.output.getSequencer().bassline.accent[x1]=noteAccent;
+                Statics.output.getSequencer().bassline.pause[x1] = notePause;
+                Statics.output.getSequencer().bassline.slide[x1] = noteSlide;
+                Statics.output.getSequencer().bassline.accent[x1] = noteAccent;
             }
         } else {
             if (x1 < 16 && x1 > -1 && y1 >= 0 && y1 < 7) {
@@ -88,9 +88,10 @@ public class MatrixActor extends Actor {
                 } else
                     Statics.output.getSequencer().rhythm[y1][x1] = 127;
             }
+            new DrumData();
         }
-        x2=x1;
-        y2=y1;
+        x2 = x1;
+        y2 = y1;
     }
 
     @Override
@@ -105,19 +106,17 @@ public class MatrixActor extends Actor {
         Statics.renderer.translate(getX(), getY(), 0);
 
         int skipx = (int) (getWidth() / 16);
-        int skipy = (int) (getHeight() / (Statics.drumdisplay ? 7 : 31));
+        int skipy = (int) (getHeight() / (Statics.drumsSelected ? 7 : 31));
         // grid
-        if (Statics.grid) {
-            Statics.renderer.begin(ShapeType.Line);
-            Statics.renderer.setColor(Color.GRAY);
-            for (int r = 0; r < 16; r += 4) {
-                Statics.renderer.line(r * skipx, 0, r * skipx, getHeight());
-            }
-            for (int r = 0; r < (Statics.drumdisplay ? 8 : 32); r++) {
-                Statics.renderer.line(0, r * skipy, getWidth(), r * skipy);
-            }
-            Statics.renderer.end();
+        Statics.renderer.begin(ShapeType.Line);
+        Statics.renderer.setColor(ColorHelper.rainbowDark());
+        for (int r = 0; r < 16; r += 4) {
+            Statics.renderer.line(r * skipx, 0, r * skipx, getHeight());
         }
+        for (int r = 0; r < (Statics.drumsSelected ? 8 : 32); r++) {
+            Statics.renderer.line(0, r * skipy, getWidth(), r * skipy);
+        }
+        Statics.renderer.end();
 
         Statics.renderer.begin(ShapeType.Line);
         Statics.renderer.setColor(ColorHelper.rainbow());
@@ -130,7 +129,7 @@ public class MatrixActor extends Actor {
         Statics.renderer.setColor(ColorHelper.rainbow());
         Statics.renderer.rect(0, 0, this.getWidth(), this.getHeight());
         Statics.renderer.end();
-        if (!Statics.drumdisplay) {
+        if (!Statics.drumsSelected) {
             Statics.renderer.begin(ShapeType.Filled);
             Statics.renderer.setColor(Color.YELLOW);
 
@@ -206,6 +205,7 @@ public class MatrixActor extends Actor {
             Statics.renderer.end();
         }
         batch.begin();
+        //batch.draw(new TextureRegion(new Texture(SequencerData.currentSequence.drawBitmap(50, 50))), 0,0);
     }
 
 }

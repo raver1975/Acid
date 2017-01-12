@@ -7,14 +7,19 @@ import synth.Synthesizer;
 
 public class Statics {
 
-	public static final boolean grid = !false;
-	public static Output output;
-	public static boolean drumzzz = true;
-	public static boolean zzzynth = true;
-	public static ShapeRenderer renderer;
-	static BasslineSynthesizer synth;
+
+	public static boolean drumsOn = true;
+	public static boolean synthOn = true;
 	public static boolean mutate;
+	public static boolean drumsSelected =true;
+
+	public static ShapeRenderer renderer;
+
+	static BasslineSynthesizer synth;
 	public static Synthesizer drums;
-	public static boolean drumdisplay=true;
+	public static Output output;
+
+
+
 
 }

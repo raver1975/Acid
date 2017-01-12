@@ -3,7 +3,6 @@ package synth;
 import com.acid.Statics;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class AcidSequencer {
 	public BasslineSynthesizer bass;
@@ -42,7 +41,7 @@ public class AcidSequencer {
 	}
 
 	public void randomize() {
-		if (!Statics.drumdisplay) {
+		if (!Statics.drumsSelected) {
 			double[] basicCoeffs = { 0.5D, 0.5D, 0.5D, 0.5D };
 			double[] bassCoeffs = new double[16];
 			boolean preferBassDrum = Math.random() > 0.5D;
