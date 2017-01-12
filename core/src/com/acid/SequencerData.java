@@ -81,8 +81,8 @@ public class SequencerData {
         ShapeRenderer renderer = new ShapeRenderer();
 //        renderer.setAutoShapeType(true);
 
-        int skipx = (int) (w / 16);
-        int skipy = (int) (h / (Statics.drumsSelected ? 7 : 31));
+        float skipx = ((float)w / 16f);
+        float skipy = ((float)h / (Statics.drumsSelected ? 7f : 31f));
         // grid
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setColor(ColorHelper.rainbowDark());
@@ -92,13 +92,6 @@ public class SequencerData {
         for (int r = 0; r < (Statics.drumsSelected ? 8 : 32); r++) {
             renderer.line(0, r * skipy, w, r * skipy);
         }
-        renderer.end();
-
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(ColorHelper.rainbow());
-        renderer.line(
-                (Statics.output.getSequencer().step) % 16 * skipx, 0,
-                (Statics.output.getSequencer().step) % 16 * skipx, h);
         renderer.end();
 
         renderer.begin(ShapeRenderer.ShapeType.Line);
@@ -166,14 +159,14 @@ public class SequencerData {
         }
         renderer.end();
         Pixmap pixmap1 = ScreenUtils.getFrameBufferPixmap(0,0,w,h);
-        Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.RED);
-        pixmap.fill();
+//        Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);
+//        pixmap.setColor(Color.CLEAR);
+//        pixmap.fill();
 //        pixmap.drawPixmap(pixmap1, 0, 0);
         drawBuffer.end();
         drawBuffer.dispose();
 
-        return pixmap;
+        return pixmap1;
     }
 
 }

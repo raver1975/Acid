@@ -32,7 +32,9 @@ public class MatrixActor extends Actor {
                 int y1 = (int) (y / (getHeight() / (Statics.drumsSelected ? 7 : 31))) - (Statics.drumsSelected ? 0 : 16);
 //                x2 = x1;
 //                y2 = y1;
-
+                notePause = Statics.output.getSequencer().bassline.pause[x1];
+                noteSlide = Statics.output.getSequencer().bassline.slide[x1];
+                noteAccent = Statics.output.getSequencer().bassline.accent[x1];
                 ttouch(x1, y1);
                 return true;
             }

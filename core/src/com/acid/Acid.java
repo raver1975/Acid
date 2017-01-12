@@ -179,8 +179,12 @@ public class Acid implements ApplicationListener {
         Table table = new Table(skin);
         table.setFillParent(true);
         stage.addActor(table);
-        //TextureRegionActor my = new TextureRegionActor();
-        //table.addActor(my);
+
+        TextureRegionActor my = new TextureRegionActor("");
+        my.setWidth(200);
+        my.setHeight(200);
+        table.addActor(my);
+
         final Touchpad touch1 = new Touchpad(0, skin);
         touch1.setBounds(15, 15, 100, 100);
         touch1.addListener(new ChangeListener() {
