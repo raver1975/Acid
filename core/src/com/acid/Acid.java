@@ -179,24 +179,22 @@ public class Acid implements ApplicationListener {
         Table table = new Table(skin);
         table.setFillParent(true);
         stage.addActor(table);
-
-        TextureRegionActor my = new TextureRegionActor("");
-        my.setWidth(200);
-        my.setHeight(200);
+        TextureRegionActor my = new TextureRegionActor(100,100);
+        my.setPosition(20,200);
         table.addActor(my);
 
-        final Touchpad touch1 = new Touchpad(0, skin);
-        touch1.setBounds(15, 15, 100, 100);
-        touch1.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Statics.synth.controlChange(35, (int) (touch1.getKnobX()));
-                Statics.synth.controlChange(34, (int) (touch1.getKnobY()));
-
-            }
-        });
-        touch1.setPosition(20, 190);
-        table.addActor(touch1);
+//        final Touchpad touch1 = new Touchpad(0, skin);
+//        touch1.setBounds(15, 15, 100, 100);
+//        touch1.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                Statics.synth.controlChange(35, (int) (touch1.getKnobX()));
+//                Statics.synth.controlChange(34, (int) (touch1.getKnobY()));
+//
+//            }
+//        });
+//        touch1.setPosition(20, 190);
+//        table.addActor(touch1);
 
         final Touchpad touch2 = new Touchpad(0, skin);
         touch2.setBounds(15, 15, 100, 100);

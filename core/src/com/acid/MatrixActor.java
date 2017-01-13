@@ -207,7 +207,7 @@ public class MatrixActor extends Actor {
             Statics.renderer.end();
         }
         batch.begin();
-        //batch.draw(new TextureRegion(new Texture(SequencerData.currentSequence.drawBitmap(50, 50))), 0,0);
+        //batch.draw(new TextureRegion(new Texture(SequencerData.currentSequence.drawPixmap(50, 50))), 0,0);
     }
 
 }

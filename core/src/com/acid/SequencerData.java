@@ -4,14 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
-import synth.AcidSequencer;
-import synth.Sequencer;
 
 /**
  * Created by Paul on 1/10/2017.
@@ -23,8 +20,10 @@ public class SequencerData {
     private final boolean[] accent = new boolean[16];
     public final SequencerData parent;
     public SequencerData child;
-
+    Pixmap pixmap;
+    public TextureRegion region;
     public static SequencerData currentSequence;
+
 
     public SequencerData() {
 
@@ -38,6 +37,9 @@ public class SequencerData {
         this.parent = currentSequence;
         if (this.parent != null) this.parent.child = this;
         currentSequence = this;
+        pixmap= drawPixmap(100,100);
+        region=new TextureRegion(new Texture(pixmap));
+        region.flip(false,true);
     }
 
     public void refresh() {
@@ -73,23 +75,22 @@ public class SequencerData {
         }
     }
 
-    public Pixmap drawBitmap(int w, int h) {
+    public Pixmap drawPixmap(int w, int h) {
         FrameBuffer drawBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, w, h, false);
         drawBuffer.begin();
-        Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
         ShapeRenderer renderer = new ShapeRenderer();
-//        renderer.setAutoShapeType(true);
-
+        renderer.getProjectionMatrix().setToOrtho2D(0,0,w,h);
         float skipx = ((float)w / 16f);
-        float skipy = ((float)h / (Statics.drumsSelected ? 7f : 31f));
+        float skipy = ((float)h /  31f);
         // grid
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setColor(ColorHelper.rainbowDark());
         for (int r = 0; r < 16; r += 4) {
             renderer.line(r * skipx, 0, r * skipx, h);
         }
-        for (int r = 0; r < (Statics.drumsSelected ? 8 : 32); r++) {
+        for (int r = 0; r < (32); r++) {
             renderer.line(0, r * skipy, w, r * skipy);
         }
         renderer.end();
@@ -102,16 +103,13 @@ public class SequencerData {
         renderer.setColor(Color.YELLOW);
 
         for (int r = 0; r < 16; r++) {
-            if (Statics.output.getSequencer().bassline.pause[r])
+            if (pause[r])
                 continue;
             int skipd = 3;
-            if (Statics.output.getSequencer().bassline.slide[r])
+            if (slide[r])
                 skipd = 0;
-            // if (r > 0 && Acid.output.getSequencer().bassline.slide[r -
-            // 1])
-            // skipd = 0;
             renderer.rect(r * skipx + skipd,
-                    (Statics.output.getSequencer().bassline.note[r] + 16)
+                    (note[r] + 16)
                             * skipy, skipx - skipd - skipd, skipy);
         }
         renderer.end();
@@ -119,20 +117,16 @@ public class SequencerData {
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.RED);
         for (int r = 0; r < 16; r++) {
-            if (Statics.output.getSequencer().bassline.pause[r])
+            if (pause[r])
                 continue;
             int skipd = 3;
-            if (Statics.output.getSequencer().bassline.slide[r])
+            if (slide[r])
                 skipd = 0;
-            // if (r > 0 && Acid.output.getSequencer().bassline.slide[r -
-            // 1])
-            // skipd = 0;
-
-            if (Statics.output.getSequencer().bassline.accent[r])
+            if (accent[r])
                 renderer
                         .rect(
                                 r * skipx + skipd,
-                                (Statics.output.getSequencer().bassline.note[r] + 16)
+                                (note[r] + 16)
                                         * skipy, skipx - skipd - skipd,
                                 skipy);
         }
@@ -141,32 +135,31 @@ public class SequencerData {
         renderer.begin(ShapeRenderer.ShapeType.Line);
 
         for (int r = 0; r < 15; r++) {
-            if (!Statics.output.getSequencer().bassline.accent[r]) {
-
+            if (accent[r]) {
                 renderer.setColor(Color.YELLOW);
             } else
                 renderer.setColor(Color.RED);
-            if (Statics.output.getSequencer().bassline.slide[r]
-                    && !Statics.output.getSequencer().bassline.pause[r]) {
+            if (slide[r]
+                    && !pause[r]) {
                 renderer
                         .line((r) * skipx + skipx / 2,
-                                (Statics.output.getSequencer().bassline.note[r] + 16)
+                                (note[r] + 16)
                                         * skipy + skipy / 2,
                                 (r + 1) * skipx + skipx / 2,
-                                (Statics.output.getSequencer().bassline.note[r + 1] + 16)
+                                (note[r + 1] + 16)
                                         * skipy + skipy / 2);
             }
         }
         renderer.end();
         Pixmap pixmap1 = ScreenUtils.getFrameBufferPixmap(0,0,w,h);
-//        Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);
-//        pixmap.setColor(Color.CLEAR);
-//        pixmap.fill();
-//        pixmap.drawPixmap(pixmap1, 0, 0);
+        Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.RED);
+        pixmap.fill();
+        pixmap.drawPixmap(pixmap1, 0, 0);
         drawBuffer.end();
         drawBuffer.dispose();
 
-        return pixmap1;
+        return pixmap;
     }
 
 }
