@@ -79,7 +79,8 @@ public class DrumData {
     public Pixmap drawPixmap(int w, int h) {
         FrameBuffer drawBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, w, h, false);
         drawBuffer.begin();
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+        Color c=ColorHelper.rainbowDark();
+        Gdx.gl.glClearColor(c.r, c.g, c.b, c.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
         ShapeRenderer renderer = new ShapeRenderer();
         renderer.getProjectionMatrix().setToOrtho2D(0, 0, w, h);

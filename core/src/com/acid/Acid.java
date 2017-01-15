@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import synth.BasslineSynthesizer;
 import synth.Output;
 import synth.RhythmSynthesizer;
@@ -247,22 +248,23 @@ public class Acid implements ApplicationListener {
         mya[4].setPosition(hj += 56, gh);
         mya[5].setPosition(hj += 56, gh);
 
-        mya[6].setPosition(30, 405);
-        mya[7].setPosition(70, 405);
+        mya[6].setPosition(40, 408);
+        mya[7].setPosition(85, 408);
 
         MatrixActor matrixa = new MatrixActor();
         table.addActor(matrixa);
         matrixa.setPosition(130, 178);
 
-        final TextButton tb4 = new TextButton("WaveForm", skin);
+        final TextButton tb4 = new TextButton("Wave", skin);
         table.addActor(tb4);
-        tb4.setPosition(7.5f, 130);
+        tb4.setPosition(470f, 140);
         tb4.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 Statics.output.getSequencer().bass.switchWaveform();
                 tb4.setChecked(tb4.isChecked());
                 tb4.setColor(tb4.isChecked() ? Color.WHITE : Color.RED);
+//                tb4.setText(tb4.isChecked() ? "~":"--");
                 tb4.invalidate();
                 return true;
             }
@@ -416,6 +418,9 @@ public class Acid implements ApplicationListener {
     @Override
     public void render() {
         // mya.rotate(10);
+//        Color c=ColorHelper.rainbowDark();
+        Color c=Color.BLACK;
+        Gdx.gl.glClearColor(c.r, c.g, c.b, c.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
         if (newZoom < ((OrthographicCamera) stage.getCamera()).zoom)
@@ -426,7 +431,7 @@ public class Acid implements ApplicationListener {
         stage.getBatch().begin();
         font.setColor(ColorHelper.rainbow());
         font.draw(stage.getBatch(),
-                (int) Statics.output.getSequencer().bpm + "", 80, 360);
+                (int) Statics.output.getSequencer().bpm + "", 90, 360);
         stage.getBatch().end();
         rainbowFade += rainbowFadeDir;
         while (rainbowFade < 0f || rainbowFade > 1f) {
@@ -438,7 +443,7 @@ public class Acid implements ApplicationListener {
 
     @Override
     public void resize(int width, int height) {
-        // stage.setViewport(width, height, true);
+        stage.getViewport().setScreenSize(width,height);
     }
 
     @Override
