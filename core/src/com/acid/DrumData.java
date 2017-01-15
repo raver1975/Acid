@@ -51,7 +51,7 @@ public class DrumData {
         String s = "";
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 7; j++) {
-                if (Statics.output.getSequencer().rhythm[j][i] == 0) {
+                if (rhythm[j][i] == 0) {
 
                 } else {
                     s += j + "";
