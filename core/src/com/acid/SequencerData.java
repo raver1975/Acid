@@ -13,15 +13,13 @@ import com.badlogic.gdx.utils.ScreenUtils;
 /**
  * Created by Paul on 1/10/2017.
  */
-public class SequencerData {
+public class SequencerData extends InstrumentData{
     private final byte[] note = new byte[16];
     private final boolean[] pause = new boolean[16];
     private final boolean[] slide = new boolean[16];
     private final boolean[] accent = new boolean[16];
     public final SequencerData parent;
     public SequencerData child;
-    Pixmap pixmap;
-    public TextureRegion region;
     public static SequencerData currentSequence;
 
 

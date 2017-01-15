@@ -13,13 +13,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 /**
  * Created by Paul on 1/10/2017.
  */
-public class DrumData {
+public class DrumData extends InstrumentData{
     private final int[][] rhythm = new int[7][16];
     public final DrumData parent;
-    private final Pixmap pixmap;
     public DrumData child;
-    public TextureRegion region;
-
     public static DrumData currentSequence;
 
     public DrumData() {

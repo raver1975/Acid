@@ -1,10 +1,7 @@
 package com.acid;
 
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -16,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -35,6 +33,7 @@ public class Acid implements ApplicationListener {
     private float newZoom;
     public static float rainbowFade = 0f;
     private static float rainbowFadeDir = .005f;
+    private Label fpsLabel;
 
     public Acid() {
     }
@@ -77,7 +76,7 @@ public class Acid implements ApplicationListener {
 
             @Override
             public boolean pan(float x, float y, float deltaX, float deltaY) {
-                //((OrthographicCamera) stage.getCamera()).translate(-deltaX/2f,deltaY/2f);
+                ((OrthographicCamera) stage.getCamera()).translate(-deltaX/2f,deltaY/2f);
                 return false;
             }
 
@@ -181,11 +180,25 @@ public class Acid implements ApplicationListener {
         table.setFillParent(true);
         stage.addActor(table);
         CurrentSequencerActor my2 = new CurrentSequencerActor(100,100);
+        my2.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                SequencerData.undo();
+                return true;
+            }
+        });
         my2.setPosition(20,300);
         table.addActor(my2);
 
         CurrentDrumActor my1 = new CurrentDrumActor(100,100);
         my1.setPosition(20,190);
+        my1.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                SequencerData.undo();
+                return true;
+            }
+        });
         table.addActor(my1);
 
 
@@ -343,7 +356,7 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        la3 = new LightActor(5, Color.RED, false);
+        la3 = new LightActor(5, null, false);
         table.addActor(la3);
         la3.setPosition(455, 268);
         la3.addListener(new InputListener() {
@@ -355,31 +368,37 @@ public class Acid implements ApplicationListener {
             }
         });
 
+        fpsLabel=new Label("",skin);
+        fpsLabel.setPosition(52,407);
+        fpsLabel.setFontScale(.5f);
+        table.addActor(fpsLabel);
 
-        TextButton zi = new TextButton("Zoom +", skin);
-        table.addActor(zi);
-        zi.setPosition(470, 430);
-        zi.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                newZoom -= .05f;
-                return true;
-            }
-        });
+        if (Gdx.app.getType()== Application.ApplicationType.Desktop) {
+            TextButton zi = new TextButton("Zoom +", skin);
+            table.addActor(zi);
+            zi.setPosition(470, 430);
+            zi.addListener(new InputListener() {
+                public boolean touchDown(InputEvent event, float x, float y,
+                                         int pointer, int button) {
+                    newZoom -= .05f;
+                    return true;
+                }
+            });
 
 
-        TextButton zo = new TextButton("Zoom - ", skin);
-        table.addActor(zo);
-        zo.setPosition(470, 400);
-        zo.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                newZoom += .05f;
-                return true;
-            }
-        });
+            TextButton zo = new TextButton("Zoom - ", skin);
+            table.addActor(zo);
+            zo.setPosition(470, 400);
+            zo.addListener(new InputListener() {
+                public boolean touchDown(InputEvent event, float x, float y,
+                                         int pointer, int button) {
+                    newZoom += .05f;
+                    return true;
+                }
+            });
+        };
 
-        final LightActor la2 = new LightActor(5, Color.RED, true);
+        final LightActor la2 = new LightActor(5, null, true);
         table.addActor(la2);
         la2.setPosition(455, 188);
         la2.addListener(new InputListener() {
@@ -391,7 +410,7 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        final LightActor la1 = new LightActor(5, Color.RED, true);
+        final LightActor la1 = new LightActor(5, null, true);
         table.addActor(la1);
         la1.setPosition(455, 228);
         la1.addListener(new InputListener() {
@@ -424,15 +443,17 @@ public class Acid implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
         if (newZoom < ((OrthographicCamera) stage.getCamera()).zoom)
-            ((OrthographicCamera) stage.getCamera()).zoom -= .01;
+            ((OrthographicCamera) stage.getCamera()).zoom -= .02f;
         if (newZoom > ((OrthographicCamera) stage.getCamera()).zoom)
-            ((OrthographicCamera) stage.getCamera()).zoom += .01;
+            ((OrthographicCamera) stage.getCamera()).zoom += .02f;
         stage.draw();
-        stage.getBatch().begin();
-        font.setColor(ColorHelper.rainbow());
-        font.draw(stage.getBatch(),
-                (int) Statics.output.getSequencer().bpm + "", 90, 360);
-        stage.getBatch().end();
+//        stage.getBatch().begin();
+//        font.setColor(ColorHelper.rainbow());
+//        font.draw(stage.getBatch(),
+//                (int) Statics.output.getSequencer().bpm + "", 90, 360);
+//        stage.getBatch().end();
+        fpsLabel.setColor(ColorHelper.rainbow());
+        fpsLabel.setText((int)Statics.output.getSequencer().bpm + "");
         rainbowFade += rainbowFadeDir;
         while (rainbowFade < 0f || rainbowFade > 1f) {
             rainbowFadeDir = -rainbowFadeDir;
