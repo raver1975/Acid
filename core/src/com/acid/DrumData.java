@@ -32,7 +32,7 @@ public class DrumData {
         this.parent = currentSequence;
         if (this.parent != null) this.parent.child = this;
         currentSequence = this;
-        pixmap= drawPixmap(100,100);
+        pixmap= drawPixmap(300,300);
         region=new TextureRegion(new Texture(pixmap));
         region.flip(false,true);
     }
@@ -87,18 +87,18 @@ public class DrumData {
 
         float skipx = ((float) w / 16f);
         float skipy = (float) h / 7f;
-        // grid
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(ColorHelper.rainbowDark());
-        for (int r = 0; r < 16; r += 4) {
-            renderer.line(r * skipx, 0, r * skipx, h);
-        }
-        for (int r = 0; r < 8; r++) {
-            renderer.line(0, r * skipy, w, r * skipy);
-        }
-        renderer.setColor(ColorHelper.rainbow());
-        renderer.rect(0, 0, w, h);
-        renderer.end();
+//        // grid
+//        renderer.begin(ShapeRenderer.ShapeType.Line);
+//        renderer.setColor(ColorHelper.rainbowDark());
+//        for (int r = 0; r < 16; r += 4) {
+//            renderer.line(r * skipx, 0, r * skipx, h);
+//        }
+//        for (int r = 0; r < 8; r++) {
+//            renderer.line(0, r * skipy, w, r * skipy);
+//        }
+//        renderer.setColor(ColorHelper.rainbow());
+//        renderer.rect(0, 0, w, h);
+//        renderer.end();
 
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.YELLOW);

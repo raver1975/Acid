@@ -184,7 +184,7 @@ public class Acid implements ApplicationListener {
         table.addActor(my2);
 
         CurrentDrumActor my1 = new CurrentDrumActor(100,100);
-        my1.setPosition(20,200);
+        my1.setPosition(20,190);
         table.addActor(my1);
 
 

@@ -37,7 +37,7 @@ public class SequencerData {
         this.parent = currentSequence;
         if (this.parent != null) this.parent.child = this;
         currentSequence = this;
-        pixmap= drawPixmap(100,100);
+        pixmap= drawPixmap(300,300);
         region=new TextureRegion(new Texture(pixmap));
         region.flip(false,true);
     }
@@ -85,20 +85,20 @@ public class SequencerData {
         float skipx = ((float)w / 16f);
         float skipy = ((float)h /  31f);
         // grid
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(ColorHelper.rainbowDark());
-        for (int r = 0; r < 16; r += 4) {
-            renderer.line(r * skipx, 0, r * skipx, h);
-        }
-        for (int r = 0; r < (32); r++) {
-            renderer.line(0, r * skipy, w, r * skipy);
-        }
-        renderer.end();
-
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(ColorHelper.rainbow());
-        renderer.rect(0, 0, w, h);
-        renderer.end();
+//        renderer.begin(ShapeRenderer.ShapeType.Line);
+//        renderer.setColor(ColorHelper.rainbowDark());
+//        for (int r = 0; r < 16; r += 4) {
+//            renderer.line(r * skipx, 0, r * skipx, h);
+//        }
+//        for (int r = 0; r < (32); r++) {
+//            renderer.line(0, r * skipy, w, r * skipy);
+//        }
+//        renderer.end();
+//
+//        renderer.begin(ShapeRenderer.ShapeType.Line);
+//        renderer.setColor(ColorHelper.rainbow());
+//        renderer.rect(0, 0, w, h);
+//        renderer.end();
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.YELLOW);
 
@@ -135,7 +135,7 @@ public class SequencerData {
         renderer.begin(ShapeRenderer.ShapeType.Line);
 
         for (int r = 0; r < 15; r++) {
-            if (accent[r]) {
+            if (!accent[r]) {
                 renderer.setColor(Color.YELLOW);
             } else
                 renderer.setColor(Color.RED);
