@@ -179,9 +179,14 @@ public class Acid implements ApplicationListener {
         Table table = new Table(skin);
         table.setFillParent(true);
         stage.addActor(table);
-        TextureRegionActor my = new TextureRegionActor(100,100);
-        my.setPosition(20,200);
-        table.addActor(my);
+        CurrentSequencerActor my2 = new CurrentSequencerActor(100,100);
+        my2.setPosition(20,300);
+        table.addActor(my2);
+
+        CurrentDrumActor my1 = new CurrentDrumActor(100,100);
+        my1.setPosition(20,200);
+        table.addActor(my1);
+
 
 //        final Touchpad touch1 = new Touchpad(0, skin);
 //        touch1.setBounds(15, 15, 100, 100);
@@ -196,18 +201,18 @@ public class Acid implements ApplicationListener {
 //        touch1.setPosition(20, 190);
 //        table.addActor(touch1);
 
-        final Touchpad touch2 = new Touchpad(0, skin);
-        touch2.setBounds(15, 15, 100, 100);
-        touch2.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Statics.synth.controlChange(36, (int) (touch2.getKnobX()));
-                Statics.synth.controlChange(37, (int) (touch2.getKnobY()));
-
-            }
-        });
-        touch2.setPosition(20, 300);
-        table.addActor(touch2);
+//        final Touchpad touch2 = new Touchpad(0, skin);
+//        touch2.setBounds(15, 15, 100, 100);
+//        touch2.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                Statics.synth.controlChange(36, (int) (touch2.getKnobX()));
+//                Statics.synth.controlChange(37, (int) (touch2.getKnobY()));
+//
+//            }
+//        });
+//        touch2.setPosition(20, 300);
+//        table.addActor(touch2);
 
         table.setPosition(Gdx.graphics.getWidth() / 2 - 280,
                 Gdx.graphics.getHeight() / 2 - 290);
