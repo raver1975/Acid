@@ -134,7 +134,7 @@ public class ColorHelper {
 
     public static Color rainbowDark() {
         Color rain=rainbow().cpy();
-        rain=rain.lerp(Color.BLACK,.7f);
+        rain=rain.lerp(Color.BLACK,.8f);
         return rain;
     }
 

@@ -91,7 +91,7 @@ public class KnobImpl {
         }
     }
 
-    static int idd = -1;
+    static int idd = -4;
     static float max = Float.MIN_VALUE;
     static float min = Float.MAX_VALUE;
 
@@ -124,8 +124,8 @@ public class KnobImpl {
                 dy = 541f;
                 break;
             case 4:
-                dx = -85f;
-                dy = 531f;
+                dx = -94f;
+                dy = 525f;
                 break;
             case 5:
                 dx = 0f;
