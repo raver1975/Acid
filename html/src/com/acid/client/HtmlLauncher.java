@@ -1,9 +1,9 @@
 package com.acid.client;
 
-import com.acid.Acid;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.acid.Acid;
 
 public class HtmlLauncher extends GwtApplication {
 

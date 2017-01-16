@@ -13,7 +13,7 @@ public class Output implements Runnable {
 
 
 	private static double volume = 1D;
-	public static final double SAMPLE_RATE = 44100;
+	public static double SAMPLE_RATE = 44100;
 	// public static final double SAMPLE_RATE = 2050;
 	public static final int BUFFER_SIZE = 2050;
 	float[] buffer1 = new float[BUFFER_SIZE];
@@ -23,7 +23,7 @@ public class Output implements Runnable {
 	private static Reverb reverb;
 	private static Delay delay;
 
-	private AudioDevice ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
+	private AudioDevice ad;
 
 
 
@@ -44,6 +44,7 @@ public class Output implements Runnable {
 	}
 
 	public Output() {
+		ad= Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
 		tracks = new Synthesizer[Statics.drumsOn ? 2 : 1];
 		BasslineSynthesizer tb = new BasslineSynthesizer();
 		tracks[0] = tb;
@@ -156,7 +157,11 @@ public class Output implements Runnable {
 				buffer1[i] = (float) (left * volume);
 				buffer1[i + 1] = (float) (right * volume);
 			}
-			ad.writeSamples(buffer1, 0, BUFFER_SIZE);
+			if (ad!=null)ad.writeSamples(buffer1, 0, BUFFER_SIZE);
+		else{
+			ad= Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
+				System.out.println(ad);
+		}
 		}
 		dispose();
 	}
