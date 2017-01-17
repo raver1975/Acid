@@ -126,6 +126,8 @@ public class KnobImpl {
             case 4:
                 dx = -94f;
                 dy = 525f;
+//                dx=-77.46f;
+//               dy=2739.46f;
                 break;
             case 5:
                 dx = 0f;

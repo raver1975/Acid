@@ -179,6 +179,11 @@ public class Acid implements ApplicationListener {
         Table table = new Table(skin);
         table.setFillParent(true);
         stage.addActor(table);
+
+        RectangleActor rectangleActor=new RectangleActor(330,40);
+        rectangleActor.setPosition(120,130);
+        table.addActor(rectangleActor);
+
         CurrentSequencerActor my2 = new CurrentSequencerActor(100,100);
         my2.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
@@ -421,6 +426,8 @@ public class Acid implements ApplicationListener {
                 return true;
             }
         });
+
+
 
         new SequencerData();
         new DrumData();
