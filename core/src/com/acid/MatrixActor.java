@@ -41,6 +41,10 @@ public class MatrixActor extends Actor {
 
             public void touchUp(InputEvent event, float x, float y,
                                 int pointer, int button) {
+                if (Statics.drumsSelected){
+                    new DrumData();
+                }
+                else{new SequencerData();}
             }
 
             public void touchDragged(InputEvent event, float x, float y,
@@ -76,8 +80,6 @@ public class MatrixActor extends Actor {
 //                                .getSequencer().bassline.accent[x1];
 //                        Statics.output.getSequencer().bassline.slide[x1] = false;
                     }
-                } else {
-                    new SequencerData();
                 }
                 Statics.output.getSequencer().bassline.pause[x1] = notePause;
                 Statics.output.getSequencer().bassline.slide[x1] = noteSlide;
@@ -90,7 +92,7 @@ public class MatrixActor extends Actor {
                 } else
                     Statics.output.getSequencer().rhythm[y1][x1] = 127;
             }
-            new DrumData();
+
         }
         x2 = x1;
         y2 = y1;

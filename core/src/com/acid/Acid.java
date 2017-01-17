@@ -200,7 +200,7 @@ public class Acid implements ApplicationListener {
         my1.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                SequencerData.undo();
+                DrumData.undo();
                 return true;
             }
         });
