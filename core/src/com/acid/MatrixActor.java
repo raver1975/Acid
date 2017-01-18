@@ -82,6 +82,11 @@ public class MatrixActor extends Actor {
 //                        Statics.output.getSequencer().bassline.slide[x1] = false;
                     }
                 }
+                if (x1!=x2){
+                    notePause=Statics.output.getSequencer().bassline.pause[x1];
+                    noteSlide=Statics.output.getSequencer().bassline.slide[x1];
+                    noteAccent=Statics.output.getSequencer().bassline.accent[x1];
+                }
                 Statics.output.getSequencer().bassline.pause[x1] = notePause;
                 Statics.output.getSequencer().bassline.slide[x1] = noteSlide;
                 Statics.output.getSequencer().bassline.accent[x1] = noteAccent;
