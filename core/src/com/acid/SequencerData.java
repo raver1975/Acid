@@ -83,73 +83,7 @@ public class SequencerData extends InstrumentData{
         renderer.getProjectionMatrix().setToOrtho2D(0,0,w,h);
         float skipx = ((float)w / 16f);
         float skipy = ((float)h /  31f);
-        // grid
-//        renderer.begin(ShapeRenderer.ShapeType.Line);
-//        renderer.setColor(ColorHelper.rainbowDark());
-//        for (int r = 0; r < 16; r += 4) {
-//            renderer.line(r * skipx, 0, r * skipx, h);
-//        }
-//        for (int r = 0; r < (32); r++) {
-//            renderer.line(0, r * skipy, w, r * skipy);
-//        }
-//        renderer.end();
-//
-//        renderer.begin(ShapeRenderer.ShapeType.Line);
-//        renderer.setColor(ColorHelper.rainbow());
-//        renderer.rect(0, 0, w, h);
-//        renderer.end();
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.YELLOW);
-
-        for (int r = 0; r < 16; r++) {
-            if (pause[r])
-                continue;
-            int skipd = 3;
-            if (slide[r])
-                skipd = 0;
-            renderer.rect(r * skipx + skipd,
-                    (note[r] + 16)
-                            * skipy, skipx - skipd - skipd, skipy);
-        }
-        renderer.end();
-
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.RED);
-        for (int r = 0; r < 16; r++) {
-            if (pause[r])
-                continue;
-            int skipd = 3;
-            if (slide[r])
-                skipd = 0;
-            if (accent[r])
-                renderer
-                        .rect(
-                                r * skipx + skipd,
-                                (note[r] + 16)
-                                        * skipy, skipx - skipd - skipd,
-                                skipy);
-        }
-        renderer.end();
-
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-
-        for (int r = 0; r < 15; r++) {
-            if (!accent[r]) {
-                renderer.setColor(Color.YELLOW);
-            } else
-                renderer.setColor(Color.RED);
-            if (slide[r]
-                    && !pause[r]) {
-                renderer
-                        .line((r) * skipx + skipx / 2,
-                                (note[r] + 16)
-                                        * skipy + skipy / 2,
-                                (r + 1) * skipx + skipx / 2,
-                                (note[r + 1] + 16)
-                                        * skipy + skipy / 2);
-            }
-        }
-        renderer.end();
+        render(renderer,skipx,skipy);
         Pixmap pixmap1 = ScreenUtils.getFrameBufferPixmap(0,0,w,h);
         Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.RED);
@@ -161,4 +95,55 @@ public class SequencerData extends InstrumentData{
         return pixmap;
     }
 
+    public static void render(ShapeRenderer renderer1,float skipx,float skipy) {
+        renderer1.begin(ShapeRenderer.ShapeType.Line);
+        for (int i = 0; i < 16; i++) {
+            if (Statics.output.getSequencer().bassline.pause[i]) {
+                continue;
+            }
+            if (Statics.output.getSequencer().bassline.accent[i]) {
+                renderer1.setColor(Color.RED);
+            } else {
+                renderer1.setColor(Color.YELLOW);
+            }
+            if (Statics.output.getSequencer().bassline.slide[i]) {
+                renderer1
+                        .line((i) * skipx + skipx / 2,
+                                (Statics.output.getSequencer().bassline.note[i] + 16)
+                                        * skipy + skipy / 2,
+                                (i + 1) * skipx + skipx / 2,
+                                (Statics.output.getSequencer().bassline.note[i + 1] + 16)
+                                        * skipy + skipy / 2);
+            }
+        }
+        renderer1.end();
+
+        renderer1.begin(ShapeRenderer.ShapeType.Filled);
+        for (int i = 0; i < 16; i++) {
+            if (Statics.output.getSequencer().bassline.pause[i]) {
+                continue;
+            }
+            if (Statics.output.getSequencer().bassline.accent[i]) {
+                renderer1.setColor(Color.RED);
+            } else {
+                renderer1.setColor(Color.YELLOW);
+            }
+
+            if (Statics.output.getSequencer().bassline.slide[i]) {
+//                    if (i==0||!Statics.output.getSequencer().bassline.slide[i-1])
+                float cx = Math.min(skipx, skipy);
+                renderer1
+                        .rect(
+                                i * skipx + ((skipx - cx) / 2),
+                                (Statics.output.getSequencer().bassline.note[i] + 16)
+                                        * skipy, cx,
+                                cx);
+//                        renderer1.circle(i * skipx + skipx / 2, (Statics.output.getSequencer().bassline.note[i] + 16) * skipy + skipy / 2, Math.min(skipx, skipy) / 2);
+
+            } else {
+                renderer1.circle(i * skipx + skipx / 2, (Statics.output.getSequencer().bassline.note[i] + 16) * skipy + skipy / 2, Math.min(skipx, skipy) / 2);
+            }
+        }
+        renderer1.end();
+    }
 }

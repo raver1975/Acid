@@ -180,8 +180,8 @@ public class Acid implements ApplicationListener {
         table.setFillParent(true);
         stage.addActor(table);
 
-        RectangleActor rectangleActor=new RectangleActor(330,40);
-        rectangleActor.setPosition(120,130);
+        RectangleActor rectangleActor=new RectangleActor(330,50);
+        rectangleActor.setPosition(122,120);
         table.addActor(rectangleActor);
 
         CurrentSequencerActor my2 = new CurrentSequencerActor(100,100);

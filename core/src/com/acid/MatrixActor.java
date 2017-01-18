@@ -41,10 +41,11 @@ public class MatrixActor extends Actor {
 
             public void touchUp(InputEvent event, float x, float y,
                                 int pointer, int button) {
-                if (Statics.drumsSelected){
+                if (Statics.drumsSelected) {
                     new DrumData();
+                } else {
+                    new SequencerData();
                 }
-                else{new SequencerData();}
             }
 
             public void touchDragged(InputEvent event, float x, float y,
@@ -134,7 +135,7 @@ public class MatrixActor extends Actor {
         Statics.renderer.rect(0, 0, this.getWidth(), this.getHeight());
         Statics.renderer.end();
         if (!Statics.drumsSelected) {
-            Statics.renderer.begin(ShapeType.Filled);
+            /*Statics.renderer.begin(ShapeType.Filled);
             Statics.renderer.setColor(Color.YELLOW);
 
             for (int r = 0; r < 16; r++) {
@@ -193,20 +194,13 @@ public class MatrixActor extends Actor {
                                             * skipy + skipy / 2);
                 }
             }
-            Statics.renderer.end();
+            Statics.renderer.end();*/
+
+            SequencerData.render(Statics.renderer,skipx,skipy);
+
+
         } else {
-            Statics.renderer.begin(ShapeType.Filled);
-            Statics.renderer.setColor(Color.YELLOW);
-            for (int r = 0; r < Statics.output.getSequencer().rhythm.length; r++) {
-                Statics.renderer.setColor(Color.YELLOW);
-                for (int r1 = 0; r1 < 16; r1++) {
-                    if (Statics.output.getSequencer().rhythm[r][r1] > 0) {
-                        Statics.renderer.rect(r1 * skipx + 2, (r)
-                                * skipy + 2, skipx - 4, skipy - 4);
-                    }
-                }
-            }
-            Statics.renderer.end();
+            DrumData.render(Statics.renderer,skipx,skipy);
         }
         batch.begin();
         //batch.draw(new TextureRegion(new Texture(SequencerData.currentSequence.drawPixmap(50, 50))), 0,0);

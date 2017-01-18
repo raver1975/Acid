@@ -13,6 +13,11 @@ public class RectangleActor extends Actor {
     TextureRegion region;
 
     public RectangleActor(int w, int h) {
+    this(w,h,false);
+    }
+
+
+    public RectangleActor(int w, int h,boolean debug) {
         this.w=w;
         this.h=h;
         this.setWidth(w);
@@ -20,10 +25,12 @@ public class RectangleActor extends Actor {
         Pixmap pm=new Pixmap(w,h, Pixmap.Format.RGBA8888);
         pm.setColor(Color.CLEAR);
         pm.fill();
-//        pm.setColor(Color.CYAN);
-//        for (int i=0;i<10;i++){
-//            pm.drawRectangle(i,i,w-i*2,h-i*2);
-//        }
+        if (debug) {
+            pm.setColor(Color.CYAN);
+            for (int i = 0; i < 10; i++) {
+                pm.drawRectangle(i, i, w - i * 2, h - i * 2);
+            }
+        }
         region=new TextureRegion(new Texture(pm));
     }
 
