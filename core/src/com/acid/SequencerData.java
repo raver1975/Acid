@@ -107,14 +107,23 @@ public class SequencerData extends InstrumentData{
                 renderer1.setColor(Color.YELLOW);
             }
             if (Statics.output.getSequencer().bassline.slide[i]) {
-                renderer1
+                if (i<15){renderer1
                         .line((i) * skipx + skipx / 2,
                                 (Statics.output.getSequencer().bassline.note[i] + 16)
                                         * skipy + skipy / 2,
                                 (i + 1) * skipx + skipx / 2,
-                                (Statics.output.getSequencer().bassline.note[i + 1] + 16)
+                                (Statics.output.getSequencer().bassline.note[(i + 1)%16] + 16)
                                         * skipy + skipy / 2);
             }
+            else{
+                    renderer1
+                            .line((i) * skipx + skipx / 2,
+                                    (Statics.output.getSequencer().bassline.note[i] + 16)
+                                            * skipy + skipy / 2,
+                                    (i + 1) * skipx,
+                                    (Statics.output.getSequencer().bassline.note[(i + 1)%16] + 16)
+                                            * skipy + skipy / 2);
+                }}
         }
         renderer1.end();
 
