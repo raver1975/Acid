@@ -109,6 +109,8 @@ public class MatrixActor extends Actor {
         if (Statics.mutate && Math.random() < .01) {
             ttouch((int) (MathUtils.random() * 16),
                     (int) (MathUtils.random() * 31) - 16);
+            if (Statics.drumsSelected)new DrumData();
+            else new SequencerData();
         }
         batch.end();
         Statics.renderer.setProjectionMatrix(batch.getProjectionMatrix());
