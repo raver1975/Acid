@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 /**
  * Created by Paul on 1/10/2017.
  */
-public class SequencerData extends InstrumentData{
+public class SequencerData extends InstrumentData {
     private final byte[] note = new byte[16];
     private final boolean[] pause = new boolean[16];
     private final boolean[] slide = new boolean[16];
@@ -35,9 +35,9 @@ public class SequencerData extends InstrumentData{
         this.parent = currentSequence;
         if (this.parent != null) this.parent.child = this;
         currentSequence = this;
-        pixmap= drawPixmap(300,300);
-        region=new TextureRegion(new Texture(pixmap));
-        region.flip(false,true);
+        pixmap = drawPixmap(300, 300);
+        region = new TextureRegion(new Texture(pixmap));
+        region.flip(false, true);
     }
 
     public void refresh() {
@@ -76,15 +76,15 @@ public class SequencerData extends InstrumentData{
     public Pixmap drawPixmap(int w, int h) {
         FrameBuffer drawBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, w, h, false);
         drawBuffer.begin();
-        Color c=ColorHelper.rainbowDark();
+        Color c = ColorHelper.rainbowDark();
         Gdx.gl.glClearColor(c.r, c.g, c.b, c.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
         ShapeRenderer renderer = new ShapeRenderer();
-        renderer.getProjectionMatrix().setToOrtho2D(0,0,w,h);
-        float skipx = ((float)w / 16f);
-        float skipy = ((float)h /  31f);
-        render(renderer,skipx,skipy);
-        Pixmap pixmap1 = ScreenUtils.getFrameBufferPixmap(0,0,w,h);
+        renderer.getProjectionMatrix().setToOrtho2D(0, 0, w, h);
+        float skipx = ((float) w / 16f);
+        float skipy = ((float) h / 31f);
+        render(renderer, skipx, skipy);
+        Pixmap pixmap1 = ScreenUtils.getFrameBufferPixmap(0, 0, w, h);
         Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.RED);
         pixmap.fill();
@@ -95,7 +95,7 @@ public class SequencerData extends InstrumentData{
         return pixmap;
     }
 
-    public static void render(ShapeRenderer renderer1,float skipx,float skipy) {
+    public static void render(ShapeRenderer renderer1, float skipx, float skipy) {
         renderer1.begin(ShapeRenderer.ShapeType.Line);
         for (int i = 0; i < 16; i++) {
             if (Statics.output.getSequencer().bassline.pause[i]) {
@@ -107,23 +107,31 @@ public class SequencerData extends InstrumentData{
                 renderer1.setColor(Color.YELLOW);
             }
             if (Statics.output.getSequencer().bassline.slide[i]) {
-                if (i<15){renderer1
-                        .line((i) * skipx + skipx / 2,
-                                (Statics.output.getSequencer().bassline.note[i] + 16)
-                                        * skipy + skipy / 2,
-                                (i + 1) * skipx + skipx / 2,
-                                (Statics.output.getSequencer().bassline.note[(i + 1)%16] + 16)
-                                        * skipy + skipy / 2);
-            }
-            else{
+                if (i < 15) {
+                    renderer1
+                            .line((i) * skipx + skipx / 2,
+                                    (Statics.output.getSequencer().bassline.note[i] + 16)
+                                            * skipy + skipy / 2,
+                                    (i + 1) * skipx + skipx / 2,
+                                    (Statics.output.getSequencer().bassline.note[(i + 1) % 16] + 16)
+                                            * skipy + skipy / 2);
+                } else {
                     renderer1
                             .line((i) * skipx + skipx / 2,
                                     (Statics.output.getSequencer().bassline.note[i] + 16)
                                             * skipy + skipy / 2,
                                     (i + 1) * skipx,
-                                    (Statics.output.getSequencer().bassline.note[(i + 1)%16] + 16)
+                                    (Statics.output.getSequencer().bassline.note[(i + 1) % 16] + 16)
                                             * skipy + skipy / 2);
-                }}
+                    renderer1
+                            .line(skipx / 2,
+                                    (Statics.output.getSequencer().bassline.note[0] + 16)
+                                            * skipy + skipy / 2,
+                                    0,
+                                    (Statics.output.getSequencer().bassline.note[15] + 16)
+                                            * skipy + skipy / 2);
+                }
+            }
         }
         renderer1.end();
 
