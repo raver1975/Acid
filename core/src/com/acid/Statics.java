@@ -10,7 +10,8 @@ public class Statics {
 
 	public static boolean drumsOn = true;
 	public static boolean synthOn = true;
-	public static boolean mutate;
+	public static boolean mutateDrum;
+	public static boolean mutateSynth;
 	public static boolean drumsSelected =true;
 
 	public static ShapeRenderer renderer;

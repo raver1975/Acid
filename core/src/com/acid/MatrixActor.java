@@ -62,9 +62,14 @@ public class MatrixActor extends Actor {
     }
 
     protected void ttouch(int x1, int y1) {
-        if (!Statics.drumsSelected) {
+        ttouch(x1, y1, Statics.drumsSelected);
+    }
+
+    protected void ttouch(int x1, int y1, boolean b) {
+        if (!b) {
             if (x1 < 16 && x1 > -1) {
                 Statics.output.getSequencer().bassline.note[x1] = (byte) y1;
+                boolean special = false;
                 if (x1 == x2 && y1 == y2) {
                     if (notePause) {
 //                        Statics.output.getSequencer().bassline.pause[x1] = false;
@@ -81,12 +86,17 @@ public class MatrixActor extends Actor {
 //                                .getSequencer().bassline.accent[x1];
 //                        Statics.output.getSequencer().bassline.slide[x1] = false;
                     }
+                } else {
+                    special = true;
                 }
-                if (x1!=x2){
-                    notePause=Statics.output.getSequencer().bassline.pause[x1];
-                    noteSlide=Statics.output.getSequencer().bassline.slide[x1];
-                    noteAccent=Statics.output.getSequencer().bassline.accent[x1];
+
+
+                if (x1 != x2) {
+                    notePause = Statics.output.getSequencer().bassline.pause[x1];
+                    noteSlide = Statics.output.getSequencer().bassline.slide[x1];
+                    noteAccent = Statics.output.getSequencer().bassline.accent[x1];
                 }
+                if (special&&notePause)notePause=false;
                 Statics.output.getSequencer().bassline.pause[x1] = notePause;
                 Statics.output.getSequencer().bassline.slide[x1] = noteSlide;
                 Statics.output.getSequencer().bassline.accent[x1] = noteAccent;
@@ -106,12 +116,7 @@ public class MatrixActor extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (Statics.mutate && Math.random() < .01) {
-            ttouch((int) (MathUtils.random() * 16),
-                    (int) (MathUtils.random() * 31) - 16);
-            if (Statics.drumsSelected)new DrumData();
-            else new SequencerData();
-        }
+
         batch.end();
         Statics.renderer.setProjectionMatrix(batch.getProjectionMatrix());
         Statics.renderer.setTransformMatrix(batch.getTransformMatrix());
@@ -203,11 +208,11 @@ public class MatrixActor extends Actor {
             }
             Statics.renderer.end();*/
 
-            SequencerData.render(Statics.renderer,skipx,skipy);
+            SequencerData.render(Statics.renderer, skipx, skipy);
 
 
         } else {
-            DrumData.render(Statics.renderer,skipx,skipy);
+            DrumData.render(Statics.renderer, skipx, skipy);
         }
         batch.begin();
         //batch.draw(new TextureRegion(new Texture(SequencerData.currentSequence.drawPixmap(50, 50))), 0,0);

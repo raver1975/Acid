@@ -25,7 +25,7 @@ public class DrumData extends InstrumentData {
                 rhythm[y1][x1] = Statics.output.getSequencer().rhythm[y1][x1];
             }
         }
-        System.out.println("copying " + this);
+        System.out.println("copying drums " + this);
         this.parent = currentSequence;
         if (this.parent != null) this.parent.child = this;
         currentSequence = this;
@@ -40,7 +40,7 @@ public class DrumData extends InstrumentData {
                 Statics.output.getSequencer().rhythm[y1][x1] = rhythm[y1][x1];
             }
         }
-        System.out.println("restoring " + this);
+        System.out.println("restoring drums " + this);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -34,6 +35,7 @@ public class Acid implements ApplicationListener {
     public static float rainbowFade = 0f;
     private static float rainbowFadeDir = .005f;
     private Label fpsLabel;
+    private MatrixActor matrixa;
 
     public Acid() {
     }
@@ -269,7 +271,7 @@ public class Acid implements ApplicationListener {
         mya[6].setPosition(40, 408);
         mya[7].setPosition(85, 408);
 
-        MatrixActor matrixa = new MatrixActor();
+        matrixa = new MatrixActor();
         table.addActor(matrixa);
         matrixa.setPosition(130, 178);
 
@@ -293,8 +295,15 @@ public class Acid implements ApplicationListener {
         tb1.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                Statics.mutate = !Statics.mutate;
-                la3.on = Statics.mutate;
+                if (Statics.drumsSelected){
+                    Statics.mutateDrum=!Statics.mutateDrum;
+                    la3.on = Statics.mutateDrum;
+                }
+                else{
+                    Statics.mutateSynth=!Statics.mutateSynth;
+                    la3.on = Statics.mutateSynth;
+                }
+
                 return true;
             }
         });
@@ -324,6 +333,7 @@ public class Acid implements ApplicationListener {
                                      int pointer, int button) {
                 // Statics.synthOn = !Statics.synthOn;
                 Statics.drumsSelected = false;
+                la3.on=Statics.mutateSynth;
                 return true;
             }
         });
@@ -357,6 +367,7 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 Statics.drumsSelected = true;
+                la3.on=Statics.mutateDrum;
                 return true;
             }
         });
@@ -368,7 +379,12 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 la3.on = !la3.on;
-                Statics.mutate = la3.on;
+                if (Statics.drumsSelected){
+                    Statics.mutateDrum=la3.on;
+                }
+                else{
+                    Statics.mutateSynth=la3.on;
+                }
                 return true;
             }
         });
@@ -443,6 +459,18 @@ public class Acid implements ApplicationListener {
 
     @Override
     public void render() {
+
+        if (Statics.mutateDrum& Math.random()<.01d){
+            matrixa.ttouch((int) (MathUtils.random() * 16),
+                    (int) (MathUtils.random() * 31) - 16,true);
+            new DrumData();
+        }
+        if (Statics.mutateSynth& Math.random()<.01d){
+            matrixa.ttouch((int) (MathUtils.random() * 16),
+                    (int) (MathUtils.random() * 31) - 16,false);
+            new SequencerData();
+        }
+
         // mya.rotate(10);
 //        Color c=ColorHelper.rainbowDark();
         Color c=Color.BLACK;
