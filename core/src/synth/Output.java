@@ -12,7 +12,7 @@ public class Output implements Runnable {
 	private static double right;
 
 
-	private static double volume = 1D;
+	public static double volume = 1D;
 	public static double SAMPLE_RATE = 44100;
 	// public static final double SAMPLE_RATE = 2050;
 	public static final int BUFFER_SIZE = 2050;

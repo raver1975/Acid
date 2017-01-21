@@ -1,6 +1,7 @@
 package synth;
 
 
+import com.acid.KnobImpl;
 import com.acid.Statics;
 
 import javax.xml.validation.Validator;
@@ -164,41 +165,41 @@ public class BasslineSynthesizer
 
 
     public void controlChange(int controller, int value) {
+
         switch (controller) {
-            case 34:
+            case 34: //cutoff
                 double newValue = value / 127.0D * 4800.0D + 200.0D;
                 if (newValue > 0d && newValue < 4000d) {
                     this.cutoff.setValue(newValue);
                 }
                 break;
-            case 35:
+            case 35: //resonance
                 newValue = value / 127.0D;
                 if (newValue > -.2d && newValue <= 1.0d) {
                     this.resonance.setValue(newValue);
                 }
                 break;
-            case 36:
+            case 36: //envelop
                 newValue = value / 127.0D;
                 if (newValue > -.2d && newValue <= 1.3d) {
                     this.envMod = (newValue);
                 }
                 break;
-            case 33:
+            case 33:  //tune
                 newValue = value / 127.0F * 2.0F - 1.0F;
                 if (newValue > -0.9d && newValue < 4d) {
                     this.tune = Math.pow(2.0D, newValue);
                     this.osc.setFrequency(this.frequency * this.tune);
                 }
                 break;
-            case 37:
+            case 37:  //decay
                 newValue = 1.0D - value / 127.0D;
                 if (newValue > 0d && newValue < 1d) {
                     this.decay = (newValue * 19.875D + 0.125D);
                     this.feg.setDecay(this.decay);
                 }
-
                 break;
-            case 39:
+            case 39:  // volume
                 newValue = value / 127.0D;
                 if (newValue >= 0d && newValue <= 2d) {
                     Statics.output.setVolume((value / 127.0D));

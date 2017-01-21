@@ -3,6 +3,9 @@ package com.acid;
 import com.badlogic.gdx.Gdx;
 import synth.BasslineSynthesizer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by Paul on 1/8/2017.
  */
@@ -48,7 +51,7 @@ public class KnobImpl {
         }
         return rotation;
     }
-
+//    public static int[] knobVals=new int[8];
     public static void touchDragged(int id, float offset) {
         int cc = (int)(127f / 2f - offset);
 
@@ -68,6 +71,7 @@ public class KnobImpl {
                 break;
 
             case 3:
+                //envelope
                 Statics.synth.controlChange(36, cc);
                 break;
 
@@ -84,12 +88,42 @@ public class KnobImpl {
                 //bpm
                 if (cc >= -100&cc<=260) {
                     Statics.output.getSequencer().setBpm(cc + 100);
+//                    knobVals[id]=cc+100;
                 }
                 break;
             case 7:
+                //volume
                 Statics.synth.controlChange(39, cc);
         }
+//        System.out.println(Arrays.toString(knobVals));
+//        Statics.synth.
+        System.out.println(Arrays.toString(getControls()));
     }
+
+    public static double[] getControls(){
+        double[] vals= new double[8];
+        vals[0]=Statics.synth.tune;
+        vals[1]=Statics.synth.cutoff.getValue();
+        vals[2]=Statics.synth.resonance.getValue();
+        vals[3]=Statics.synth.envMod;
+        vals[4]=Statics.synth.decay;
+        vals[5]=Statics.synth.accent;
+        vals[6]=Statics.output.getSequencer().bpm;
+        vals[7]=Statics.output.volume;
+        return vals;
+    }
+
+    public static void setControls(float[] vals){
+        Statics.synth.tune=vals[0];
+        Statics.synth.cutoff.setValue(vals[1]);
+        Statics.synth.resonance.setValue(vals[2]);
+        Statics.synth.envMod=vals[3];
+        Statics.synth.decay=vals[4];
+        Statics.synth.accent=vals[5];
+        Statics.output.getSequencer().bpm=vals[6];
+        Statics.output.volume=vals[7];
+    }
+
 
     static int idd = -4;
     static float max = Float.MIN_VALUE;
@@ -144,4 +178,5 @@ public class KnobImpl {
         }
         return (val - dx) / (dy - dx);
     }
+
 }
