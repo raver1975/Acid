@@ -22,7 +22,6 @@ public class MatrixActor extends Actor {
 
 
     public MatrixActor() {
-//        this.id = id;
         this.setWidth(320);
         this.setHeight(280);
         this.addListener(new InputListener() {
@@ -30,8 +29,6 @@ public class MatrixActor extends Actor {
                                      int pointer, int button) {
                 int x1 = (int) (x / ((getWidth() / 16)));
                 int y1 = (int) (y / (getHeight() / (Statics.drumsSelected ? 7 : 31))) - (Statics.drumsSelected ? 0 : 16);
-//                x2 = x1;
-//                y2 = y1;
                 notePause = Statics.output.getSequencer().bassline.pause[x1];
                 noteSlide = Statics.output.getSequencer().bassline.slide[x1];
                 noteAccent = Statics.output.getSequencer().bassline.accent[x1];
@@ -54,8 +51,6 @@ public class MatrixActor extends Actor {
                 int y1 = (int) (y / (getHeight() / (Statics.drumsSelected ? 7 : 31))) - (Statics.drumsSelected ? 0 : 16);
                 if (x1 != x2 || y1 != y2) {
                     ttouch(x1, y1);
-//                    x2 = x1;
-//                    y2 = y1;
                 }
             }
         });
@@ -72,19 +67,13 @@ public class MatrixActor extends Actor {
                 boolean special = false;
                 if (x1 == x2 && y1 == y2) {
                     if (notePause) {
-//                        Statics.output.getSequencer().bassline.pause[x1] = false;
                         notePause = false;
                     } else if (!noteSlide) {
-//                        Statics.output.getSequencer().bassline.slide[x1] = true;
                         noteSlide = true;
                     } else {
                         notePause = true;
                         noteAccent = !noteAccent;
                         noteSlide = false;
-//                        Statics.output.getSequencer().bassline.pause[x1] = true;
-//                        Statics.output.getSequencer().bassline.accent[x1] = !Statics.output
-//                                .getSequencer().bassline.accent[x1];
-//                        Statics.output.getSequencer().bassline.slide[x1] = false;
                     }
                 } else {
                     special = true;
@@ -147,75 +136,11 @@ public class MatrixActor extends Actor {
         Statics.renderer.rect(0, 0, this.getWidth(), this.getHeight());
         Statics.renderer.end();
         if (!Statics.drumsSelected) {
-            /*Statics.renderer.begin(ShapeType.Filled);
-            Statics.renderer.setColor(Color.YELLOW);
-
-            for (int r = 0; r < 16; r++) {
-                if (Statics.output.getSequencer().bassline.pause[r])
-                    continue;
-                int skipd = 3;
-                if (Statics.output.getSequencer().bassline.slide[r])
-                    skipd = 0;
-                // if (r > 0 && Acid.output.getSequencer().bassline.slide[r -
-                // 1])
-                // skipd = 0;
-                Statics.renderer.rect(r * skipx + skipd,
-                        (Statics.output.getSequencer().bassline.note[r] + 16)
-                                * skipy, skipx - skipd - skipd, skipy);
-            }
-            Statics.renderer.end();
-
-            Statics.renderer.begin(ShapeType.Filled);
-            Statics.renderer.setColor(Color.RED);
-            for (int r = 0; r < 16; r++) {
-                if (Statics.output.getSequencer().bassline.pause[r])
-                    continue;
-                int skipd = 3;
-                if (Statics.output.getSequencer().bassline.slide[r])
-                    skipd = 0;
-                // if (r > 0 && Acid.output.getSequencer().bassline.slide[r -
-                // 1])
-                // skipd = 0;
-
-                if (Statics.output.getSequencer().bassline.accent[r])
-                    Statics.renderer
-                            .rect(
-                                    r * skipx + skipd,
-                                    (Statics.output.getSequencer().bassline.note[r] + 16)
-                                            * skipy, skipx - skipd - skipd,
-                                    skipy);
-            }
-            Statics.renderer.end();
-
-            Statics.renderer.begin(ShapeType.Line);
-
-            for (int r = 0; r < 15; r++) {
-                if (!Statics.output.getSequencer().bassline.accent[r]) {
-
-                    Statics.renderer.setColor(Color.YELLOW);
-                } else
-                    Statics.renderer.setColor(Color.RED);
-                if (Statics.output.getSequencer().bassline.slide[r]
-                        && !Statics.output.getSequencer().bassline.pause[r]) {
-                    Statics.renderer
-                            .line((r) * skipx + skipx / 2,
-                                    (Statics.output.getSequencer().bassline.note[r] + 16)
-                                            * skipy + skipy / 2,
-                                    (r + 1) * skipx + skipx / 2,
-                                    (Statics.output.getSequencer().bassline.note[r + 1] + 16)
-                                            * skipy + skipy / 2);
-                }
-            }
-            Statics.renderer.end();*/
-
             SequencerData.render(Statics.renderer, skipx, skipy);
-
-
         } else {
             DrumData.render(Statics.renderer, skipx, skipy);
         }
         batch.begin();
-        //batch.draw(new TextureRegion(new Texture(SequencerData.currentSequence.drawPixmap(50, 50))), 0,0);
     }
 
 }

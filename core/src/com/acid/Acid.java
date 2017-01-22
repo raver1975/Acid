@@ -36,6 +36,7 @@ public class Acid implements ApplicationListener {
     private static float rainbowFadeDir = .005f;
     private Label fpsLabel;
     private MatrixActor matrixa;
+    private double[] knobs;
 
     public Acid() {
     }
@@ -418,6 +419,28 @@ public class Acid implements ApplicationListener {
                 }
             });
         };
+
+        TextButton loadButton = new TextButton("Load", skin);
+        table.addActor(loadButton);
+        loadButton.setPosition(80, 130);
+        loadButton.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                if (knobs!=null)KnobImpl.setControls(knobs);
+                return true;
+            }
+        });
+
+        TextButton saveButton = new TextButton("Save", skin);
+        table.addActor(saveButton);
+        saveButton.setPosition(30, 130);
+        saveButton.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                knobs=KnobImpl.getControls();
+                return true;
+            }
+        });
 
         final LightActor la2 = new LightActor(5, null, true);
         table.addActor(la2);

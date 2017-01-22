@@ -113,15 +113,15 @@ public class KnobImpl {
         return vals;
     }
 
-    public static void setControls(float[] vals){
+    public static void setControls(double[] vals){
         Statics.synth.tune=vals[0];
         Statics.synth.cutoff.setValue(vals[1]);
         Statics.synth.resonance.setValue(vals[2]);
         Statics.synth.envMod=vals[3];
         Statics.synth.decay=vals[4];
         Statics.synth.accent=vals[5];
-        Statics.output.getSequencer().bpm=vals[6];
-        Statics.output.volume=vals[7];
+        //Statics.output.getSequencer().setBpm(vals[6]);
+        //Statics.output.volume=vals[7];
     }
 
 
