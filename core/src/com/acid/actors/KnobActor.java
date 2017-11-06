@@ -1,5 +1,8 @@
-package com.acid;
+package com.acid.actors;
 
+import com.acid.ColorHelper;
+import com.acid.KnobImpl;
+import com.acid.Statics;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

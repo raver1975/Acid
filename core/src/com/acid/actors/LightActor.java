@@ -1,5 +1,7 @@
-package com.acid;
+package com.acid.actors;
 
+import com.acid.ColorHelper;
+import com.acid.Statics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,7 +12,7 @@ public class LightActor extends Actor {
 
 	int radius = 0;
 	Color color;
-	boolean on;
+	public boolean on;
 
 	public LightActor(int radius, Color color, boolean on) {
 		this.on = on;
@@ -34,7 +36,7 @@ public class LightActor extends Actor {
 
 		} else {
 			Statics.renderer.begin(ShapeType.Line);
-			Statics.renderer.setColor(color==null?ColorHelper.rainbow():color);
+			Statics.renderer.setColor(color==null? ColorHelper.rainbow():color);
 			Statics.renderer.circle(radius, radius, radius, 10);
 			Statics.renderer.end();
 		}

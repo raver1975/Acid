@@ -59,6 +59,13 @@ public class DrumData extends InstrumentData {
         return s;
     }
 
+    public static void setcurrentSequence(DrumData sd){
+        if (sd!= null) {
+            currentSequence = sd;
+            currentSequence.refresh();
+        }
+    }
+
     public static void undo() {
         if (currentSequence != null && currentSequence.parent != null) {
             currentSequence = currentSequence.parent;
@@ -99,9 +106,9 @@ public class DrumData extends InstrumentData {
 
     public static void render(ShapeRenderer renderer1, float skipx, float skipy) {
         renderer1.begin(ShapeRenderer.ShapeType.Filled);
-        renderer1.setColor(Color.YELLOW);
+        renderer1.setColor(ColorHelper.rainbowLight());
         for (int r = 0; r < Statics.output.getSequencer().rhythm.length; r++) {
-            renderer1.setColor(Color.YELLOW);
+            renderer1.setColor(ColorHelper.rainbowLight());
             for (int r1 = 0; r1 < 16; r1++) {
                 if (Statics.output.getSequencer().rhythm[r][r1] > 0) {
                     renderer1.rect(r1 * skipx + 2, (r)

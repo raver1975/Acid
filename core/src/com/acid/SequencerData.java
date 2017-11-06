@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import synth.Sequencer;
 
 /**
  * Created by Paul on 1/10/2017.
@@ -57,6 +58,13 @@ public class SequencerData extends InstrumentData {
             s += note[i] + (pause[i] ? "p" : "") + (slide[i] ? "s" : "") + (accent[i] ? "a" : "") + " ";
         }
         return s;
+    }
+
+    public static void setcurrentSequence(SequencerData sd){
+        if (sd!= null) {
+            currentSequence = sd;
+            currentSequence.refresh();
+        }
     }
 
     public static void undo() {

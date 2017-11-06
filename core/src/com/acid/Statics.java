@@ -12,15 +12,11 @@ public class Statics {
 	public static boolean synthOn = true;
 	public static boolean mutateDrum;
 	public static boolean mutateSynth;
-	public static boolean drumsSelected =true;
 
 	public static ShapeRenderer renderer;
 
 	static BasslineSynthesizer synth;
 	public static Synthesizer drums;
 	public static Output output;
-
-
-
-
+	
 }

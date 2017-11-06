@@ -131,10 +131,19 @@ public class ColorHelper {
     public static Color rainbow() {
         return numberToColorPercentage(Acid.rainbowFade);
     }
+    public static Color rainbowInverse() {
+        return numberToColorPercentage(1.0f-Acid.rainbowFade);
+    }
 
     public static Color rainbowDark() {
         Color rain=rainbow().cpy();
         rain=rain.lerp(Color.BLACK,.8f);
+        return rain;
+    }
+
+    public static Color rainbowLight() {
+        Color rain=rainbowInverse().cpy();
+        rain=rain.lerp(Color.WHITE,.6f);
         return rain;
     }
 
