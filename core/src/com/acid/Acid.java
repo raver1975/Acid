@@ -36,6 +36,7 @@ public class Acid implements ApplicationListener {
     private static float rainbowFadeDir = .005f;
     private Label fpsLabel1;
     private Label fpsLabel2;
+    private Label fpsLabel3;
     private com.acid.actors.SequenceActor sequenceMatrix;
     private com.acid.actors.DrumActor drumMatrix;
     private double[] knobs;
@@ -47,6 +48,7 @@ public class Acid implements ApplicationListener {
     private ArrayList<DrumData> drumDataArrayList = new ArrayList<DrumData>();
     private ArrayList<double[]> knobsArrayList = new ArrayList<double[]>();
     int songPosition = 0;
+    int maxSongPosition = 0;
 
     public Acid() {
     }
@@ -294,6 +296,36 @@ public class Acid implements ApplicationListener {
         sequenceMatrix.setPosition(130, 178);
         sequenceMatrix.setScale(1f - drumsSynthScale);
 
+        final TextButton prev1 = new TextButton("<", skin);
+        table.addActor(prev1);
+        prev1.setPosition(70, 160);
+        prev1.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                if (maxSongPosition > 0) {
+                    maxSongPosition--;
+                    if (maxSongPosition>songPosition)songPosition=maxSongPosition;
+                }
+                return true;
+            }
+        });
+
+        final TextButton next1 = new TextButton(">", skin);
+        table.addActor(next1);
+        next1.setPosition(100, 160);
+        next1.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                maxSongPosition++;
+                while (maxSongPosition+1 >= sequencerDataArrayList.size()) {
+                    sequencerDataArrayList.add(new SequencerData());
+                    drumDataArrayList.add(new DrumData());
+                    knobsArrayList.add(KnobImpl.getControls());
+                }
+                return true;
+            }
+        });
+
         final TextButton prev = new TextButton("<", skin);
         table.addActor(prev);
         prev.setPosition(70, 130);
@@ -323,6 +355,7 @@ public class Acid implements ApplicationListener {
         next.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
+                if (songPosition==maxSongPosition)return true;
                 while (songPosition+1 >= sequencerDataArrayList.size()) {
                     sequencerDataArrayList.add(new SequencerData());
                     drumDataArrayList.add(new DrumData());
@@ -463,6 +496,11 @@ public class Acid implements ApplicationListener {
         fpsLabel2.setFontScale(.5f);
         table.addActor(fpsLabel2);
 
+        fpsLabel3 = new Label("", skin);
+        fpsLabel3.setPosition(90, 170);
+        fpsLabel3.setFontScale(.5f);
+        table.addActor(fpsLabel3);
+
 
         if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
             TextButton zi = new TextButton("Zoom +", skin);
@@ -573,7 +611,7 @@ public class Acid implements ApplicationListener {
             knobsArrayList.add(songPosition,KnobImpl.getControls());
 
             songPosition++;
-            if (songPosition>=sequencerDataArrayList.size()){
+            if (songPosition>maxSongPosition){
                 songPosition=0;
             }
             SequencerData.setcurrentSequence(sequencerDataArrayList.get(songPosition));
@@ -586,6 +624,9 @@ public class Acid implements ApplicationListener {
         fpsLabel1.setText((int) Statics.output.getSequencer().bpm + "");
         fpsLabel2.setColor(ColorHelper.rainbowLight());
         fpsLabel2.setText((int) (songPosition+1)+ "");
+        fpsLabel3.setColor(ColorHelper.rainbowLight());
+        fpsLabel3.setText((int) (maxSongPosition+1)+ "");
+
         rainbowFade += rainbowFadeDir;
         while (rainbowFade < 0f || rainbowFade > 1f) {
             rainbowFadeDir = -rainbowFadeDir;
