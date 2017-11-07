@@ -18,5 +18,6 @@ public class Statics {
 	static BasslineSynthesizer synth;
 	public static Synthesizer drums;
 	public static Output output;
-	
+
+	public static boolean recording;
 }

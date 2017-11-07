@@ -30,13 +30,13 @@ public class Acid implements ApplicationListener {
 
     private BitmapFont font;
     private Stage stage;
-    private com.acid.actors.LightActor la3 = null;
+    private LightActor mutateLight = null;
     private float newZoom;
     static float rainbowFade = 0f;
     private static float rainbowFadeDir = .005f;
     private Label fpsLabel1;
-    private Label fpsLabel2;
-    private Label fpsLabel3;
+    private Label maxSongLengthLabel;
+    private Label songLengthLabel;
     private com.acid.actors.SequenceActor sequenceMatrix;
     private com.acid.actors.DrumActor drumMatrix;
     private double[] knobs;
@@ -296,10 +296,10 @@ public class Acid implements ApplicationListener {
         sequenceMatrix.setPosition(130, 178);
         sequenceMatrix.setScale(1f - drumsSynthScale);
 
-        final TextButton prev1 = new TextButton("<", skin);
-        table.addActor(prev1);
-        prev1.setPosition(70, 160);
-        prev1.addListener(new InputListener() {
+        final TextButton prevMax = new TextButton("<", skin);
+        table.addActor(prevMax);
+        prevMax.setPosition(60, 130);
+        prevMax.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 if (maxSongPosition > 0) {
@@ -310,10 +310,10 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        final TextButton next1 = new TextButton(">", skin);
-        table.addActor(next1);
-        next1.setPosition(100, 160);
-        next1.addListener(new InputListener() {
+        final TextButton nextMax = new TextButton(">", skin);
+        table.addActor(nextMax);
+        nextMax.setPosition(105, 130);
+        nextMax.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 maxSongPosition++;
@@ -328,22 +328,12 @@ public class Acid implements ApplicationListener {
 
         final TextButton prev = new TextButton("<", skin);
         table.addActor(prev);
-        prev.setPosition(70, 130);
+        prev.setPosition(60, 160);
         prev.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                sequencerDataArrayList.remove(songPosition);
-                drumDataArrayList.remove(songPosition);
-                knobsArrayList.remove(songPosition);
-                sequencerDataArrayList.add(songPosition, SequencerData.currentSequence);
-                drumDataArrayList.add(songPosition, DrumData.currentSequence);
-                knobsArrayList.add(songPosition,KnobImpl.getControls());
                 if (songPosition > 0) {
-                    songPosition--;
-                    SequencerData.setcurrentSequence(sequencerDataArrayList.get(songPosition));
-                    DrumData.setcurrentSequence(drumDataArrayList.get(songPosition));
-                    KnobImpl.setControls(knobsArrayList.get(songPosition));
-                    System.out.println("songposition:"+songPosition);
+                    swapPattern(songPosition,--songPosition);
                 }
                 return true;
             }
@@ -351,27 +341,24 @@ public class Acid implements ApplicationListener {
 
         final TextButton next = new TextButton(">", skin);
         table.addActor(next);
-        next.setPosition(100, 130);
+        next.setPosition(105, 160);
         next.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 if (songPosition==maxSongPosition)return true;
-                while (songPosition+1 >= sequencerDataArrayList.size()) {
-                    sequencerDataArrayList.add(new SequencerData());
-                    drumDataArrayList.add(new DrumData());
-                    knobsArrayList.add(KnobImpl.getControls());
-                }
-                sequencerDataArrayList.remove(songPosition);
-                drumDataArrayList.remove(songPosition);
-                knobsArrayList.remove(songPosition);
-                sequencerDataArrayList.add(songPosition, SequencerData.currentSequence);
-                drumDataArrayList.add(songPosition, DrumData.currentSequence);
-                knobsArrayList.add(songPosition,KnobImpl.getControls());
-                songPosition++;
-                SequencerData.setcurrentSequence(sequencerDataArrayList.get(songPosition));
-                DrumData.setcurrentSequence(drumDataArrayList.get(songPosition));
-                KnobImpl.setControls(knobsArrayList.get(songPosition));
-                System.out.println("songposition:"+songPosition);
+                swapPattern(songPosition,++songPosition);
+                return true;
+            }
+        });
+
+        final LightActor recording = new LightActor(5, null, false);
+        table.addActor(recording);
+        recording.setPosition(87, 152);
+        recording.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                recording.on = !recording.on;
+                Statics.recording=recording.on;
                 return true;
             }
         });
@@ -398,10 +385,10 @@ public class Acid implements ApplicationListener {
                                      int pointer, int button) {
                 if (drumsSelected) {
                     Statics.mutateDrum = !Statics.mutateDrum;
-                    la3.on = Statics.mutateDrum;
+                    mutateLight.on = Statics.mutateDrum;
                 } else {
                     Statics.mutateSynth = !Statics.mutateSynth;
-                    la3.on = Statics.mutateSynth;
+                    mutateLight.on = Statics.mutateSynth;
                 }
 
                 return true;
@@ -431,7 +418,7 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 drumsSelected = false;
-                la3.on = Statics.mutateSynth;
+                mutateLight.on = Statics.mutateSynth;
                 return true;
             }
         });
@@ -465,22 +452,22 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 drumsSelected = true;
-                la3.on = Statics.mutateDrum;
+                mutateLight.on = Statics.mutateDrum;
                 return true;
             }
         });
 
-        la3 = new com.acid.actors.LightActor(5, null, false);
-        table.addActor(la3);
-        la3.setPosition(455, 268);
-        la3.addListener(new InputListener() {
+        mutateLight = new LightActor(5, null, false);
+        table.addActor(mutateLight);
+        mutateLight.setPosition(455, 268);
+        mutateLight.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                la3.on = !la3.on;
+                mutateLight.on = !mutateLight.on;
                 if (drumsSelected) {
-                    Statics.mutateDrum = la3.on;
+                    Statics.mutateDrum = mutateLight.on;
                 } else {
-                    Statics.mutateSynth = la3.on;
+                    Statics.mutateSynth = mutateLight.on;
                 }
                 return true;
             }
@@ -491,15 +478,15 @@ public class Acid implements ApplicationListener {
         fpsLabel1.setFontScale(.5f);
         table.addActor(fpsLabel1);
 
-        fpsLabel2 = new Label("", skin);
-        fpsLabel2.setPosition(90, 140);
-        fpsLabel2.setFontScale(.5f);
-        table.addActor(fpsLabel2);
+        maxSongLengthLabel = new Label("", skin);
+        maxSongLengthLabel.setPosition(76, 170);
+        maxSongLengthLabel.setFontScale(1f);
+        table.addActor(maxSongLengthLabel);
 
-        fpsLabel3 = new Label("", skin);
-        fpsLabel3.setPosition(90, 170);
-        fpsLabel3.setFontScale(.5f);
-        table.addActor(fpsLabel3);
+        songLengthLabel = new Label("", skin);
+        songLengthLabel.setPosition(76, 140);
+        songLengthLabel.setFontScale(1f);
+        table.addActor(songLengthLabel);
 
 
         if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
@@ -528,7 +515,7 @@ public class Acid implements ApplicationListener {
         }
         ;
 
-        final com.acid.actors.LightActor la2 = new com.acid.actors.LightActor(5, null, true);
+        final LightActor la2 = new LightActor(5, null, true);
         table.addActor(la2);
         la2.setPosition(455, 188);
         la2.addListener(new InputListener() {
@@ -540,7 +527,7 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        final com.acid.actors.LightActor la1 = new LightActor(5, null, true);
+        final LightActor la1 = new LightActor(5, null, true);
         table.addActor(la1);
         la1.setPosition(455, 228);
         la1.addListener(new InputListener() {
@@ -556,6 +543,25 @@ public class Acid implements ApplicationListener {
         new SequencerData();
         new DrumData();
 
+    }
+
+    private void swapPattern(int curr,int next){
+        while (next >= sequencerDataArrayList.size()) {
+            sequencerDataArrayList.add(new SequencerData());
+            drumDataArrayList.add(new DrumData());
+            knobsArrayList.add(KnobImpl.getControls());
+        }
+        if (Statics.recording) {
+            sequencerDataArrayList.remove(curr);
+            drumDataArrayList.remove(curr);
+            knobsArrayList.remove(curr);
+            sequencerDataArrayList.add(curr, SequencerData.currentSequence);
+            drumDataArrayList.add(curr, DrumData.currentSequence);
+            knobsArrayList.add(curr, KnobImpl.getControls());
+        }
+        SequencerData.setcurrentSequence(sequencerDataArrayList.get(next));
+        DrumData.setcurrentSequence(drumDataArrayList.get(next));
+        KnobImpl.setControls(knobsArrayList.get(next));
     }
 
     @Override
@@ -597,35 +603,21 @@ public class Acid implements ApplicationListener {
 //        stage.getBatch().end();
 
         if (Statics.output.getSequencer().step%16==0 && prevStep%16==15){
-            while (songPosition >= sequencerDataArrayList.size()) {
-                sequencerDataArrayList.add(new SequencerData());
-                drumDataArrayList.add(new DrumData());
-                knobsArrayList.add(KnobImpl.getControls());
-            }
-            System.out.println("songposition:"+songPosition);
-            sequencerDataArrayList.remove(songPosition);
-            drumDataArrayList.remove(songPosition);
-            knobsArrayList.remove(songPosition);
-            sequencerDataArrayList.add(songPosition, SequencerData.currentSequence);
-            drumDataArrayList.add(songPosition, DrumData.currentSequence);
-            knobsArrayList.add(songPosition,KnobImpl.getControls());
-
+            int old =songPosition;
             songPosition++;
             if (songPosition>maxSongPosition){
                 songPosition=0;
             }
-            SequencerData.setcurrentSequence(sequencerDataArrayList.get(songPosition));
-            DrumData.setcurrentSequence(drumDataArrayList.get(songPosition));
-            KnobImpl.setControls(knobsArrayList.get(songPosition));
+            swapPattern(old,songPosition);
         }
         prevStep=Statics.output.getSequencer().step;
 
         fpsLabel1.setColor(ColorHelper.rainbowLight());
         fpsLabel1.setText((int) Statics.output.getSequencer().bpm + "");
-        fpsLabel2.setColor(ColorHelper.rainbowLight());
-        fpsLabel2.setText((int) (songPosition+1)+ "");
-        fpsLabel3.setColor(ColorHelper.rainbowLight());
-        fpsLabel3.setText((int) (maxSongPosition+1)+ "");
+        maxSongLengthLabel.setColor(ColorHelper.rainbowLight());
+        maxSongLengthLabel.setText((int) (songPosition+1)+ "");
+        songLengthLabel.setColor(ColorHelper.rainbowLight());
+        songLengthLabel.setText((int) (maxSongPosition+1)+ "");
 
         rainbowFade += rainbowFadeDir;
         while (rainbowFade < 0f || rainbowFade > 1f) {

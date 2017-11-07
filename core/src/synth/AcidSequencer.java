@@ -13,7 +13,7 @@ public class AcidSequencer {
     public double bpm;
     private boolean shuffle;
     private int samplesPerSequencerUpdate;
-    private int tick = 0;
+    public int tick = 0;
     public int step = 0;
     private boolean sixteenth_note = true;
 
