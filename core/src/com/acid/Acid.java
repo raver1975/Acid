@@ -353,12 +353,24 @@ public class Acid implements ApplicationListener {
 
         final LightActor recording = new LightActor(5, null, false);
         table.addActor(recording);
-        recording.setPosition(87, 152);
+        recording.setPosition(80, 152);
         recording.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 recording.on = !recording.on;
                 Statics.recording=recording.on;
+                return true;
+            }
+        });
+
+        final LightActor pause= new LightActor(5, null, false);
+        table.addActor(pause);
+        pause.setPosition(95, 152);
+        pause.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                pause.on = !pause.on;
+                Statics.output.paused=pause.on;
                 return true;
             }
         });
