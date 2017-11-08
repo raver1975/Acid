@@ -34,21 +34,24 @@ public class Acid implements ApplicationListener {
     private float newZoom;
     static float rainbowFade = 0f;
     private static float rainbowFadeDir = .005f;
-    private Label fpsLabel1;
-    private Label maxSongLengthLabel;
-    private Label songLengthLabel;
+    private Label BpmLabel;
     private com.acid.actors.SequenceActor sequenceMatrix;
     private com.acid.actors.DrumActor drumMatrix;
     private double[] knobs;
     private boolean drumsSelected;
     private float drumsSynthScale = 1.0f;
-    int prevStep=-1;
+    private int prevStep = -1;
 
     private ArrayList<SequencerData> sequencerDataArrayList = new ArrayList<SequencerData>();
     private ArrayList<DrumData> drumDataArrayList = new ArrayList<DrumData>();
     private ArrayList<double[]> knobsArrayList = new ArrayList<double[]>();
-    int songPosition = 0;
-    int maxSongPosition = 0;
+    private int songPosition = 0;
+    private int maxSongPosition = 0;
+    private int minSongPosition = 0;
+    private Label maxSongLengthLabel;
+    private Label songLengthLabel;
+    private Label minSongLengthLabel;
+
 
     public Acid() {
     }
@@ -65,7 +68,6 @@ public class Acid implements ApplicationListener {
         Statics.output.getSequencer().randomize();
         drumsSelected = false;
         Statics.output.getSequencer().randomize();
-
 
 
         InputMultiplexer mult = new InputMultiplexer();
@@ -293,47 +295,55 @@ public class Acid implements ApplicationListener {
 
         sequenceMatrix = new SequenceActor();
         table.addActor(sequenceMatrix);
-        sequenceMatrix.setPosition(130, 178);
         sequenceMatrix.setScale(1f - drumsSynthScale);
+        sequenceMatrix.setPosition(130, 178);
 
-        final TextButton prevMax = new TextButton("<", skin);
-        table.addActor(prevMax);
-        prevMax.setPosition(60, 130);
-        prevMax.addListener(new InputListener() {
+
+        minSongLengthLabel = new Label("", skin);
+        minSongLengthLabel.setPosition(196, 110);
+        minSongLengthLabel.setFontScale(1f);
+        table.addActor(minSongLengthLabel);
+
+
+        final TextButton prevMin = new TextButton("<", skin);
+        table.addActor(prevMin);
+        prevMin.setPosition(180, 100);
+        prevMin.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                if (maxSongPosition > 0) {
-                    maxSongPosition--;
-                    if (maxSongPosition>songPosition)songPosition=maxSongPosition;
+                if (minSongPosition > 0) {
+                    minSongPosition--;
                 }
                 return true;
             }
         });
 
-        final TextButton nextMax = new TextButton(">", skin);
-        table.addActor(nextMax);
-        nextMax.setPosition(105, 130);
-        nextMax.addListener(new InputListener() {
+        final TextButton nextMin = new TextButton(">", skin);
+        table.addActor(nextMin);
+        nextMin.setPosition(225, 100);
+        nextMin.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                maxSongPosition++;
-                while (maxSongPosition+1 >= sequencerDataArrayList.size()) {
-                    sequencerDataArrayList.add(new SequencerData());
-                    drumDataArrayList.add(new DrumData());
-                    knobsArrayList.add(KnobImpl.getControls());
-                }
+                if (minSongPosition < maxSongPosition) minSongPosition++;
+
                 return true;
             }
         });
+
+
+        songLengthLabel = new Label("", skin);
+        songLengthLabel.setPosition(266, 110);
+        songLengthLabel.setFontScale(1f);
+        table.addActor(songLengthLabel);
 
         final TextButton prev = new TextButton("<", skin);
         table.addActor(prev);
-        prev.setPosition(60, 160);
+        prev.setPosition(250, 100);
         prev.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 if (songPosition > 0) {
-                    swapPattern(songPosition,--songPosition);
+                    swapPattern(songPosition, --songPosition);
                 }
                 return true;
             }
@@ -341,58 +351,116 @@ public class Acid implements ApplicationListener {
 
         final TextButton next = new TextButton(">", skin);
         table.addActor(next);
-        next.setPosition(105, 160);
+        next.setPosition(295, 100);
         next.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                if (songPosition==maxSongPosition)return true;
-                swapPattern(songPosition,++songPosition);
+                if (songPosition == maxSongPosition) return true;
+                swapPattern(songPosition, ++songPosition);
                 return true;
             }
         });
 
-        final LightActor recording = new LightActor(5, null, false);
-        table.addActor(recording);
-        recording.setPosition(80, 152);
-        recording.addListener(new InputListener() {
+        maxSongLengthLabel = new Label("", skin);
+        maxSongLengthLabel.setPosition(336, 110);
+        maxSongLengthLabel.setFontScale(1f);
+        table.addActor(maxSongLengthLabel);
+
+
+        final TextButton prevMax = new TextButton("<", skin);
+        table.addActor(prevMax);
+        prevMax.setPosition(320, 100);
+        prevMax.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                recording.on = !recording.on;
-                Statics.recording=recording.on;
+                if (maxSongPosition > 0 && maxSongPosition > minSongPosition) {
+                    maxSongPosition--;
+                }
                 return true;
             }
         });
 
-        final LightActor pause= new LightActor(5, null, false);
-        table.addActor(pause);
-        pause.setPosition(95, 152);
-        pause.addListener(new InputListener() {
+        final TextButton nextMax = new TextButton(">", skin);
+        table.addActor(nextMax);
+        nextMax.setPosition(365, 100);
+        nextMax.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                pause.on = !pause.on;
-                Statics.output.paused=pause.on;
+                maxSongPosition++;
                 return true;
             }
         });
 
-        final TextButton tb4 = new TextButton("Wave", skin);
-        table.addActor(tb4);
-        tb4.setPosition(470f, 140);
-        tb4.addListener(new InputListener() {
+
+        final LightActor recordingLight = new LightActor(5, null, false);
+        table.addActor(recordingLight);
+        recordingLight.setPosition(50, 170);
+        recordingLight.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                recordingLight.on = !recordingLight.on;
+                Statics.recording = recordingLight.on;
+                return true;
+            }
+        });
+
+        final TextButton recButton = new TextButton("Rec", skin);
+        table.addActor(recButton);
+        recButton.setPosition(40f, 135);
+        recButton.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+
+                                     int pointer, int button) {
+                recordingLight.on = !recordingLight.on;
+                Statics.recording = recordingLight.on;
+                return true;
+            }
+        });
+
+        final LightActor pauseLight = new LightActor(5, null, false);
+        table.addActor(pauseLight);
+        pauseLight.setPosition(95, 170);
+        pauseLight.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                pauseLight.on = !pauseLight.on;
+                Statics.output.paused = pauseLight.on;
+                return true;
+            }
+        });
+
+        final TextButton pauseButton = new TextButton("||", skin);
+        table.addActor(pauseButton);
+        pauseButton.setPosition(85f, 135);
+        pauseButton.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+
+                                     int pointer, int button) {
+                pauseLight.on = !pauseLight.on;
+                Statics.output.paused = pauseLight.on;
+                return true;
+            }
+        });
+
+        final TextButton waveButton = new TextButton("Wave", skin);
+        table.addActor(waveButton);
+        waveButton.setPosition(470f, 140);
+        waveButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 Statics.output.getSequencer().bass.switchWaveform();
-                tb4.setChecked(tb4.isChecked());
-                tb4.setColor(tb4.isChecked() ? Color.WHITE : Color.RED);
+                waveButton.setChecked(waveButton.isChecked());
+                waveButton.setColor(waveButton.isChecked() ? Color.WHITE : Color.RED);
 //                tb4.setText(tb4.isChecked() ? "~":"--");
-                tb4.invalidate();
+                waveButton.invalidate();
                 return true;
             }
         });
-        TextButton tb1 = new TextButton("Mutate", skin);
-        table.addActor(tb1);
-        tb1.setPosition(470, 260);
-        tb1.addListener(new InputListener() {
+
+        TextButton mutateButton = new TextButton("Mutate", skin);
+        table.addActor(mutateButton);
+        mutateButton.setPosition(470, 260);
+        mutateButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 if (drumsSelected) {
@@ -407,10 +475,10 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        TextButton tb3 = new TextButton("Random", skin);
-        table.addActor(tb3);
-        tb3.setPosition(470, 300);
-        tb3.addListener(new InputListener() {
+        TextButton randomButton = new TextButton("Random", skin);
+        table.addActor(randomButton);
+        randomButton.setPosition(470, 300);
+        randomButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 Statics.output.getSequencer().randomize();
@@ -423,10 +491,10 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        TextButton tb5 = new TextButton("Synth", skin);
-        table.addActor(tb5);
-        tb5.setPosition(470, 180);
-        tb5.addListener(new InputListener() {
+        TextButton synthButton = new TextButton("Synth", skin);
+        table.addActor(synthButton);
+        synthButton.setPosition(470, 180);
+        synthButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 drumsSelected = false;
@@ -435,10 +503,10 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        TextButton tb7 = new TextButton("Clear", skin);
-        table.addActor(tb7);
-        tb7.setPosition(470, 340);
-        tb7.addListener(new InputListener() {
+        TextButton clearButton = new TextButton("Clear", skin);
+        table.addActor(clearButton);
+        clearButton.setPosition(470, 340);
+        clearButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 if (drumsSelected) {
@@ -457,10 +525,10 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        TextButton tb2 = new TextButton("Drums", skin);
-        table.addActor(tb2);
-        tb2.setPosition(470, 220);
-        tb2.addListener(new InputListener() {
+        TextButton drumsButton = new TextButton("Drums", skin);
+        table.addActor(drumsButton);
+        drumsButton.setPosition(470, 220);
+        drumsButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 drumsSelected = true;
@@ -485,20 +553,10 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        fpsLabel1 = new Label("", skin);
-        fpsLabel1.setPosition(52, 407);
-        fpsLabel1.setFontScale(.5f);
-        table.addActor(fpsLabel1);
-
-        maxSongLengthLabel = new Label("", skin);
-        maxSongLengthLabel.setPosition(76, 170);
-        maxSongLengthLabel.setFontScale(1f);
-        table.addActor(maxSongLengthLabel);
-
-        songLengthLabel = new Label("", skin);
-        songLengthLabel.setPosition(76, 140);
-        songLengthLabel.setFontScale(1f);
-        table.addActor(songLengthLabel);
+        BpmLabel = new Label("", skin);
+        BpmLabel.setPosition(52, 407);
+        BpmLabel.setFontScale(.5f);
+        table.addActor(BpmLabel);
 
 
         if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
@@ -527,26 +585,26 @@ public class Acid implements ApplicationListener {
         }
         ;
 
-        final LightActor la2 = new LightActor(5, null, true);
-        table.addActor(la2);
-        la2.setPosition(455, 188);
-        la2.addListener(new InputListener() {
+        final LightActor synthLight = new LightActor(5, null, true);
+        table.addActor(synthLight);
+        synthLight.setPosition(455, 188);
+        synthLight.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                la2.on = !la2.on;
-                Statics.synthOn = la2.on;
+                synthLight.on = !synthLight.on;
+                Statics.synthOn = synthLight.on;
                 return true;
             }
         });
 
-        final LightActor la1 = new LightActor(5, null, true);
-        table.addActor(la1);
-        la1.setPosition(455, 228);
-        la1.addListener(new InputListener() {
+        final LightActor drumsLight = new LightActor(5, null, true);
+        table.addActor(drumsLight);
+        drumsLight.setPosition(455, 228);
+        drumsLight.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                la1.on = !la1.on;
-                Statics.drumsOn = la1.on;
+                drumsLight.on = !drumsLight.on;
+                Statics.drumsOn = drumsLight.on;
                 return true;
             }
         });
@@ -554,10 +612,10 @@ public class Acid implements ApplicationListener {
 
         new SequencerData();
         new DrumData();
-
+        newZoom += .15f;
     }
 
-    private void swapPattern(int curr,int next){
+    private void swapPattern(int curr, int next) {
         while (next >= sequencerDataArrayList.size()) {
             sequencerDataArrayList.add(new SequencerData());
             drumDataArrayList.add(new DrumData());
@@ -614,22 +672,24 @@ public class Acid implements ApplicationListener {
 //                (int) Statics.output.getSequencer().bpm + "", 90, 360);
 //        stage.getBatch().end();
 
-        if (Statics.output.getSequencer().step%16==0 && prevStep%16==15){
-            int old =songPosition;
+        if (Statics.output.getSequencer().step % 16 == 0 && prevStep % 16 == 15) {
+            int old = songPosition;
             songPosition++;
-            if (songPosition>maxSongPosition){
-                songPosition=0;
+            if (songPosition > maxSongPosition) {
+                songPosition = minSongPosition;
             }
-            swapPattern(old,songPosition);
+            swapPattern(old, songPosition);
         }
-        prevStep=Statics.output.getSequencer().step;
+        prevStep = Statics.output.getSequencer().step;
 
-        fpsLabel1.setColor(ColorHelper.rainbowLight());
-        fpsLabel1.setText((int) Statics.output.getSequencer().bpm + "");
+        BpmLabel.setColor(ColorHelper.rainbowLight());
+        BpmLabel.setText((int) Statics.output.getSequencer().bpm + "");
         maxSongLengthLabel.setColor(ColorHelper.rainbowLight());
-        maxSongLengthLabel.setText((int) (songPosition+1)+ "");
+        maxSongLengthLabel.setText(format(maxSongPosition + 1));
+        minSongLengthLabel.setColor(ColorHelper.rainbowLight());
+        minSongLengthLabel.setText((format(minSongPosition + 1)));
         songLengthLabel.setColor(ColorHelper.rainbowLight());
-        songLengthLabel.setText((int) (maxSongPosition+1)+ "");
+        songLengthLabel.setText(format(songPosition + 1));
 
         rainbowFade += rainbowFadeDir;
         while (rainbowFade < 0f || rainbowFade > 1f) {
@@ -649,6 +709,13 @@ public class Acid implements ApplicationListener {
         }
 
 
+    }
+
+    private String format(int i) {
+        String s = i + "";
+        if (i < 100) s = "0" + s;
+        if (i < 10) s = "00" + i;
+        return s;
     }
 
     @Override
