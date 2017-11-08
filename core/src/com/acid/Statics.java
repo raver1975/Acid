@@ -20,5 +20,5 @@ public class Statics {
 	public static Synthesizer drums;
 	public static Output output;
 
-	public static boolean recording;
+	public static boolean recording=true;
 }

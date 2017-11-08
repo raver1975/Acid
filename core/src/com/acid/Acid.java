@@ -393,6 +393,7 @@ public class Acid implements ApplicationListener {
 
 
         final LightActor recordingLight = new LightActor(5, null, false);
+        recordingLight.on=true;
         table.addActor(recordingLight);
         recordingLight.setPosition(50, 170);
         recordingLight.addListener(new InputListener() {
