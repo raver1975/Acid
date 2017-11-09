@@ -21,7 +21,6 @@ public class KnobActor extends Actor {
     private final BitmapFont font;
     private final int id;
     private final String name;
-    private int ccpos;
 
     public KnobActor(String name, final int id) {
         font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",

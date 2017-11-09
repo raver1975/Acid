@@ -10,14 +10,50 @@ import java.util.Arrays;
  * Created by Paul on 1/8/2017.
  */
 public class KnobImpl {
-    static double[][] knobs;
+    static double[][] knobs=new double[16][8];;
     static{
-       knobs=new double[16][8];
        for (int i=0;i<16;i++){
            knobs[i]=getControls();
        }
     }
     static boolean[] touched=new boolean[8];
+
+    public static float getRotation(int id,double val) {
+        float rotation = 0f;
+        switch (id) {
+            case 0:
+                rotation = (int) (((val - .5f) * 400.0) / 1.5f);
+                break;
+            case 1:
+                rotation = (float) ((val- 1200) * 5.0f) / 50f;
+                break;
+
+            case 2:
+                rotation = (float) (val * 500f) - 100f;
+                break;
+
+            case 3:
+                rotation = (int) ((val * 500) - 100);
+                break;
+
+            case 4:
+                rotation = (float) ((val * Gdx.graphics.getWidth()) / 20.0f) - 100f;
+                break;
+
+            case 5:
+                rotation = (float) val * 360f;
+                break;
+            case 6:
+                //accent
+                rotation = (float) val;
+                break;
+            case 7:
+                rotation = (float) val * 360f;
+                break;
+        }
+        return rotation;
+    }
+
 
     public static float getRotation(int id) {
         float rotation = 0f;
@@ -210,6 +246,7 @@ public class KnobImpl {
 
     public static void touchReleased(int id) {
         touched[id]=false;
+        new KnobData();
     }
 
     public static void touchDown(int id) {

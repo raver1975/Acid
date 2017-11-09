@@ -203,7 +203,7 @@ public class Acid implements ApplicationListener {
         rectangleActor.setPosition(122, 120);
         table.addActor(rectangleActor);
 
-        com.acid.actors.CurrentSequencerActor my2 = new CurrentSequencerActor(100, 100);
+        com.acid.actors.CurrentSequencerActor my2 = new CurrentSequencerActor(100, 80);
         my2.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
@@ -211,11 +211,11 @@ public class Acid implements ApplicationListener {
                 return true;
             }
         });
-        my2.setPosition(20, 300);
+        my2.setPosition(20, 320);
         table.addActor(my2);
 
-        com.acid.actors.CurrentDrumActor my1 = new CurrentDrumActor(100, 100);
-        my1.setPosition(20, 190);
+        com.acid.actors.CurrentDrumActor my1 = new CurrentDrumActor(100, 80);
+        my1.setPosition(20, 240);
         my1.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
@@ -225,7 +225,16 @@ public class Acid implements ApplicationListener {
         });
         table.addActor(my1);
 
-
+        com.acid.actors.CurrentKnobsActor currentKnobs = new CurrentKnobsActor(100, 50);
+        currentKnobs.setPosition(20, 180);
+        currentKnobs.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                KnobData.undo();
+                return true;
+            }
+        });
+        table.addActor(currentKnobs);
 //        final Touchpad touch1 = new Touchpad(0, skin);
 //        touch1.setBounds(15, 15, 100, 100);
 //        touch1.addListener(new ChangeListener() {
