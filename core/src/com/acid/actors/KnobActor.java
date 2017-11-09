@@ -40,12 +40,14 @@ public class KnobActor extends Actor {
                                      int pointer, int button) {
                 distx = x;
                 disty = y;
+                KnobImpl.touchDown(id);
 //                ccpos = (int) ((int) ((KnobImpl.getRotation(id) * (127f / 360f) + 127 + 127 / 2) % 127) - 0);
                 return true;
             }
 
             public void touchUp(InputEvent event, float x, float y,
                                 int pointer, int button) {
+                KnobImpl.touchReleased(id);
             }
 
             public void touchDragged(InputEvent event, float x, float y,

@@ -10,6 +10,15 @@ import java.util.Arrays;
  * Created by Paul on 1/8/2017.
  */
 public class KnobImpl {
+    static double[][] knobs;
+    static{
+       knobs=new double[16][8];
+       for (int i=0;i<16;i++){
+           knobs[i]=getControls();
+       }
+    }
+    static boolean[] touched=new boolean[8];
+
     public static float getRotation(int id) {
         float rotation = 0f;
         switch (id) {
@@ -53,6 +62,7 @@ public class KnobImpl {
     }
 //    public static int[] knobVals=new int[8];
     public static void touchDragged(int id, float offset) {
+
         int cc = (int)(127f / 2f - offset);
 
         switch (id) {
@@ -100,6 +110,14 @@ public class KnobImpl {
         System.out.println(Arrays.toString(getControls()));
     }
 
+    public static void setControl(int step, int id){
+        knobs[step%16][id]=getControls()[id];
+    }
+
+    public static double[] getControl(int step){
+        return knobs[step%16];
+    }
+
     public static double[] getControls(){
         double[] vals= new double[8];
         vals[0]=Statics.synth.tune;
@@ -120,6 +138,17 @@ public class KnobImpl {
         Statics.synth.envMod=vals[3];
         Statics.synth.decay=vals[4];
         Statics.synth.accent=vals[5];
+        //Statics.output.getSequencer().setBpm(vals[6]);
+        //Statics.output.volume=vals[7];
+    }
+
+    public static void setControls(double vals, int id){
+        if (id==0)Statics.synth.tune=vals;
+        if (id==1)Statics.synth.cutoff.setValue(vals);
+        if (id==2)Statics.synth.resonance.setValue(vals);
+        if (id==3)Statics.synth.envMod=vals;
+        if (id==4)Statics.synth.decay=vals;
+        if (id==5)Statics.synth.accent=vals;
         //Statics.output.getSequencer().setBpm(vals[6]);
         //Statics.output.volume=vals[7];
     }
@@ -179,4 +208,11 @@ public class KnobImpl {
         return (val - dx) / (dy - dx);
     }
 
+    public static void touchReleased(int id) {
+        touched[id]=false;
+    }
+
+    public static void touchDown(int id) {
+        touched[id]=true;
+    }
 }
