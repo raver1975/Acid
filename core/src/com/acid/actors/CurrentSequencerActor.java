@@ -25,8 +25,8 @@ public class CurrentSequencerActor extends Actor {
         Color color = getColor();
 //        if (region!=null)System.out.println(region.getRegionWidth()+","+region.getRegionHeight()+"\t"+getWidth()+","+getHeight()+"\t"+getScaleX()+":"+getScaleY());
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-        if (SequencerData.currentSequence.region != null && SequencerData.currentSequence.parent != null && SequencerData.currentSequence.parent.region != null)
-            batch.draw(SequencerData.currentSequence.parent.region, getX(), getY(), getOriginX(), getOriginY(),
+        if (SequencerData.currentSequence.region != null )
+            batch.draw(SequencerData.currentSequence.region, getX(), getY(), getOriginX(), getOriginY(),
                     getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
     }
 }

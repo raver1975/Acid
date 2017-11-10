@@ -10,22 +10,32 @@ import java.util.Arrays;
  * Created by Paul on 1/8/2017.
  */
 public class KnobImpl {
-    static double[][] knobs=new double[16][8];;
-    static{
-       for (int i=0;i<16;i++){
-           knobs[i]=getControls();
-       }
-    }
-    static boolean[] touched=new boolean[8];
+    static double[][] knobs = new double[16][8];
+    ;
 
-    public static float getRotation(int id,double val) {
+    static {
+        for (int i = 0; i < 16; i++) {
+            knobs[i] = getControls();
+        }
+    }
+
+    static boolean[] touched = new boolean[8];
+
+    static boolean isTouched() {
+        for (int i = 0; i < 8; i++) {
+            if (touched[i]) return true;
+        }
+        return false;
+    }
+
+    public static float getRotation(int id, double val) {
         float rotation = 0f;
         switch (id) {
             case 0:
                 rotation = (int) (((val - .5f) * 400.0) / 1.5f);
                 break;
             case 1:
-                rotation = (float) ((val- 1200) * 5.0f) / 50f;
+                rotation = (float) ((val - 1200) * 5.0f) / 50f;
                 break;
 
             case 2:
@@ -96,10 +106,11 @@ public class KnobImpl {
         }
         return rotation;
     }
-//    public static int[] knobVals=new int[8];
+
+    //    public static int[] knobVals=new int[8];
     public static void touchDragged(int id, float offset) {
 
-        int cc = (int)(127f / 2f - offset);
+        int cc = (int) (127f / 2f - offset);
 
         switch (id) {
             case 0:
@@ -132,7 +143,7 @@ public class KnobImpl {
                 break;
             case 6:
                 //bpm
-                if (cc >= -100&cc<=260) {
+                if (cc >= -100 & cc <= 260) {
                     Statics.output.getSequencer().setBpm(cc + 100);
 //                    knobVals[id]=cc+100;
                 }
@@ -146,45 +157,45 @@ public class KnobImpl {
         System.out.println(Arrays.toString(getControls()));
     }
 
-    public static void setControl(int step, int id){
-        knobs[step%16][id]=getControls()[id];
+    public static void setControl(int step, int id) {
+        knobs[step % 16][id] = getControls()[id];
     }
 
-    public static double[] getControl(int step){
-        return knobs[step%16];
+    public static double[] getControl(int step) {
+        return knobs[step % 16];
     }
 
-    public static double[] getControls(){
-        double[] vals= new double[8];
-        vals[0]=Statics.synth.tune;
-        vals[1]=Statics.synth.cutoff.getValue();
-        vals[2]=Statics.synth.resonance.getValue();
-        vals[3]=Statics.synth.envMod;
-        vals[4]=Statics.synth.decay;
-        vals[5]=Statics.synth.accent;
-        vals[6]=Statics.output.getSequencer().bpm;
-        vals[7]=Statics.output.volume;
+    public static double[] getControls() {
+        double[] vals = new double[8];
+        vals[0] = Statics.synth.tune;
+        vals[1] = Statics.synth.cutoff.getValue();
+        vals[2] = Statics.synth.resonance.getValue();
+        vals[3] = Statics.synth.envMod;
+        vals[4] = Statics.synth.decay;
+        vals[5] = Statics.synth.accent;
+        vals[6] = Statics.output.getSequencer().bpm;
+        vals[7] = Statics.output.volume;
         return vals;
     }
 
-    public static void setControls(double[] vals){
-        Statics.synth.tune=vals[0];
+    public static void setControls(double[] vals) {
+        Statics.synth.tune = vals[0];
         Statics.synth.cutoff.setValue(vals[1]);
         Statics.synth.resonance.setValue(vals[2]);
-        Statics.synth.envMod=vals[3];
-        Statics.synth.decay=vals[4];
-        Statics.synth.accent=vals[5];
+        Statics.synth.envMod = vals[3];
+        Statics.synth.decay = vals[4];
+        Statics.synth.accent = vals[5];
         //Statics.output.getSequencer().setBpm(vals[6]);
         //Statics.output.volume=vals[7];
     }
 
-    public static void setControls(double vals, int id){
-        if (id==0)Statics.synth.tune=vals;
-        if (id==1)Statics.synth.cutoff.setValue(vals);
-        if (id==2)Statics.synth.resonance.setValue(vals);
-        if (id==3)Statics.synth.envMod=vals;
-        if (id==4)Statics.synth.decay=vals;
-        if (id==5)Statics.synth.accent=vals;
+    public static void setControls(double vals, int id) {
+        if (id == 0) Statics.synth.tune = vals;
+        if (id == 1) Statics.synth.cutoff.setValue(vals);
+        if (id == 2) Statics.synth.resonance.setValue(vals);
+        if (id == 3) Statics.synth.envMod = vals;
+        if (id == 4) Statics.synth.decay = vals;
+        if (id == 5) Statics.synth.accent = vals;
         //Statics.output.getSequencer().setBpm(vals[6]);
         //Statics.output.volume=vals[7];
     }
@@ -233,23 +244,23 @@ public class KnobImpl {
                 dy = 360f;
                 break;
             case 6:
-                dx=0f;
-                dy=360f;
+                dx = 0f;
+                dy = 360f;
                 break;
             case 7:
-                dx=0f;
-                dy=720f;
+                dx = 0f;
+                dy = 720f;
                 break;
         }
         return (val - dx) / (dy - dx);
     }
 
     public static void touchReleased(int id) {
-        touched[id]=false;
+        touched[id] = false;
         new KnobData();
     }
 
     public static void touchDown(int id) {
-        touched[id]=true;
+        touched[id] = true;
     }
 }

@@ -86,7 +86,7 @@ public class KnobData extends InstrumentData {
         ShapeRenderer renderer = new ShapeRenderer();
         renderer.getProjectionMatrix().setToOrtho2D(0, 0, w, h);
         float skipx = ((float) w / 16f);
-        float skipy = ((float) h / 8f);
+        float skipy = ((float) h / 6f);
         render(renderer, skipx, skipy);
         Pixmap pixmap1 = ScreenUtils.getFrameBufferPixmap(0, 0, w, h);
         Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);
@@ -102,7 +102,7 @@ public class KnobData extends InstrumentData {
     public void render(ShapeRenderer renderer1, float skipx, float skipy) {
         renderer1.begin(ShapeRenderer.ShapeType.Filled);
         for (int i=0;i<16;i++){
-            for (int j=0;j<8;j++){
+            for (int j=0;j<6;j++){
                 renderer1.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(j,(float)KnobImpl.getRotation(j,knobs[i][j]))));
                 renderer1.rect(skipx*i,skipy*j,skipx,skipy);
             }
