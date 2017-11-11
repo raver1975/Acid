@@ -19,4 +19,5 @@ public class Statics {
 
 	public static boolean recording=true;
 	public static boolean free=true;
+	public static boolean waveSquare;
 }

@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import sun.security.krb5.internal.KDCReqBody;
 import synth.BasslineSynthesizer;
 import synth.Output;
 import synth.RhythmSynthesizer;
@@ -60,6 +61,7 @@ public class Acid implements ApplicationListener {
     private Label songLengthCaption;
     private Label maxSongLengthCaption;
     private Label stepCaption;
+    private TextButton waveButton;
 
     public Acid() {
     }
@@ -580,16 +582,16 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        final TextButton waveButton = new TextButton(" [] ", skin);
+        waveButton = new TextButton(" Square ", skin);
         table.addActor(waveButton);
         waveButton.setPosition(520f, 280);
         waveButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 Statics.output.getSequencer().bass.switchWaveform();
-                waveButton.setChecked(waveButton.isChecked());
-                waveButton.setColor(waveButton.isChecked() ? Color.WHITE : Color.RED);
-                waveButton.setText(waveButton.isChecked() ? " [] " : " /\\ ");
+                waveButton.setChecked(Statics.waveSquare);
+                waveButton.setColor(Statics.waveSquare ? Color.WHITE : Color.RED);
+                waveButton.setText(Statics.waveSquare ? " Square " : " Saw ");
                 waveButton.invalidate();
                 return true;
             }
@@ -599,15 +601,20 @@ public class Acid implements ApplicationListener {
         table.addActor(randomButton);
         randomButton.setPosition(470, 340);
         randomButton.addListener(new InputListener() {
+//            public void touchUp(InputEvent event, float x, float y,
+//                                     int pointer, int button) {
+//                new KnobData();
+//            }
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
 
                 if (drumsSelected) {
                     Statics.output.getSequencer().randomizeRhythm();
-                    new DrumData();
                 } else {
+                    Statics.output.getSequencer().bass.randomize();
                     Statics.output.getSequencer().randomizeSequence();
-                    //new SequencerData();
+                    KnobImpl.refill();
+
                 }
                 return true;
             }
@@ -798,6 +805,9 @@ public class Acid implements ApplicationListener {
             swapPattern(old, songPosition);
         }
         prevStep = Statics.output.getSequencer().step;
+
+        waveButton.setColor(Statics.waveSquare ? Color.WHITE : Color.RED);
+        waveButton.setText(Statics.waveSquare ? " Square " : " Saw ");
 
         BpmLabel.setColor(ColorHelper.rainbowLight());
         BpmLabel.setText((int) Statics.output.getSequencer().bpm + "");

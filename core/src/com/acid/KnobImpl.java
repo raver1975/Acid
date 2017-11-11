@@ -46,7 +46,7 @@ public class KnobImpl {
                 break;
 
             case 4:
-                rotation = (float) ((20-val) * 32.0f) - 100f;
+                rotation = (float) (20-val * 32.0f) - 100f;
                 break;
 
             case 5:
@@ -153,6 +153,17 @@ public class KnobImpl {
 //        System.out.println(Arrays.toString(knobVals));
 //        Statics.synth.
         System.out.println(Arrays.toString(getControls()));
+        new KnobData();
+    }
+
+    public static void refill() {
+        double[] contrls=KnobImpl.getControls();
+
+        for (int i=0;i<16;i++){
+            for (int j=0;j<6;j++) {
+                KnobImpl.knobs[i][j]=contrls[j];
+            }
+        }
         new KnobData();
     }
 

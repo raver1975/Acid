@@ -84,10 +84,13 @@ public class BasslineSynthesizer
     public void randomize() {
         if (Math.random() > 0.5D) {
             this.osc.setWavetable(WAVETABLE_SQUARE);
+            Statics.waveSquare=true;
         } else {
             this.osc.setWavetable(WAVETABLE_SAW);
+            Statics.waveSquare=false;
         }
-
+        cutoff.setValue(Math.random() * 3866.0D + 100.0D);
+        resonance.setValue(Math.random());
 //     if (Math.random() > 0.66D)
 //       controlChange(39, (int)(64.0D + Math.random() * 63.0D));
 //     else {
@@ -154,10 +157,14 @@ public class BasslineSynthesizer
     }
 
     public void switchWaveform() {
-        if (this.osc.getWavetable() == WAVETABLE_SAW)
+        if (this.osc.getWavetable() == WAVETABLE_SAW) {
             this.osc.setWavetable(WAVETABLE_SQUARE);
-        else
+            Statics.waveSquare = true;
+        }
+        else {
             this.osc.setWavetable(WAVETABLE_SAW);
+            Statics.waveSquare=false;
+        }
     }
 
     public void close() {
