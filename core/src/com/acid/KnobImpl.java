@@ -11,7 +11,6 @@ import java.util.Arrays;
  */
 public class KnobImpl {
     static double[][] knobs = new double[16][8];
-    ;
 
     static {
         for (int i = 0; i < 16; i++) {
@@ -158,7 +157,14 @@ public class KnobImpl {
     }
 
     public static void setControl(int step, int id) {
-        knobs[step % 16][id] = getControls()[id];
+        if (Statics.free){
+            for (int i=0;i<16;i++){
+                knobs[i % 16][id] = getControls()[id];
+            }
+        }
+        else {
+            knobs[step % 16][id] = getControls()[id];
+        }
     }
 
     public static double[] getControl(int step) {

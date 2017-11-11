@@ -21,4 +21,5 @@ public class Statics {
 	public static Output output;
 
 	public static boolean recording=true;
+	public static boolean free=true;
 }

@@ -45,7 +45,7 @@ public class Acid implements ApplicationListener {
 
     private ArrayList<SequencerData> sequencerDataArrayList = new ArrayList<SequencerData>();
     private ArrayList<DrumData> drumDataArrayList = new ArrayList<DrumData>();
-    private ArrayList<double[][]> knobsArrayList = new ArrayList<double[][]>();
+    private ArrayList<KnobData> knobsArrayList = new ArrayList<KnobData>();
     private int songPosition = 0;
     private int maxSongPosition = 0;
     private int minSongPosition = 0;
@@ -53,9 +53,13 @@ public class Acid implements ApplicationListener {
     private Label songLengthLabel;
     private Label minSongLengthLabel;
     private Label stepLabel;
+
     private CurrentDrumActor currentDrumActor;
     private CurrentSequencerActor currentSequencerActor;
     private CurrentKnobsActor currentKnobsActor;
+    private Label minSongLengthCaption;
+    private Label songLengthCaption;
+    private Label maxSongLengthCaption;
 
     public Acid() {
     }
@@ -219,8 +223,8 @@ public class Acid implements ApplicationListener {
             @Override
             public void fling(InputEvent event, float velocityX, float velocityY, int button) {
                 System.out.println("swipe!! " + velocityX + ", " + velocityY);
-                if (velocityX>0)SequencerData.redo();
-                if (velocityX<0)SequencerData.undo();
+                if (velocityX > 0) SequencerData.redo();
+                if (velocityX < 0) SequencerData.undo();
             }
         });
         table.addActor(currentSequencerActor);
@@ -239,8 +243,8 @@ public class Acid implements ApplicationListener {
             @Override
             public void fling(InputEvent event, float velocityX, float velocityY, int button) {
                 System.out.println("swipe!! " + velocityX + ", " + velocityY);
-                if (velocityX>0)DrumData.redo();
-                if (velocityX<0)DrumData.undo();
+                if (velocityX > 0) DrumData.redo();
+                if (velocityX < 0) DrumData.undo();
             }
         });
 
@@ -258,11 +262,11 @@ public class Acid implements ApplicationListener {
             @Override
             public void fling(InputEvent event, float velocityX, float velocityY, int button) {
                 System.out.println("swipe!! " + velocityX + ", " + velocityY);
-                if (velocityX>0)KnobData.redo();
-                if (velocityX<0)KnobData.undo();
+                if (velocityX > 0) KnobData.redo();
+                if (velocityX < 0) KnobData.undo();
             }
         });
-       table.addActor(currentKnobsActor);
+        table.addActor(currentKnobsActor);
 //        final Touchpad touch1 = new Touchpad(0, skin);
 //        touch1.setBounds(15, 15, 100, 100);
 //        touch1.addListener(new ChangeListener() {
@@ -355,6 +359,12 @@ public class Acid implements ApplicationListener {
         minSongLengthLabel.setFontScale(1f);
         table.addActor(minSongLengthLabel);
 
+        minSongLengthCaption = new Label("Start", skin);
+        minSongLengthCaption.setPosition(166, 75);
+        minSongLengthCaption.setFontScale(.75f);
+        table.addActor(minSongLengthCaption);
+
+
         final TextButton nextMin = new TextButton(" > ", skin);
         table.addActor(nextMin);
         nextMin.setPosition(195, 95);
@@ -386,6 +396,11 @@ public class Acid implements ApplicationListener {
         songLengthLabel.setFontScale(1f);
         table.addActor(songLengthLabel);
 
+        songLengthCaption = new Label("Current", skin);
+        songLengthCaption.setPosition(266, 75);
+        songLengthCaption.setFontScale(.75f);
+        table.addActor(songLengthCaption);
+
         final TextButton next = new TextButton(" > ", skin);
         table.addActor(next);
         next.setPosition(305, 95);
@@ -416,6 +431,11 @@ public class Acid implements ApplicationListener {
         maxSongLengthLabel.setFontScale(1f);
         table.addActor(maxSongLengthLabel);
 
+        maxSongLengthCaption = new Label("End", skin);
+        maxSongLengthCaption.setPosition(394, 75);
+        maxSongLengthCaption.setFontScale(.75f);
+        table.addActor(maxSongLengthCaption);
+
         final TextButton nextMax = new TextButton(" > ", skin);
         table.addActor(nextMax);
         nextMax.setPosition(418, 95);
@@ -432,13 +452,28 @@ public class Acid implements ApplicationListener {
         recButton.setChecked(false);
         recButton.setColor(recButton.isChecked() ? Color.WHITE : Color.RED);
         table.addActor(recButton);
-        recButton.setPosition(30f, 95);
+        recButton.setPosition(60f, 95);
         recButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
 
                                      int pointer, int button) {
                 recButton.setColor(recButton.isChecked() ? Color.RED : Color.WHITE);
                 Statics.recording = recButton.isChecked();
+                return true;
+            }
+        });
+
+        final TextButton freeButton = new TextButton("Free", skin);
+        freeButton.setChecked(false);
+        freeButton.setColor(freeButton.isChecked() ? Color.WHITE : Color.RED);
+        table.addActor(freeButton);
+        freeButton.setPosition(15f, 95);
+        freeButton.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+
+                                     int pointer, int button) {
+                freeButton.setColor(freeButton.isChecked() ? Color.RED : Color.WHITE);
+                Statics.free = freeButton.isChecked();
                 return true;
             }
         });
@@ -476,7 +511,7 @@ public class Acid implements ApplicationListener {
         final TextButton pauseButton = new TextButton(" || ", skin);
         pauseButton.setChecked(true);
         table.addActor(pauseButton);
-        pauseButton.setPosition(85f, 95);
+        pauseButton.setPosition(100f, 95);
         pauseButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
 
@@ -489,7 +524,7 @@ public class Acid implements ApplicationListener {
 
         final TextButton waveButton = new TextButton(" ~ ", skin);
         table.addActor(waveButton);
-        waveButton.setPosition(130f, 465);
+        waveButton.setPosition(520f, 180);
         waveButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
@@ -664,21 +699,24 @@ public class Acid implements ApplicationListener {
 
     private void swapPattern(int curr, int next) {
         while (next >= sequencerDataArrayList.size()) {
-            sequencerDataArrayList.add(new SequencerData());
-            drumDataArrayList.add(new DrumData());
-            knobsArrayList.add(KnobImpl.knobs);
+            sequencerDataArrayList.add(SequencerData.currentSequence);
+            drumDataArrayList.add(DrumData.currentSequence);
+            knobsArrayList.add(KnobData.currentSequence);
         }
         if (Statics.recording) {
             sequencerDataArrayList.remove(curr);
             drumDataArrayList.remove(curr);
             knobsArrayList.remove(curr);
-            sequencerDataArrayList.add(curr, SequencerData.currentSequence);
-            drumDataArrayList.add(curr, DrumData.currentSequence);
-            knobsArrayList.add(curr, KnobImpl.knobs);
+            sequencerDataArrayList.add(curr, SequencerData.factory());
+            drumDataArrayList.add(curr, DrumData.factory());
+            knobsArrayList.add(curr, KnobData.factory());
         }
-        SequencerData.setcurrentSequence(sequencerDataArrayList.get(next));
-        DrumData.setcurrentSequence(drumDataArrayList.get(next));
-        if (!KnobImpl.isTouched()) KnobImpl.knobs = knobsArrayList.get(next);
+        if (!Statics.free) {
+            SequencerData.setcurrentSequence(sequencerDataArrayList.get(next));
+            DrumData.setcurrentSequence(drumDataArrayList.get(next));
+            if (!KnobImpl.isTouched()) KnobData.setcurrentSequence(knobsArrayList.get(next));
+
+        }
     }
 
     @Override
@@ -723,18 +761,22 @@ public class Acid implements ApplicationListener {
         if (KnobImpl.getControl(Statics.output.getSequencer().step) != null)
             for (int i = 0; i < 8; i++) {
                 if (!KnobImpl.touched[i]) {
-                    KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer().step)[i], i);
-                } else {
-                    if (Statics.recording) {
-                        KnobImpl.setControl(Statics.output.getSequencer().step, i);
+                    if (Statics.free) {
+
+                    } else {
+                        KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer().step)[i], i);
                     }
                 }
+                else if (Statics.recording) {
+                    KnobImpl.setControl(Statics.output.getSequencer().step, i);
+                }
+
             }
 //            KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer().step));
 
         if (Statics.output.getSequencer().step % 16 == 0 && prevStep % 16 == 15) {
             int old = songPosition;
-            songPosition++;
+            if (!Statics.free)songPosition++;
             if (songPosition > maxSongPosition) {
                 songPosition = minSongPosition;
             }
@@ -744,6 +786,11 @@ public class Acid implements ApplicationListener {
 
         BpmLabel.setColor(ColorHelper.rainbowLight());
         BpmLabel.setText((int) Statics.output.getSequencer().bpm + "");
+
+        minSongLengthCaption.setColor(ColorHelper.rainbowLight());
+        songLengthCaption.setColor(ColorHelper.rainbowLight());
+        maxSongLengthCaption.setColor(ColorHelper.rainbowLight());
+
         maxSongLengthLabel.setColor(ColorHelper.rainbowLight());
         maxSongLengthLabel.setText(format(maxSongPosition + 1));
         minSongLengthLabel.setColor(ColorHelper.rainbowLight());

@@ -19,7 +19,7 @@ public class SequencerData extends InstrumentData {
     private final boolean[] pause = new boolean[16];
     private final boolean[] slide = new boolean[16];
     private final boolean[] accent = new boolean[16];
-    public final SequencerData parent;
+    public SequencerData parent;
     public SequencerData child;
     public static SequencerData currentSequence;
 
@@ -33,12 +33,27 @@ public class SequencerData extends InstrumentData {
             accent[x1] = Statics.output.getSequencer().bassline.accent[x1];
         }
         System.out.println("copying synth " + this);
+
         this.parent = currentSequence;
         if (this.parent != null) this.parent.child = this;
         currentSequence = this;
         pixmap = drawPixmap(300, 300);
         region = new TextureRegion(new Texture(pixmap));
         region.flip(false, true);
+    }
+
+    public static SequencerData factory(){
+        if (currentSequence != null) {
+            boolean same = true;
+            for (int x1 = 0; x1 < 16; x1++) {
+                if (currentSequence.note[x1] != Statics.output.getSequencer().bassline.note[x1]) same = false;
+                if (currentSequence.pause[x1] != Statics.output.getSequencer().bassline.pause[x1]) same = false;
+                if (currentSequence.slide[x1] != Statics.output.getSequencer().bassline.slide[x1]) same = false;
+                if (currentSequence.accent[x1] != Statics.output.getSequencer().bassline.accent[x1]) same = false;
+            }
+            if (same)return currentSequence;
+        }
+        return new SequencerData();
     }
 
     public void refresh() {
@@ -60,8 +75,8 @@ public class SequencerData extends InstrumentData {
         return s;
     }
 
-    public static void setcurrentSequence(SequencerData sd){
-        if (sd!= null) {
+    public static void setcurrentSequence(SequencerData sd) {
+        if (sd != null) {
             currentSequence = sd;
             currentSequence.refresh();
         }

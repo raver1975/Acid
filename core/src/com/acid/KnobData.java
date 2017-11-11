@@ -14,20 +14,20 @@ import com.badlogic.gdx.utils.ScreenUtils;
  * Created by Paul on 1/10/2017.
  */
 public class KnobData extends InstrumentData {
-    private double[][] knobs = new double[16][8];
-    public final KnobData parent;
+    double[][] knobs = new double[16][8];
+    public KnobData parent;
     public KnobData child;
     public static KnobData currentSequence;
 
 
     public KnobData() {
-
-       for (int i=0;i<16;i++){
-           for (int j=0;j<8;j++){
-               knobs[i][j]=KnobImpl.knobs[i][j];
-           }
-       }
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 8; j++) {
+                knobs[i][j] = KnobImpl.knobs[i][j];
+            }
+        }
         System.out.println("copying knobs " + this);
+
         this.parent = currentSequence;
         if (this.parent != null) this.parent.child = this;
         currentSequence = this;
@@ -36,10 +36,23 @@ public class KnobData extends InstrumentData {
         region.flip(false, true);
     }
 
+    public static  KnobData factory(){
+        if (currentSequence != null) {
+            boolean same = true;
+            for (int i = 0; i < 16; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (currentSequence.knobs[i][j] != KnobImpl.knobs[i][j]) same = false;
+                }
+            }
+            if (same)return currentSequence;
+        }
+        return new KnobData();
+    }
+
     public void refresh() {
-        for (int i=0;i<16;i++){
-            for (int j=0;j<8;j++){
-                knobs[i][j]=KnobImpl.knobs[i][j];
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 8; j++) {
+                KnobImpl.knobs[i][j] = knobs[i][j];
             }
         }
         System.out.println("restoring knobs " + this);
@@ -48,16 +61,16 @@ public class KnobData extends InstrumentData {
     @Override
     public String toString() {
         String s = "";
-        for (int i=0;i<16;i++){
-            for (int j=0;j<8;j++){
-                s+=knobs[i][j]+" ";
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 8; j++) {
+                s += knobs[i][j] + " ";
             }
         }
         return s;
     }
 
-    public static void setcurrentSequence(KnobData sd){
-        if (sd!= null) {
+    public static void setcurrentSequence(KnobData sd) {
+        if (sd != null) {
             currentSequence = sd;
             currentSequence.refresh();
         }
@@ -101,10 +114,13 @@ public class KnobData extends InstrumentData {
 
     public void render(ShapeRenderer renderer1, float skipx, float skipy) {
         renderer1.begin(ShapeRenderer.ShapeType.Filled);
-        for (int i=0;i<16;i++){
-            for (int j=0;j<6;j++){
-                renderer1.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(j,(float)KnobImpl.getRotation(j,knobs[i][j]))));
-                renderer1.rect(skipx*i,skipy*j,skipx,skipy);
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 6; j++) {
+                if (j != 4)
+                    renderer1.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(j, (float) KnobImpl.getRotation(j, knobs[i][j]))));
+                else
+                    renderer1.setColor(ColorHelper.numberToColorPercentage(1f - KnobImpl.percent(j, (float) KnobImpl.getRotation(j, knobs[i][j]))));
+                renderer1.rect(skipx * i, skipy * j, skipx, skipy);
             }
         }
         renderer1.end();
