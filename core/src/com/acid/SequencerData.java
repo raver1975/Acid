@@ -109,7 +109,7 @@ public class SequencerData extends InstrumentData {
         render(renderer, skipx, skipy);
         Pixmap pixmap1 = ScreenUtils.getFrameBufferPixmap(0, 0, w, h);
         Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.RED);
+        pixmap.setColor(ColorHelper.rainbowInverse());
         pixmap.fill();
         pixmap.drawPixmap(pixmap1, 0, 0);
         drawBuffer.end();
@@ -125,9 +125,10 @@ public class SequencerData extends InstrumentData {
                 continue;
             }
             if (Statics.output.getSequencer().bassline.accent[i]) {
-                renderer1.setColor(Color.RED);
+                renderer1.setColor(ColorHelper.rainbowInverse());
             } else {
-                renderer1.setColor(Color.YELLOW);
+                
+                renderer1.setColor(ColorHelper.rainbowLight());
             }
             if (Statics.output.getSequencer().bassline.slide[i]) {
                 if (i < 15) {
@@ -164,12 +165,12 @@ public class SequencerData extends InstrumentData {
                 continue;
             }
             if (Statics.output.getSequencer().bassline.accent[i]) {
-                renderer1.setColor(Color.RED);
+                renderer1.setColor(ColorHelper.rainbowInverse());
             } else {
-                renderer1.setColor(Color.YELLOW);
+                renderer1.setColor(ColorHelper.rainbowLight());
             }
 
-            if (Statics.output.getSequencer().bassline.slide[i]) {
+            if (Statics.output.getSequencer().bassline.accent[i]) {
 //                    if (i==0||!Statics.output.getSequencer().bassline.slide[i-1])
                 float cx = Math.min(skipx, skipy);
                 renderer1
