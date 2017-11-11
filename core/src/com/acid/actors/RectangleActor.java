@@ -14,16 +14,16 @@ public class RectangleActor extends Actor {
     TextureRegion region;
 
     public RectangleActor(int w, int h) {
-    this(w,h,false);
+        this(w, h, false);
     }
 
 
-    public RectangleActor(int w, int h,boolean debug) {
-        this.w=w;
-        this.h=h;
+    public RectangleActor(int w, int h, boolean debug) {
+        this.w = w;
+        this.h = h;
         this.setWidth(w);
         this.setHeight(h);
-        Pixmap pm=new Pixmap(w,h, Pixmap.Format.RGBA8888);
+        Pixmap pm = new Pixmap(w, h, Pixmap.Format.RGBA8888);
         pm.setColor(Color.CLEAR);
         pm.fill();
         if (debug) {
@@ -32,7 +32,7 @@ public class RectangleActor extends Actor {
                 pm.drawRectangle(i, i, w - i * 2, h - i * 2);
             }
         }
-        region=new TextureRegion(new Texture(pm));
+        region = new TextureRegion(new Texture(pm));
     }
 
 
@@ -41,8 +41,9 @@ public class RectangleActor extends Actor {
         Color color = getColor();
 //        if (region!=null)System.out.println(region.getRegionWidth()+","+region.getRegionHeight()+"\t"+getWidth()+","+getHeight()+"\t"+getScaleX()+":"+getScaleY());
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-        if (DrumData.currentSequence.region!=null)batch.draw(region, getX(), getY(), getOriginX(), getOriginY(),
-                getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+        if (DrumData.peekStack() != null && DrumData.peekStack().region != null)
+            batch.draw(region, getX(), getY(), getOriginX(), getOriginY(),
+                    getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
     }
 
 }

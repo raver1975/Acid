@@ -10,13 +10,13 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.util.Stack;
+
 /**
  * Created by Paul on 1/10/2017.
  */
 public class KnobData extends InstrumentData {
     double[][] knobs = new double[16][8];
-    public KnobData parent;
-    public KnobData child;
     public static KnobData currentSequence;
 
 
@@ -28,8 +28,6 @@ public class KnobData extends InstrumentData {
         }
         System.out.println("copying knobs " + this);
 
-        this.parent = currentSequence;
-        if (this.parent != null) this.parent.child = this;
         currentSequence = this;
         pixmap = drawPixmap(300, 300);
         region = new TextureRegion(new Texture(pixmap));
@@ -72,20 +70,6 @@ public class KnobData extends InstrumentData {
     public static void setcurrentSequence(KnobData sd) {
         if (sd != null) {
             currentSequence = sd;
-            currentSequence.refresh();
-        }
-    }
-
-    public static void undo() {
-        if (currentSequence != null && currentSequence.parent != null) {
-            currentSequence = currentSequence.parent;
-            currentSequence.refresh();
-        }
-    }
-
-    public static void redo() {
-        if (currentSequence != null && currentSequence.child != null) {
-            currentSequence = currentSequence.child;
             currentSequence.refresh();
         }
     }

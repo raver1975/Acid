@@ -24,8 +24,8 @@ public class CurrentDrumActor extends Actor {
         Color color = getColor();
 //        if (region!=null)System.out.println(region.getRegionWidth()+","+region.getRegionHeight()+"\t"+getWidth()+","+getHeight()+"\t"+getScaleX()+":"+getScaleY());
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-        if (DrumData.currentSequence.region != null)
-            batch.draw(DrumData.currentSequence.region, getX(), getY(), getOriginX(), getOriginY(),
+        if (DrumData.peekStack()!=null && DrumData.peekStack().region != null)
+            batch.draw(DrumData.peekStack().region, getX(), getY(), getOriginX(), getOriginY(),
                     getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
     }
 

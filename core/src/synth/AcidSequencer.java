@@ -24,11 +24,14 @@ public class AcidSequencer {
         this.bass = bass;
         this.drums = drums;
 
-        randomize();
+        randomizeRhythm();
+        randomizeSequence();
     }
 
-    public void randomize() {
+    public void randomizeRhythm(){
         this.rhythm = createRhythm(this.patternLength);
+    }
+    public void randomizeSequence() {
 //        if (!Statics.drumsSelected) {
             double[] basicCoeffs = {0.5D, 0.5D, 0.5D, 0.5D};
             double[] bassCoeffs = new double[16];

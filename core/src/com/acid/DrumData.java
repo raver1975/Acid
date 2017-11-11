@@ -10,14 +10,13 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.util.Stack;
+
 /**
  * Created by Paul on 1/10/2017.
  */
 public class DrumData extends InstrumentData {
     private final int[][] rhythm = new int[7][16];
-    public final DrumData parent;
-    public DrumData child;
-    public static DrumData currentSequence;
 
     public DrumData() {
         for (int y1 = 0; y1 < 7; y1++) {
@@ -26,32 +25,29 @@ public class DrumData extends InstrumentData {
             }
         }
         System.out.println("copying drums " + this);
-        this.parent = currentSequence;
-        if (this.parent != null) this.parent.child = this;
-        currentSequence = this;
         pixmap = drawPixmap(300, 300);
         region = new TextureRegion(new Texture(pixmap));
         region.flip(false, true);
     }
 
-    public static DrumData factory(){
-        if (currentSequence!=null) {
-            boolean same = true;
-            top:
-            for (int y1 = 0; y1 < 7; y1++) {
-                for (int x1 = 0; x1 < 16; x1++) {
-                    if (currentSequence.rhythm[y1][x1] != Statics.output.getSequencer().rhythm[y1][x1]) {
-                        same = false;
-                        break top;
-                    }
-                    ;
-                }
-            }
-
-            if (same) return currentSequence;
-        }
-        return new DrumData();
-    }
+//    public static DrumData factory(){
+//        if (currentSequence!=null) {
+//            boolean same = true;
+//            top:
+//            for (int y1 = 0; y1 < 7; y1++) {
+//                for (int x1 = 0; x1 < 16; x1++) {
+//                    if (currentSequence.rhythm[y1][x1] != Statics.output.getSequencer().rhythm[y1][x1]) {
+//                        same = false;
+//                        break top;
+//                    }
+//                    ;
+//                }
+//            }
+//
+//            if (same) return currentSequence;
+//        }
+//        return new DrumData();
+//    }
 
     public void refresh() {
         for (int y1 = 0; y1 < 7; y1++) {
@@ -76,27 +72,6 @@ public class DrumData extends InstrumentData {
             s += " ";
         }
         return s;
-    }
-
-    public static void setcurrentSequence(DrumData sd){
-        if (sd!= null) {
-            currentSequence = sd;
-            currentSequence.refresh();
-        }
-    }
-
-    public static void undo() {
-        if (currentSequence != null && currentSequence.parent != null) {
-            currentSequence = currentSequence.parent;
-            currentSequence.refresh();
-        }
-    }
-
-    public static void redo() {
-        if (currentSequence != null && currentSequence.child != null) {
-            currentSequence = currentSequence.child;
-            currentSequence.refresh();
-        }
     }
 
     public Pixmap drawPixmap(int w, int h) {
@@ -137,4 +112,23 @@ public class DrumData extends InstrumentData {
         }
         renderer1.end();
     }
+
+    static Stack<DrumData> sequences = new Stack<DrumData>();
+
+    public static DrumData peekStack() {
+        if (sequences.empty()) return null;
+        DrumData peek = sequences.peek();
+        return peek;
+    }
+
+    public static DrumData popStack() {
+        if (sequences.empty()) return null;
+        return sequences.pop();
+    }
+
+    public static void pushStack(DrumData sd) {
+        sequences.push(sd);
+    }
+
+
 }

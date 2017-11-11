@@ -73,10 +73,9 @@ public class Acid implements ApplicationListener {
         Statics.renderer = new ShapeRenderer();
         Statics.output = new Output();
         Statics.output.getSequencer().setBpm(120);
-        Statics.output.getSequencer().randomize();
+        Statics.output.getSequencer().randomizeRhythm();
         drumsSelected = false;
-        Statics.output.getSequencer().randomize();
-
+        Statics.output.getSequencer().randomizeSequence();
 
         InputMultiplexer mult = new InputMultiplexer();
         GestureListener gl = new GestureListener() {
@@ -146,22 +145,6 @@ public class Acid implements ApplicationListener {
 
             @Override
             public boolean keyTyped(char character) {
-                if (character == 'z') {
-                    SequencerData.undo();
-                }
-
-                if (character == 'a') {
-                    SequencerData.redo();
-                }
-
-
-                if (character == 's') {
-                    DrumData.undo();
-                }
-
-                if (character == 'x') {
-                    DrumData.redo();
-                }
                 return true;
             }
 
@@ -215,43 +198,88 @@ public class Acid implements ApplicationListener {
         currentSequencerActor.setPosition(20, 295);
         currentSequencerActor.addListener(new ActorGestureListener() {
 
-            //@Override
-            //public void tap(InputEvent event,float stageX, float stageY, int count, int button){
-            //    SequencerData.undo();
-            //}
-
             @Override
-            public void fling(InputEvent event, float velocityX, float velocityY, int button) {
-                System.out.println("swipe!! " + velocityX + ", " + velocityY);
-                if (velocityX > 0) SequencerData.redo();
-                if (velocityX < 0) SequencerData.undo();
+            public void tap(InputEvent event, float stageX, float stageY, int count, int button) {
+//                SequencerData.undo();
+                SequencerData.popStack();
             }
+
+//            @Override
+//            public void fling(InputEvent event, float velocityX, float velocityY, int button) {
+//                System.out.println("swipe!! " + velocityX + ", " + velocityY);
+//                if (velocityX > 0) SequencerData.redo();
+//                if (velocityX < 0) SequencerData.popStack();
+//            }
         });
         table.addActor(currentSequencerActor);
+
+
+        TextButton pushtoSequencer = new TextButton(" > ", skin);
+        pushtoSequencer.setPosition(100, 305);
+        table.addActor(pushtoSequencer);
+        pushtoSequencer.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+//                SequencerData.undo();
+                if (SequencerData.peekStack() != null) SequencerData.popStack().refresh();
+                return true;
+            }
+        });
+        TextButton popFromSequencer = new TextButton(" < ", skin);
+        popFromSequencer.setPosition(100, 360);
+        table.addActor(popFromSequencer);
+        popFromSequencer.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                SequencerData.pushStack(new SequencerData());
+                return true;
+            }
+        });
 
         currentDrumActor = new CurrentDrumActor(100, 100);
         currentDrumActor.setPosition(20, 185);
         currentDrumActor.addListener(new ActorGestureListener() {
 
-//            @Override
-//            public void tap(InputEvent event,float stageX, float stageY, int count, int button){
-//                DrumData.undo();
-//                drumDataArrayList.remove(songPosition);
-//                drumDataArrayList.add(songPosition,DrumData.currentSequence);
-//            }
-
             @Override
-            public void fling(InputEvent event, float velocityX, float velocityY, int button) {
-                System.out.println("swipe!! " + velocityX + ", " + velocityY);
-                if (velocityX > 0) DrumData.redo();
-                if (velocityX < 0) DrumData.undo();
+            public void tap(InputEvent event, float stageX, float stageY, int count, int button) {
+                DrumData.popStack();
             }
+//
+//            @Override
+//            public void fling(InputEvent event, float velocityX, float velocityY, int button) {
+//                System.out.println("swipe!! " + velocityX + ", " + velocityY);
+//                if (velocityX > 0) DrumData.redo();
+//                if (velocityX < 0) DrumData.popStack();
+//            }
         });
 
         table.addActor(currentDrumActor);
 
-        currentKnobsActor = new CurrentKnobsActor(80, 70);
-        currentKnobsActor.setPosition(460, 100);
+        TextButton pushtoDrum = new TextButton(" > ", skin);
+        pushtoDrum.setPosition(100, 195);
+        table.addActor(pushtoDrum);
+        pushtoDrum.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+//                SequencerData.undo();
+                if (DrumData.peekStack() != null) DrumData.popStack().refresh();
+                return true;
+            }
+        });
+        TextButton popFromDrum = new TextButton(" < ", skin);
+        popFromDrum.setPosition(100, 250);
+        table.addActor(popFromDrum);
+        popFromDrum.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                DrumData.pushStack(new DrumData());
+                return true;
+            }
+        });
+
+
+        currentKnobsActor = new CurrentKnobsActor(90, 70);
+        currentKnobsActor.setPosition(450, 100);
         currentKnobsActor.addListener(new ActorGestureListener() {
 
 //            @Override
@@ -262,8 +290,8 @@ public class Acid implements ApplicationListener {
             @Override
             public void fling(InputEvent event, float velocityX, float velocityY, int button) {
                 System.out.println("swipe!! " + velocityX + ", " + velocityY);
-                if (velocityX > 0) KnobData.redo();
-                if (velocityX < 0) KnobData.undo();
+//                if (velocityX > 0) KnobData.redo();
+//                if (velocityX < 0) KnobData.undo();
             }
         });
         table.addActor(currentKnobsActor);
@@ -384,7 +412,7 @@ public class Acid implements ApplicationListener {
         prev.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                if (songPosition > 0) {
+                if (songPosition > minSongPosition) {
                     swapPattern(songPosition, --songPosition);
                 }
                 return true;
@@ -561,11 +589,13 @@ public class Acid implements ApplicationListener {
         randomButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                Statics.output.getSequencer().randomize();
+
                 if (drumsSelected) {
+                    Statics.output.getSequencer().randomizeRhythm();
                     new DrumData();
                 } else {
-                    new SequencerData();
+                    Statics.output.getSequencer().randomizeSequence();
+                    //new SequencerData();
                 }
                 return true;
             }
@@ -691,29 +721,29 @@ public class Acid implements ApplicationListener {
         });
 
 
-        new SequencerData();
-        new DrumData();
+        SequencerData.pushStack(new SequencerData());
+        DrumData.pushStack(new DrumData());
         new KnobData();
         newZoom += .10f;
     }
 
     private void swapPattern(int curr, int next) {
         while (next >= sequencerDataArrayList.size()) {
-            sequencerDataArrayList.add(SequencerData.currentSequence);
-            drumDataArrayList.add(DrumData.currentSequence);
+            sequencerDataArrayList.add(new SequencerData());
+            drumDataArrayList.add(new DrumData());
             knobsArrayList.add(KnobData.currentSequence);
         }
         if (Statics.recording) {
             sequencerDataArrayList.remove(curr);
             drumDataArrayList.remove(curr);
             knobsArrayList.remove(curr);
-            sequencerDataArrayList.add(curr, SequencerData.factory());
-            drumDataArrayList.add(curr, DrumData.factory());
+            sequencerDataArrayList.add(curr, new SequencerData());
+            drumDataArrayList.add(curr, new DrumData());
             knobsArrayList.add(curr, KnobData.factory());
         }
         if (!Statics.free) {
-            SequencerData.setcurrentSequence(sequencerDataArrayList.get(next));
-            DrumData.setcurrentSequence(drumDataArrayList.get(next));
+            sequencerDataArrayList.get(next).refresh();
+            drumDataArrayList.get(next).refresh();
             if (!KnobImpl.isTouched()) KnobData.setcurrentSequence(knobsArrayList.get(next));
 
         }
@@ -738,7 +768,7 @@ public class Acid implements ApplicationListener {
         if (Statics.mutateSynth & Math.random() < .01d) {
             sequenceMatrix.ttouch((int) (MathUtils.random() * 16),
                     (int) (MathUtils.random() * 31) - 16);
-            new SequencerData();
+            //new SequencerData();
         }
 
         // mya.rotate(10);
@@ -766,9 +796,11 @@ public class Acid implements ApplicationListener {
                     } else {
                         KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer().step)[i], i);
                     }
-                }
-                else if (Statics.recording) {
-                    KnobImpl.setControl(Statics.output.getSequencer().step, i);
+                } else {
+                    new KnobData();
+                    if (Statics.recording) {
+                        KnobImpl.setControl(Statics.output.getSequencer().step, i);
+                    }
                 }
 
             }
@@ -776,7 +808,7 @@ public class Acid implements ApplicationListener {
 
         if (Statics.output.getSequencer().step % 16 == 0 && prevStep % 16 == 15) {
             int old = songPosition;
-            if (!Statics.free)songPosition++;
+            if (!Statics.free) songPosition++;
             if (songPosition > maxSongPosition) {
                 songPosition = minSongPosition;
             }

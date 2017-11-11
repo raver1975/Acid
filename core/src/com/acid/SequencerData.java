@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import synth.Sequencer;
 
+import java.util.ArrayList;
+import java.util.Stack;
+
 /**
  * Created by Paul on 1/10/2017.
  */
@@ -19,9 +22,9 @@ public class SequencerData extends InstrumentData {
     private final boolean[] pause = new boolean[16];
     private final boolean[] slide = new boolean[16];
     private final boolean[] accent = new boolean[16];
-    public SequencerData parent;
-    public SequencerData child;
-    public static SequencerData currentSequence;
+//    public SequencerData parent;
+//    public SequencerData child;
+//    public static SequencerData currentSequence;
 
 
     public SequencerData() {
@@ -34,27 +37,27 @@ public class SequencerData extends InstrumentData {
         }
         System.out.println("copying synth " + this);
 
-        this.parent = currentSequence;
-        if (this.parent != null) this.parent.child = this;
-        currentSequence = this;
+//        this.parent = currentSequence;
+//        if (this.parent != null) this.parent.child = this;
+//        currentSequence = this;
         pixmap = drawPixmap(300, 300);
         region = new TextureRegion(new Texture(pixmap));
         region.flip(false, true);
     }
 
-    public static SequencerData factory(){
-        if (currentSequence != null) {
-            boolean same = true;
-            for (int x1 = 0; x1 < 16; x1++) {
-                if (currentSequence.note[x1] != Statics.output.getSequencer().bassline.note[x1]) same = false;
-                if (currentSequence.pause[x1] != Statics.output.getSequencer().bassline.pause[x1]) same = false;
-                if (currentSequence.slide[x1] != Statics.output.getSequencer().bassline.slide[x1]) same = false;
-                if (currentSequence.accent[x1] != Statics.output.getSequencer().bassline.accent[x1]) same = false;
-            }
-            if (same)return currentSequence;
-        }
-        return new SequencerData();
-    }
+//    public static SequencerData factory(){
+//        if (currentSequence != null) {
+//            boolean same = true;
+//            for (int x1 = 0; x1 < 16; x1++) {
+//                if (currentSequence.note[x1] != Statics.output.getSequencer().bassline.note[x1]) same = false;
+//                if (currentSequence.pause[x1] != Statics.output.getSequencer().bassline.pause[x1]) same = false;
+//                if (currentSequence.slide[x1] != Statics.output.getSequencer().bassline.slide[x1]) same = false;
+//                if (currentSequence.accent[x1] != Statics.output.getSequencer().bassline.accent[x1]) same = false;
+//            }
+//            if (same)return currentSequence;
+//        }
+//        return new SequencerData();
+//    }
 
     public void refresh() {
         for (int x1 = 0; x1 < 16; x1++) {
@@ -73,27 +76,6 @@ public class SequencerData extends InstrumentData {
             s += note[i] + (pause[i] ? "p" : "") + (slide[i] ? "s" : "") + (accent[i] ? "a" : "") + " ";
         }
         return s;
-    }
-
-    public static void setcurrentSequence(SequencerData sd) {
-        if (sd != null) {
-            currentSequence = sd;
-            currentSequence.refresh();
-        }
-    }
-
-    public static void undo() {
-        if (currentSequence != null && currentSequence.parent != null) {
-            currentSequence = currentSequence.parent;
-            currentSequence.refresh();
-        }
-    }
-
-    public static void redo() {
-        if (currentSequence != null && currentSequence.child != null) {
-            currentSequence = currentSequence.child;
-            currentSequence.refresh();
-        }
     }
 
     public Pixmap drawPixmap(int w, int h) {
@@ -127,7 +109,7 @@ public class SequencerData extends InstrumentData {
             if (Statics.output.getSequencer().bassline.accent[i]) {
                 renderer1.setColor(ColorHelper.rainbowInverse());
             } else {
-                
+
                 renderer1.setColor(ColorHelper.rainbowLight());
             }
             if (Statics.output.getSequencer().bassline.slide[i]) {
@@ -187,4 +169,22 @@ public class SequencerData extends InstrumentData {
         }
         renderer1.end();
     }
+
+    static Stack<SequencerData> sequences = new Stack<SequencerData>();
+
+    public static SequencerData peekStack() {
+        if (sequences.empty()) return null;
+        SequencerData peek = sequences.peek();
+        return peek;
+    }
+
+    public static SequencerData popStack() {
+        if (sequences.empty()) return null;
+        return sequences.pop();
+    }
+
+    public static void pushStack(SequencerData sd) {
+        sequences.push(sd);
+    }
+
 }

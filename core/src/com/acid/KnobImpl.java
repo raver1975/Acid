@@ -108,7 +108,6 @@ public class KnobImpl {
 
     //    public static int[] knobVals=new int[8];
     public static void touchDragged(int id, float offset) {
-
         int cc = (int) (127f / 2f - offset);
 
         switch (id) {
@@ -154,6 +153,7 @@ public class KnobImpl {
 //        System.out.println(Arrays.toString(knobVals));
 //        Statics.synth.
         System.out.println(Arrays.toString(getControls()));
+        new KnobData();
     }
 
     public static void setControl(int step, int id) {
@@ -268,5 +268,6 @@ public class KnobImpl {
 
     public static void touchDown(int id) {
         touched[id] = true;
+        new KnobData();
     }
 }
