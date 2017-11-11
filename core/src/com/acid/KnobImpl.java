@@ -46,7 +46,7 @@ public class KnobImpl {
                 break;
 
             case 4:
-                rotation = (float) ((val * Gdx.graphics.getWidth()) / 20.0f) - 100f;
+                rotation = (float) ((20-val) * 32.0f) - 100f;
                 break;
 
             case 5:
@@ -89,7 +89,7 @@ public class KnobImpl {
 
             case 4:
                 rotation = (float) ((((20 - ((BasslineSynthesizer) Statics.output
-                        .getTrack(0)).decay)) * Gdx.graphics.getWidth()) / 20.0f) - 100f;
+                        .getTrack(0)).decay))* 640) / 20.0f) - 100f;
                 break;
 
             case 5:

@@ -113,7 +113,7 @@ public class Acid implements ApplicationListener {
 
             @Override
             public boolean zoom(float initialDistance, float distance) {
-                newZoom = initialDistance / distance;
+                newZoom = (Math.abs(distance-initialDistance))/distance;
 //				((OrthographicCamera) stage.getCamera()).zoom =initialDistance/distance;
                 return true;
             }
@@ -221,7 +221,7 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
 //                SequencerData.undo();
-                if (SequencerData.peekStack() != null) SequencerData.popStack().refresh();
+                if (SequencerData.peekStack() != null) SequencerData.peekStack().refresh();
                 return true;
             }
         });
@@ -262,7 +262,7 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
 //                SequencerData.undo();
-                if (DrumData.peekStack() != null) DrumData.popStack().refresh();
+                if (DrumData.peekStack() != null) DrumData.peekStack().refresh();
                 return true;
             }
         });
@@ -279,7 +279,7 @@ public class Acid implements ApplicationListener {
 
 
         currentKnobsActor = new CurrentKnobsActor(90, 70);
-        currentKnobsActor.setPosition(450, 100);
+        currentKnobsActor.setPosition(455, 100);
         currentKnobsActor.addListener(new ActorGestureListener() {
 
 //            @Override

@@ -34,7 +34,7 @@ public class KnobData extends InstrumentData {
         region.flip(false, true);
     }
 
-    public static  KnobData factory(){
+    public static KnobData factory() {
         if (currentSequence != null) {
             boolean same = true;
             for (int i = 0; i < 16; i++) {
@@ -42,7 +42,7 @@ public class KnobData extends InstrumentData {
                     if (currentSequence.knobs[i][j] != KnobImpl.knobs[i][j]) same = false;
                 }
             }
-            if (same)return currentSequence;
+            if (same) return currentSequence;
         }
         return new KnobData();
     }
@@ -100,10 +100,7 @@ public class KnobData extends InstrumentData {
         renderer1.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 6; j++) {
-                if (j != 4)
-                    renderer1.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(j, (float) KnobImpl.getRotation(j, knobs[i][j]))));
-                else
-                    renderer1.setColor(ColorHelper.numberToColorPercentage(1f - KnobImpl.percent(j, (float) KnobImpl.getRotation(j, knobs[i][j]))));
+                renderer1.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(j, (float) KnobImpl.getRotation(j, knobs[i][j]))));
                 renderer1.rect(skipx * i, skipy * j, skipx, skipy);
             }
         }
