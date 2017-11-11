@@ -109,14 +109,14 @@ public class SequenceActor extends Actor {
         Statics.renderer.end();
 
         Statics.renderer.begin(ShapeType.Line);
-        Statics.renderer.setColor(ColorHelper.rainbow());
+        Statics.renderer.setColor(ColorHelper.rainbowInverse());
         Statics.renderer.line(
                 (Statics.output.getSequencer().step) % 16 * skipx, 0,
                 (Statics.output.getSequencer().step) % 16 * skipx, getHeight());
         Statics.renderer.end();
 
         Statics.renderer.begin(ShapeType.Line);
-        Statics.renderer.setColor(ColorHelper.rainbow());
+        Statics.renderer.setColor(ColorHelper.rainbowInverse());
         Statics.renderer.rect(0, 0, this.getWidth(), this.getHeight());
         Statics.renderer.end();
         SequencerData.render(Statics.renderer, skipx, skipy);

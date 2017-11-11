@@ -81,12 +81,21 @@ public class DrumData extends InstrumentData {
         Gdx.gl.glClearColor(c.r, c.g, c.b, c.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
         ShapeRenderer renderer = new ShapeRenderer();
+
+
         renderer.getProjectionMatrix().setToOrtho2D(0, 0, w, h);
 
 
         float skipx = ((float) w / 16f);
         float skipy = (float) h / 7f;
         render(renderer, skipx, skipy);
+        renderer.begin(ShapeRenderer.ShapeType.Line);
+        renderer.setColor(ColorHelper.rainbowInverse());
+        for (int i=0;i<5;i++) {
+            renderer.rect(i, i, w-i*2, h-i*2);
+        }
+        renderer.end();
+
         Pixmap pixmap1 = ScreenUtils.getFrameBufferPixmap(0, 0, w, h);
         Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.RED);

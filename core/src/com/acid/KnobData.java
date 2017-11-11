@@ -53,6 +53,7 @@ public class KnobData extends InstrumentData {
                 KnobImpl.knobs[i][j] = knobs[i][j];
             }
         }
+        new KnobData();
         System.out.println("restoring knobs " + this);
     }
 
@@ -106,4 +107,22 @@ public class KnobData extends InstrumentData {
         }
         renderer1.end();
     }
+
+    static Stack<KnobData> sequences = new Stack<KnobData>();
+
+    public static KnobData peekStack() {
+        if (sequences.empty()) return null;
+        KnobData peek = sequences.peek();
+        return peek;
+    }
+
+    public static KnobData popStack() {
+        if (sequences.empty()) return null;
+        return sequences.pop();
+    }
+
+    public static void pushStack(KnobData sd) {
+        sequences.push(sd);
+    }
+
 }
