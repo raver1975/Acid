@@ -53,6 +53,7 @@ public class KnobData extends InstrumentData {
                 KnobImpl.knobs[i][j] = knobs[i][j];
             }
         }
+        KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer().step));
         new KnobData();
         System.out.println("restoring knobs " + this);
     }

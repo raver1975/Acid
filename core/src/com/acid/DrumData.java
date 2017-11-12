@@ -15,7 +15,7 @@ import java.util.Stack;
 /**
  * Created by Paul on 1/10/2017.
  */
-public class DrumData extends InstrumentData {
+public class DrumData extends InstrumentData  {
     private final int[][] rhythm = new int[7][16];
 
     public DrumData() {
