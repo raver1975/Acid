@@ -115,7 +115,7 @@ public class Acid implements ApplicationListener {
 
             @Override
             public boolean zoom(float initialDistance, float distance) {
-                newZoom = (initialDistance / distance) * newZoom;
+                newZoom = (initialDistance / distance) * ((OrthographicCamera) stage.getCamera()).zoom;
                 //                newZoom = (Math.abs(distance-initialDistance))/distance;
 //				((OrthographicCamera) stage.getCamera()).zoom =initialDistance/distance;
                 return true;
@@ -128,7 +128,7 @@ public class Acid implements ApplicationListener {
 
             @Override
             public void pinchStop() {
-
+                newZoom=((OrthographicCamera) stage.getCamera()).zoom;
             }
         };
         GestureDetector gd = new GestureDetector(gl);
@@ -260,13 +260,13 @@ public class Acid implements ApplicationListener {
 
         selectSongList = new SelectBox<String>(skin);
         selectSongList.setPosition(130, 465);
-        selectSongList.setSize(150, 30);
+        selectSongList.setSize(170, 30);
         selectSongList.setZIndex(0);
         table.addActor(selectSongList);
         selectSongList.setItems(new Array<String>(fileList.toArray(new String[]{})));
 
         TextButton saveSongButton = new TextButton("Save", skin);
-        saveSongButton.setPosition(285, 465);
+        saveSongButton.setPosition(305, 465);
         table.addActor(saveSongButton);
         saveSongButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
@@ -292,7 +292,7 @@ public class Acid implements ApplicationListener {
         });
 
         TextButton loadSongButton = new TextButton("Load", skin);
-        loadSongButton.setPosition(330, 465);
+        loadSongButton.setPosition(350, 465);
         table.addActor(loadSongButton);
         loadSongButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
@@ -312,6 +312,9 @@ public class Acid implements ApplicationListener {
                                 Statics.output.getSequencer().randomizeRhythm();
                                 Statics.output.getSequencer().bass.randomize();
                                 Statics.output.getSequencer().randomizeSequence();
+                                maxSongPosition=0;
+                                minSongPosition=0;
+                                songPosition=0;
                                 KnobImpl.refill();
 
                             }
@@ -347,7 +350,7 @@ public class Acid implements ApplicationListener {
 
 
         TextButton deleteSongButton = new TextButton("Delete", skin);
-        deleteSongButton.setPosition(375, 465);
+        deleteSongButton.setPosition(395, 465);
         table.addActor(deleteSongButton);
         deleteSongButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
@@ -933,7 +936,7 @@ public class Acid implements ApplicationListener {
         if (!fileList.contains(name)) {
             fileList.add(name);
         } else {
-            Dialog dialog = new Dialog("This song exists, overwrite?", skin) {
+            Dialog dialog = new Dialog("Overwrite "+name+"?", skin) {
 
                 @Override
                 protected void result(Object object) {
@@ -990,9 +993,9 @@ public class Acid implements ApplicationListener {
             knobsArrayList.add(KnobData.currentSequence);
         }
         if (Statics.recording) {
-            sequencerDataArrayList.remove(curr);
-            drumDataArrayList.remove(curr);
-            knobsArrayList.remove(curr);
+            if (sequencerDataArrayList.size()>curr)sequencerDataArrayList.remove(curr);
+            if (drumDataArrayList.size()>curr)drumDataArrayList.remove(curr);
+            if (knobsArrayList.size()>curr)knobsArrayList.remove(curr);
             sequencerDataArrayList.add(curr, new SequencerData());
             drumDataArrayList.add(curr, new DrumData());
             knobsArrayList.add(curr, KnobData.factory());
@@ -1023,9 +1026,9 @@ public class Acid implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
         if (newZoom < ((OrthographicCamera) stage.getCamera()).zoom)
-            ((OrthographicCamera) stage.getCamera()).zoom -= .02f;
+            ((OrthographicCamera) stage.getCamera()).zoom -= .005f;
         if (newZoom > ((OrthographicCamera) stage.getCamera()).zoom)
-            ((OrthographicCamera) stage.getCamera()).zoom += .02f;
+            ((OrthographicCamera) stage.getCamera()).zoom += .005f;
         stage.draw();
         if (KnobImpl.getControl(Statics.output.getSequencer().step) != null)
             for (int i = 0; i < 8; i++) {
