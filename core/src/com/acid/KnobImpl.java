@@ -46,7 +46,7 @@ public class KnobImpl {
                 break;
 
             case 4:
-                rotation = (float) (20-val * 32.0f) - 100f;
+                rotation = (float) (((20 - val) * 640) / 20.0f) - 100f;
                 break;
 
             case 5:
@@ -89,7 +89,7 @@ public class KnobImpl {
 
             case 4:
                 rotation = (float) ((((20 - ((BasslineSynthesizer) Statics.output
-                        .getTrack(0)).decay))* 640) / 20.0f) - 100f;
+                        .getTrack(0)).decay)) * 640) / 20.0f) - 100f;
                 break;
 
             case 5:
@@ -157,23 +157,22 @@ public class KnobImpl {
     }
 
     public static void refill() {
-        double[] contrls=KnobImpl.getControls();
+        double[] contrls = KnobImpl.getControls();
 
-        for (int i=0;i<16;i++){
-            for (int j=0;j<6;j++) {
-                KnobImpl.knobs[i][j]=contrls[j];
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 6; j++) {
+                KnobImpl.knobs[i][j] = contrls[j];
             }
         }
         new KnobData();
     }
 
     public static void setControl(int step, int id) {
-        if (Statics.free){
-            for (int i=0;i<16;i++){
+        if (Statics.free) {
+            for (int i = 0; i < 16; i++) {
                 knobs[i % 16][id] = getControls()[id];
             }
-        }
-        else {
+        } else {
             knobs[step % 16][id] = getControls()[id];
         }
     }
