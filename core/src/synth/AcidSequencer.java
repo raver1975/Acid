@@ -150,7 +150,6 @@ public class AcidSequencer {
 
     public BasslinePattern createBassline(int length, int[] scale,
                                           double[] weights) {
-        // System.out.println(length);
         BasslinePattern pattern = new BasslinePattern(length);
         pattern.clear();
         int prevNote = 0;

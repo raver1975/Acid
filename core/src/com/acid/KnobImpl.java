@@ -150,10 +150,7 @@ public class KnobImpl {
                 //volume
                 Statics.synth.controlChange(39, cc);
         }
-//        System.out.println(Arrays.toString(knobVals));
-//        Statics.synth.
-        System.out.println(Arrays.toString(getControls()));
-        new KnobData();
+        KnobData.factory();
     }
 
     public static void refill() {
@@ -164,7 +161,7 @@ public class KnobImpl {
                 KnobImpl.knobs[i][j] = contrls[j];
             }
         }
-        new KnobData();
+        KnobData.factory();
     }
 
     public static void setControl(int step, int id) {
@@ -225,7 +222,7 @@ public class KnobImpl {
         if (id == idd) {
             max = Math.max(max, val);
             min = Math.min(min, val);
-            System.out.println("knob:" + id + "\t" + val + "\t" + min + "\t" + max);
+            //System.out.println("knob:" + id + "\t" + val + "\t" + min + "\t" + max);
         }
         float dx = 0;
         float dy = 0;
@@ -273,11 +270,11 @@ public class KnobImpl {
 
     public static void touchReleased(int id) {
         touched[id] = false;
-        new KnobData();
+        KnobData.factory();
     }
 
     public static void touchDown(int id) {
         touched[id] = true;
-        new KnobData();
+        KnobData.factory();
     }
 }

@@ -22,7 +22,6 @@ public class BelowKnobsActor extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         Color color = getColor();
-//        if (region!=null)System.out.println(region.getRegionWidth()+","+region.getRegionHeight()+"\t"+getWidth()+","+getHeight()+"\t"+getScaleX()+":"+getScaleY());
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         if (KnobData.currentSequence!=null&& KnobData.currentSequence.region != null) {// && KnobData.currentSequence.parent != null && KnobData.currentSequence.parent.region != null)
             batch.draw(KnobData.currentSequence.region, getX(), getY(), getOriginX(), getOriginY(),

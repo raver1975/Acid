@@ -26,10 +26,9 @@ public class KnobData extends InstrumentData {
                 knobs[i][j] = KnobImpl.knobs[i][j];
             }
         }
-        System.out.println("copying knobs " + this);
 
         currentSequence = this;
-        pixmap = drawPixmap(300, 300);
+        pixmap = drawPixmap(50, 50);
         region = new TextureRegion(new Texture(pixmap));
         region.flip(false, true);
     }
@@ -54,8 +53,7 @@ public class KnobData extends InstrumentData {
             }
         }
         KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer().step));
-        new KnobData();
-        System.out.println("restoring knobs " + this);
+        KnobData.currentSequence=this;
     }
 
     @Override
@@ -89,7 +87,7 @@ public class KnobData extends InstrumentData {
         render(renderer, skipx, skipy);
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setColor(ColorHelper.rainbowLight());
-        for (int i=0;i<5;i++) {
+        for (int i=0;i<1;i++) {
             renderer.rect(i, i, w-i*2, h-i*2);
         }
         renderer.end();

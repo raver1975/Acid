@@ -22,7 +22,6 @@ public class CurrentDrumActor extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         Color color = getColor();
-//        if (region!=null)System.out.println(region.getRegionWidth()+","+region.getRegionHeight()+"\t"+getWidth()+","+getHeight()+"\t"+getScaleX()+":"+getScaleY());
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         if (DrumData.peekStack()!=null && DrumData.peekStack().region != null)
             batch.draw(DrumData.peekStack().region, getX(), getY(), getOriginX(), getOriginY(),

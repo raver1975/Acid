@@ -35,7 +35,6 @@ public class SequencerData extends InstrumentData {
             slide[x1] = Statics.output.getSequencer().bassline.slide[x1];
             accent[x1] = Statics.output.getSequencer().bassline.accent[x1];
         }
-        System.out.println("copying synth " + this);
 
 //        this.parent = currentSequence;
 //        if (this.parent != null) this.parent.child = this;
@@ -66,7 +65,7 @@ public class SequencerData extends InstrumentData {
             Statics.output.getSequencer().bassline.slide[x1] = slide[x1];
             Statics.output.getSequencer().bassline.accent[x1] = accent[x1];
         }
-        System.out.println("restoring synth " + this);
+//        System.out.println("restoring synth " + this);
     }
 
     @Override

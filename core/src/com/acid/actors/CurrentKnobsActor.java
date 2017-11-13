@@ -23,7 +23,6 @@ public class CurrentKnobsActor extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         Color color = getColor();
-//        if (region!=null)System.out.println(region.getRegionWidth()+","+region.getRegionHeight()+"\t"+getWidth()+","+getHeight()+"\t"+getScaleX()+":"+getScaleY());
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         if (KnobData.peekStack()!=null&& KnobData.peekStack().region != null) {// && KnobData.currentSequence.parent != null && KnobData.currentSequence.parent.region != null)
             batch.draw(KnobData.peekStack().region, getX(), getY(), getOriginX(), getOriginY(),

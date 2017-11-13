@@ -24,7 +24,6 @@ public class DrumData extends InstrumentData  {
                 rhythm[y1][x1] = Statics.output.getSequencer().rhythm[y1][x1];
             }
         }
-        System.out.println("copying drums " + this);
         pixmap = drawPixmap(300, 300);
         region = new TextureRegion(new Texture(pixmap));
         region.flip(false, true);
@@ -55,7 +54,6 @@ public class DrumData extends InstrumentData  {
                 Statics.output.getSequencer().rhythm[y1][x1] = rhythm[y1][x1];
             }
         }
-        System.out.println("restoring drums " + this);
     }
 
     @Override

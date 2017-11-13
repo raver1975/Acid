@@ -23,7 +23,6 @@ public class CurrentSequencerActor extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         Color color = getColor();
-//        if (region!=null)System.out.println(region.getRegionWidth()+","+region.getRegionHeight()+"\t"+getWidth()+","+getHeight()+"\t"+getScaleX()+":"+getScaleY());
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         if (SequencerData.peekStack() != null && SequencerData.peekStack().region != null)
             batch.draw(SequencerData.peekStack().region, getX(), getY(), getOriginX(), getOriginY(),

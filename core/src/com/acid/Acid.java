@@ -256,7 +256,6 @@ public class Acid implements ApplicationListener {
                 e.printStackTrace();
             }
         }
-        System.out.println("filelist:" + fileList);
 
         selectSongList = new SelectBox<String>(skin);
         selectSongList.setPosition(130, 465);
@@ -459,7 +458,7 @@ public class Acid implements ApplicationListener {
         popFromKnob.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                KnobData.pushStack(new KnobData());
+                KnobData.pushStack(KnobData.factory());
                 return true;
             }
         });
@@ -476,7 +475,7 @@ public class Acid implements ApplicationListener {
 
             @Override
             public void fling(InputEvent event, float velocityX, float velocityY, int button) {
-                System.out.println("swipe!! " + velocityX + ", " + velocityY);
+//                System.out.println("swipe!! " + velocityX + ", " + velocityY);
 //                if (velocityX > 0) KnobData.redo();
 //                if (velocityX < 0) KnobData.undo();
             }
@@ -891,7 +890,7 @@ public class Acid implements ApplicationListener {
 
         SequencerData.pushStack(new SequencerData());
         DrumData.pushStack(new DrumData());
-        KnobData.pushStack(new KnobData());
+        KnobData.pushStack(KnobData.factory());
 
         newZoom += .10f;
     }
@@ -1039,7 +1038,7 @@ public class Acid implements ApplicationListener {
                         KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer().step)[i], i);
                     }
                 } else {
-                    new KnobData();
+                    KnobData.factory();
                     if (Statics.recording) {
                         KnobImpl.setControl(Statics.output.getSequencer().step, i);
                     }

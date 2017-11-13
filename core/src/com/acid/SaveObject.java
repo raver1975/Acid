@@ -30,6 +30,5 @@ public class SaveObject implements Serializable {
         acid.songPosition = songPosition;
         acid.maxSongPosition = maxSongPosition;
         acid.minSongPosition = minSongPosition;
-        System.out.println("restored Song");
     }
 }

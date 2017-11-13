@@ -19,6 +19,7 @@ public class Output implements Runnable {
     private static Delay delay;
     public static boolean paused=false;
     private AudioDevice ad;
+    private boolean writtenTo;
 
 
     public static double getVolume() {
@@ -139,10 +140,13 @@ public class Output implements Runnable {
                 buffer[i] = (float) (left * volume);
                 buffer[i + 1] = (float) (right * volume);
             }
-            if (ad != null) ad.writeSamples(buffer, 0, BUFFER_SIZE);
+            if (ad != null) {
+                ad.writeSamples(buffer, 0, BUFFER_SIZE);
+                writtenTo=true;
+            }
             else {
                 ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
-                System.out.println(ad);
+                writtenTo=false;
             }
         }
         dispose();
@@ -150,7 +154,7 @@ public class Output implements Runnable {
 
     public void dispose() {
         running = false;
-        ad.dispose();
+        if (writtenTo)ad.dispose();
 
     }
 
