@@ -87,9 +87,7 @@ public class KnobData extends InstrumentData {
         render(renderer, skipx, skipy);
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setColor(ColorHelper.rainbowLight());
-        for (int i=0;i<1;i++) {
-            renderer.rect(i, i, w-i*2, h-i*2);
-        }
+            renderer.rect(1, 1, w-1, h-1);
         renderer.end();
         Pixmap pixmap1 = ScreenUtils.getFrameBufferPixmap(0, 0, w, h);
         Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);

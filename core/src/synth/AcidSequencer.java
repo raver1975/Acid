@@ -76,7 +76,6 @@ public class AcidSequencer {
         Output.getDelay().setFeedback(Math.random() * 0.75D + 0.2D);
         Output.getDelay().setTime(
                 (Integer) delayTimes.getKid().getContent());
-
     }
 
     public void tick() {

@@ -17,21 +17,18 @@ public class Output implements Runnable {
     public static boolean running = false;
     private static Reverb reverb;
     private static Delay delay;
-    public static boolean paused=false;
+    private static boolean paused = false;
     private AudioDevice ad;
-    private boolean writtenTo;
-
 
     public static double getVolume() {
         return volume;
     }
 
-
     static void setVolume(double value) {
         volume = value;
     }
 
-    static Delay getDelay() {
+    public static Delay getDelay() {
         return delay;
     }
 
@@ -140,21 +137,17 @@ public class Output implements Runnable {
                 buffer[i] = (float) (left * volume);
                 buffer[i + 1] = (float) (right * volume);
             }
-            if (ad != null) {
-                ad.writeSamples(buffer, 0, BUFFER_SIZE);
-                writtenTo=true;
-            }
-            else {
+            if (ad == null) {
                 ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
-                writtenTo=false;
             }
+            ad.writeSamples(buffer, 0, BUFFER_SIZE);
         }
         dispose();
     }
 
     public void dispose() {
         running = false;
-        if (writtenTo)ad.dispose();
+        ad.dispose();
 
     }
 

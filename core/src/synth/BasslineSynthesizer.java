@@ -209,8 +209,8 @@ public class BasslineSynthesizer
             case 39:  // volume
                 newValue = value / 127.0D;
                 if (newValue >= 0d && newValue <= 2d) {
-                    Statics.output.setVolume((value / 127.0D));
-                    this.vol_i = (Statics.output.getVolume() * 2.0D);
+                    Output.setVolume((value / 127.0D));
+                    this.vol_i = (Output.getVolume() * 2.0D);
                     if (this.vol_i > 1.0D) {
                         this.distortion.setGain(1.0D / ((this.vol_i - 1.0D) * 50.0D + 1.0D));
                         this.vol_i = 1.0D;

@@ -2,6 +2,7 @@ package com.acid;
 
 import com.badlogic.gdx.Gdx;
 import synth.BasslineSynthesizer;
+import synth.Output;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +11,7 @@ import java.util.Arrays;
  * Created by Paul on 1/8/2017.
  */
 public class KnobImpl {
-    static double[][] knobs = new double[16][8];
+    static double[][] knobs = new double[16][10];
 
     static {
         for (int i = 0; i < 16; i++) {
@@ -18,10 +19,10 @@ public class KnobImpl {
         }
     }
 
-    static boolean[] touched = new boolean[8];
+    static boolean[] touched = new boolean[10];
 
     static boolean isTouched() {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 6; i++) {
             if (touched[i]) return true;
         }
         return false;
@@ -59,6 +60,14 @@ public class KnobImpl {
             case 7:
                 rotation = (float) val * 360f;
                 break;
+            case 8:
+
+                rotation = (float)val/44100f * 360f;
+
+                break;
+            case 9:
+                rotation = (float) val * 360f;
+                break;
         }
         return rotation;
     }
@@ -93,15 +102,23 @@ public class KnobImpl {
                 break;
 
             case 5:
+                //accent
                 rotation = (float) ((BasslineSynthesizer) Statics.output.getTrack(0)).accent * 360f;
                 break;
             case 6:
-                //accent
+
                 rotation = (float) Statics.output.getSequencer().bpm;
                 break;
             case 7:
                 rotation = (float) Statics.output.getVolume() * 360f;
                 break;
+            case 8:
+                rotation = (float) Output.getDelay().getTime()/44100f * 360f;
+                break;
+            case 9:
+                rotation = (float) Output.getDelay().getFeedback() * 360f;
+                break;
+
         }
         return rotation;
     }
@@ -149,6 +166,13 @@ public class KnobImpl {
             case 7:
                 //volume
                 Statics.synth.controlChange(39, cc);
+                break;
+            case 8:
+                //Delay time
+                Output.getDelay().controlChange(40, cc);
+                break;
+            case 9:
+                Output.getDelay().controlChange(41, cc);
         }
         KnobData.factory();
     }
@@ -179,7 +203,7 @@ public class KnobImpl {
     }
 
     public static double[] getControls() {
-        double[] vals = new double[8];
+        double[] vals = new double[10];
         vals[0] = Statics.synth.tune;
         vals[1] = Statics.synth.cutoff.getValue();
         vals[2] = Statics.synth.resonance.getValue();
@@ -187,7 +211,9 @@ public class KnobImpl {
         vals[4] = Statics.synth.decay;
         vals[5] = Statics.synth.accent;
         vals[6] = Statics.output.getSequencer().bpm;
-        vals[7] = Statics.output.volume;
+        vals[7] = Output.volume;
+        vals[8] = Output.getDelay().getTime();
+        vals[9] = Output.getDelay().getFeedback();
         return vals;
     }
 
@@ -214,7 +240,7 @@ public class KnobImpl {
     }
 
 
-    static int idd = -4;
+    static int idd = 8;
     static float max = Float.MIN_VALUE;
     static float min = Float.MAX_VALUE;
 
@@ -222,7 +248,7 @@ public class KnobImpl {
         if (id == idd) {
             max = Math.max(max, val);
             min = Math.min(min, val);
-            //System.out.println("knob:" + id + "\t" + val + "\t" + min + "\t" + max);
+           // System.out.println("knob:id=" + id + "\tval=" + val + "\tmin=" + min + "\tmax=" + max);
         }
         float dx = 0;
         float dy = 0;
@@ -264,7 +290,16 @@ public class KnobImpl {
                 dx = 0f;
                 dy = 720f;
                 break;
+            case 8:
+                dx = 0f;
+                dy = 360f;
+                break;
+            case 9:
+                dx = 0f;
+                dy = 360f;
+                break;
         }
+
         return (val - dx) / (dy - dx);
     }
 

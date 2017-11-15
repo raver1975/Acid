@@ -65,7 +65,6 @@ public class SequencerData extends InstrumentData {
             Statics.output.getSequencer().bassline.slide[x1] = slide[x1];
             Statics.output.getSequencer().bassline.accent[x1] = accent[x1];
         }
-//        System.out.println("restoring synth " + this);
     }
 
     @Override
