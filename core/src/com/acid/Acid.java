@@ -52,9 +52,6 @@ public class Acid implements ApplicationListener {
     private Label minSongLengthLabel;
     private Label stepLabel;
 
-    private CurrentDrumActor currentDrumActor;
-    private CurrentSequencerActor currentSequencerActor;
-    private BelowKnobsActor belowKnobsActor;
     private Label minSongLengthCaption;
     private Label songLengthCaption;
     private Label maxSongLengthCaption;
@@ -200,7 +197,7 @@ public class Acid implements ApplicationListener {
         rectangleActor.setPosition(122, 120);
         table.addActor(rectangleActor);
 
-        currentSequencerActor = new CurrentSequencerActor(100, 100);
+        CurrentSequencerActor currentSequencerActor = new CurrentSequencerActor(100, 100);
         currentSequencerActor.setPosition(20, 295);
         currentSequencerActor.addListener(new ActorGestureListener() {
 
@@ -219,7 +216,7 @@ public class Acid implements ApplicationListener {
         table.addActor(currentSequencerActor);
 
         sequencerDataArrayListLabel = new Label("", skin);
-        sequencerDataArrayListLabel.setPosition(10,290);
+        sequencerDataArrayListLabel.setPosition(10, 290);
         sequencerDataArrayListLabel.setFontScale(1f);
         table.addActor(sequencerDataArrayListLabel);
 
@@ -404,7 +401,7 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        currentDrumActor = new CurrentDrumActor(100, 100);
+        CurrentDrumActor currentDrumActor = new CurrentDrumActor(100, 100);
         currentDrumActor.setPosition(20, 185);
         currentDrumActor.addListener(new ActorGestureListener() {
 
@@ -416,7 +413,7 @@ public class Acid implements ApplicationListener {
         table.addActor(currentDrumActor);
 
         drumDataArrayListLabel = new Label("", skin);
-        drumDataArrayListLabel.setPosition(10,180);
+        drumDataArrayListLabel.setPosition(10, 180);
         drumDataArrayListLabel.setFontScale(1f);
         table.addActor(drumDataArrayListLabel);
 
@@ -454,7 +451,7 @@ public class Acid implements ApplicationListener {
         });
 
         knobDataArrayListLabel = new Label("", skin);
-        knobDataArrayListLabel.setPosition(450,195);
+        knobDataArrayListLabel.setPosition(450, 195);
         knobDataArrayListLabel.setFontScale(1f);
         table.addActor(knobDataArrayListLabel);
 
@@ -481,7 +478,7 @@ public class Acid implements ApplicationListener {
         });
 
 
-        belowKnobsActor = new BelowKnobsActor(80, 70);
+        BelowKnobsActor belowKnobsActor = new BelowKnobsActor(80, 70);
         belowKnobsActor.setPosition(460, 100);
         belowKnobsActor.addListener(new ActorGestureListener() {
 
@@ -848,8 +845,6 @@ public class Acid implements ApplicationListener {
         table.addActor(BpmLabel);
 
 
-
-
         if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
             TextButton zi = new TextButton("Zoom +", skin);
             table.addActor(zi);
@@ -1088,13 +1083,13 @@ public class Acid implements ApplicationListener {
         waveButton.setText(Statics.waveSquare ? " Square " : " Saw ");
 
         sequencerDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        sequencerDataArrayListLabel.setText(sequencerDataArrayList.size()+"");
+        sequencerDataArrayListLabel.setText(SequencerData.sequences.size() + "");
 
         drumDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        drumDataArrayListLabel.setText(drumDataArrayList.size()+"");
+        drumDataArrayListLabel.setText(DrumData.sequences.size() + "");
 
         knobDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        knobDataArrayListLabel.setText(knobsArrayList.size()+"");
+        knobDataArrayListLabel.setText(KnobData.sequences.size() + "");
 
         BpmLabel.setText((int) Statics.output.getSequencer().bpm + "");
 
