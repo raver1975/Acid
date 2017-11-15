@@ -27,7 +27,7 @@ public class SaveObject implements Serializable {
         this.maxSongPosition = acid.maxSongPosition;
         this.minSongPosition = acid.minSongPosition;
         this.bpm=Statics.output.getSequencer().bpm;
-        this.vol = (float) Statics.output.getVolume();
+        this.vol = (float) Output.getVolume();
         this.delayTime=Output.getDelay().getTime();
         this.delayFeedback=Output.getDelay().getFeedback();
       }
@@ -43,8 +43,8 @@ public class SaveObject implements Serializable {
         acid.maxSongPosition = maxSongPosition;
         acid.minSongPosition = minSongPosition;
 
-        Statics.output.getSequencer().bpm=bpm;
-        Statics.output.volume=vol;
+        Statics.output.getSequencer().setBpm(bpm);
+        Output.volume=vol;
         Output.getDelay().setTime(delayTime);
         Output.getDelay().setFeedback(delayFeedback);
     }
