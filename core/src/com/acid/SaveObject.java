@@ -33,17 +33,19 @@ public class SaveObject implements Serializable {
       }
 
     public void restore(Acid acid) {
-        Output.pause();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        acid.swapPattern(acid.songPosition,acid.songPosition);
+        acid.sequencerDataArrayList = sequencerDataArrayList;
+        acid.drumDataArrayList = drumDataArrayList;
+        acid.knobsArrayList = knobsArrayList;
+        acid.swapPattern(songPosition,songPosition);
 
-            }
-        }).start();
+        acid.songPosition = songPosition;
+        acid.maxSongPosition = maxSongPosition;
+        acid.minSongPosition = minSongPosition;
+
         Statics.output.getSequencer().bpm=bpm;
-        Output.volume =vol;
+        Statics.output.volume=vol;
         Output.getDelay().setTime(delayTime);
         Output.getDelay().setFeedback(delayFeedback);
-        Output.resume();
     }
 }
