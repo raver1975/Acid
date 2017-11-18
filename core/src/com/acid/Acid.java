@@ -375,13 +375,35 @@ public class Acid implements ApplicationListener {
         exportSongButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                String selected = selectSongList.getSelected().replaceAll("[^a-zA-Z0-9]", "");
-                selected+=".wav";
+                if (selectSongList.getSelectedIndex() == 0) {
+                    Gdx.input.getTextInput(new Input.TextInputListener() {
+                        @Override
+                        public void input(String text) {
+                            String selected = text.replaceAll("[^a-zA-Z0-9]", "");
+                            selected += ".wav";
+                            export(selected);
+                        }
+
+                        @Override
+                        public void canceled() {
+
+                        }
+                    }, "Export Song", "", "Song Title");
+                } else {
+                    String selected = selectSongList.getSelected().replaceAll("[^a-zA-Z0-9]", "");
+                    selected += ".wav";
+                    export(selected);
+                }
+                return true;
+            }
+
+            private void export(String selected) {
+
                 if (!Gdx.files.external(selected).exists()) {
                     startSaving(selected);
                 } else {
                     final String finalSelected = selected;
-                    Dialog dialog = new Dialog("Overwrite " + selected+"?", skin) {
+                    Dialog dialog = new Dialog("Overwrite " + selected + "?", skin) {
 
                         @Override
                         protected void result(Object object) {
@@ -414,7 +436,6 @@ public class Acid implements ApplicationListener {
                     dialog.key(Input.Keys.ESCAPE, false);
                     dialog.show(stage);
                 }
-                return true;
             }
         });
 
@@ -675,7 +696,7 @@ public class Acid implements ApplicationListener {
         nextMin.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                if (minSongPosition < maxSongPosition && minSongPosition< 998) minSongPosition++;
+                if (minSongPosition < maxSongPosition && minSongPosition < 998) minSongPosition++;
 
                 return true;
             }
@@ -711,7 +732,7 @@ public class Acid implements ApplicationListener {
         next.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                if (songPosition == maxSongPosition&& songPosition<998) return true;
+                if (songPosition == maxSongPosition && songPosition < 998) return true;
                 swapPattern(songPosition, ++songPosition);
                 return true;
             }
@@ -746,7 +767,7 @@ public class Acid implements ApplicationListener {
         nextMax.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                if (maxSongPosition<998)maxSongPosition++;
+                if (maxSongPosition < 998) maxSongPosition++;
                 return true;
             }
         });
@@ -1203,7 +1224,7 @@ public class Acid implements ApplicationListener {
     }
 
     private void startSaving(String selected) {
-        Statics.saveName=selected;
+        Statics.saveName = selected;
 
         if (Statics.free) {
             InputEvent event1 = new InputEvent();
