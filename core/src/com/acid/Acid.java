@@ -1034,12 +1034,6 @@ public class Acid implements ApplicationListener {
                 protected void result(Object object) {
                     boolean yes = (Boolean) object;
                     if (yes) {
-                        fileList.add(name);
-                        try {
-                            Serializer.save(fileList, "filelist.ser");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
                         selectSongList.setItems(new Array<String>(fileList.toArray(new String[]{})));
                         selectSongList.setSelected(name);
                         try {
