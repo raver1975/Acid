@@ -3,6 +3,7 @@ package com.acid;
 import com.acid.actors.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,9 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Array;
@@ -20,6 +19,9 @@ import synth.BasslineSynthesizer;
 import synth.Output;
 import synth.RhythmSynthesizer;
 
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 
@@ -62,6 +64,8 @@ public class Acid implements ApplicationListener {
     private Label knobDataArrayListLabel;
     private Label sequencerDataArrayListLabel;
     private Label drumDataArrayListLabel;
+    private TextButton exportSongButton;
+    private TextButton freeButton;
 
     public Acid() {
     }
@@ -79,7 +83,7 @@ public class Acid implements ApplicationListener {
         drumsSelected = false;
         Statics.output.getSequencer().randomizeSequence();
 
-        InputMultiplexer mult = new InputMultiplexer();
+        InputMultiplexer multiplexer = new InputMultiplexer();
         GestureListener gl = new GestureListener() {
 
             @Override
@@ -132,8 +136,8 @@ public class Acid implements ApplicationListener {
             }
         };
         GestureDetector gd = new GestureDetector(gl);
-        mult.addProcessor(stage);
-        mult.addProcessor(gd);
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(gd);
 
         InputProcessor il = new InputProcessor() {
             @Override
@@ -177,9 +181,9 @@ public class Acid implements ApplicationListener {
                 return false;
             }
         };
-        mult.addProcessor(il);
+        multiplexer.addProcessor(il);
 
-        Gdx.input.setInputProcessor(mult);
+        Gdx.input.setInputProcessor(multiplexer);
 
         font = new BitmapFont(Gdx.app.getFiles().getFileHandle("data/font.fnt",
                 FileType.Internal), false);
@@ -346,6 +350,70 @@ public class Acid implements ApplicationListener {
                 dialog.key(Input.Keys.ESCAPE, false);
                 dialog.show(stage);
 
+                return true;
+            }
+        });
+
+        freeButton = new TextButton("Free", skin);
+        freeButton.setChecked(false);
+        freeButton.setColor(freeButton.isChecked() ? Color.WHITE : Color.RED);
+        table.addActor(freeButton);
+        freeButton.setPosition(15f, 95);
+        freeButton.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+
+                                     int pointer, int button) {
+                freeButton.setColor(freeButton.isChecked() ? Color.RED : Color.WHITE);
+                Statics.free = freeButton.isChecked();
+                return true;
+            }
+        });
+
+        exportSongButton = new TextButton("Export", skin);
+        exportSongButton.setPosition(455, 465);
+        table.addActor(exportSongButton);
+        exportSongButton.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                String selected = selectSongList.getSelected().replaceAll("[^a-zA-Z0-9]", "");
+                selected+=".wav";
+                if (!Gdx.files.external(selected).exists()) {
+                    startSaving(selected);
+                } else {
+                    final String finalSelected = selected;
+                    Dialog dialog = new Dialog("Overwrite " + selected+"?", skin) {
+
+                        @Override
+                        protected void result(Object object) {
+                            boolean yes = (Boolean) object;
+                            if (yes) {
+                                startSaving(finalSelected);
+                            } else {
+                                return;
+                            }
+                        }
+
+                        @Override
+                        public Dialog show(Stage stage) {
+                            return super.show(stage);
+                        }
+
+                        @Override
+                        public void cancel() {
+                            super.cancel();
+                        }
+
+                        @Override
+                        public float getPrefHeight() {
+                            return 50f;
+                        }
+                    };
+                    dialog.button("Yes", true);
+                    dialog.button("No", false);
+                    dialog.key(Input.Keys.ENTER, true);
+                    dialog.key(Input.Keys.ESCAPE, false);
+                    dialog.show(stage);
+                }
                 return true;
             }
         });
@@ -607,7 +675,7 @@ public class Acid implements ApplicationListener {
         nextMin.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                if (minSongPosition < maxSongPosition) minSongPosition++;
+                if (minSongPosition < maxSongPosition && minSongPosition< 998) minSongPosition++;
 
                 return true;
             }
@@ -639,11 +707,11 @@ public class Acid implements ApplicationListener {
 
         final TextButton next = new TextButton(" > ", skin);
         table.addActor(next);
-        next.setPosition(310, 95);
+        next.setPosition(313, 95);
         next.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                if (songPosition == maxSongPosition) return true;
+                if (songPosition == maxSongPosition&& songPosition<998) return true;
                 swapPattern(songPosition, ++songPosition);
                 return true;
             }
@@ -678,7 +746,7 @@ public class Acid implements ApplicationListener {
         nextMax.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                maxSongPosition++;
+                if (maxSongPosition<998)maxSongPosition++;
                 return true;
             }
         });
@@ -699,20 +767,6 @@ public class Acid implements ApplicationListener {
             }
         });
 
-        final TextButton freeButton = new TextButton("Free", skin);
-        freeButton.setChecked(false);
-        freeButton.setColor(freeButton.isChecked() ? Color.WHITE : Color.RED);
-        table.addActor(freeButton);
-        freeButton.setPosition(15f, 95);
-        freeButton.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-
-                                     int pointer, int button) {
-                freeButton.setColor(freeButton.isChecked() ? Color.RED : Color.WHITE);
-                Statics.free = freeButton.isChecked();
-                return true;
-            }
-        });
 
         final TextButton prevStep = new TextButton(" < ", skin);
         table.addActor(prevStep);
@@ -917,6 +971,7 @@ public class Acid implements ApplicationListener {
         newZoom += .10f;
     }
 
+
     private void loadSong(String name) {
         try {
             byte[] bytesOfMessage = name.getBytes("UTF-8");
@@ -953,9 +1008,25 @@ public class Acid implements ApplicationListener {
     }
 
 
-    private void saveSong(String name, Skin skin) {
+    private void saveSong(final String name, Skin skin) {
         if (!fileList.contains(name)) {
             fileList.add(name);
+            try {
+                Serializer.save(fileList, "filelist.ser");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            selectSongList.setItems(new Array<String>(fileList.toArray(new String[]{})));
+            selectSongList.setSelected(name);
+            try {
+                byte[] bytesOfMessage = name.getBytes("UTF-8");
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                byte[] thedigest = md.digest(bytesOfMessage);
+                String savefilename = bytesToHex(thedigest);
+                Serializer.save(new SaveObject(this), savefilename);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             Dialog dialog = new Dialog("Overwrite " + name + "?", skin) {
 
@@ -963,6 +1034,23 @@ public class Acid implements ApplicationListener {
                 protected void result(Object object) {
                     boolean yes = (Boolean) object;
                     if (yes) {
+                        fileList.add(name);
+                        try {
+                            Serializer.save(fileList, "filelist.ser");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        selectSongList.setItems(new Array<String>(fileList.toArray(new String[]{})));
+                        selectSongList.setSelected(name);
+                        try {
+                            byte[] bytesOfMessage = name.getBytes("UTF-8");
+                            MessageDigest md = MessageDigest.getInstance("MD5");
+                            byte[] thedigest = md.digest(bytesOfMessage);
+                            String savefilename = bytesToHex(thedigest);
+                            Serializer.save(new SaveObject(Acid.this), savefilename);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     } else {
                         return;
                     }
@@ -971,6 +1059,7 @@ public class Acid implements ApplicationListener {
                 @Override
                 public Dialog show(Stage stage) {
                     return super.show(stage);
+
                 }
 
                 @Override
@@ -988,22 +1077,6 @@ public class Acid implements ApplicationListener {
             dialog.key(Input.Keys.ENTER, true);
             dialog.key(Input.Keys.ESCAPE, false);
             dialog.show(stage);
-        }
-        try {
-            Serializer.save(fileList, "filelist.ser");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        selectSongList.setItems(new Array<String>(fileList.toArray(new String[]{})));
-        selectSongList.setSelected(name);
-        try {
-            byte[] bytesOfMessage = name.getBytes("UTF-8");
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] thedigest = md.digest(bytesOfMessage);
-            String savefilename = bytesToHex(thedigest);
-            Serializer.save(new SaveObject(this), savefilename);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -1074,6 +1147,9 @@ public class Acid implements ApplicationListener {
             if (!Statics.free) songPosition++;
             if (songPosition > maxSongPosition) {
                 songPosition = minSongPosition;
+                if (Statics.export) {
+                    stopSaving();
+                }
             }
             swapPattern(old, songPosition);
         }
@@ -1130,6 +1206,103 @@ public class Acid implements ApplicationListener {
         }
 
 
+    }
+
+    private void startSaving(String selected) {
+        Statics.saveName=selected;
+
+        if (Statics.free) {
+            InputEvent event1 = new InputEvent();
+            event1.setType(InputEvent.Type.touchDown);
+            freeButton.fire(event1);
+
+            InputEvent event2 = new InputEvent();
+            event2.setType(InputEvent.Type.touchUp);
+            freeButton.fire(event2);
+        }
+        stage.getRoot().setTouchable(Touchable.disabled);
+        songPosition = minSongPosition;
+        Statics.output.getSequencer().tick = 0;
+        Statics.output.getSequencer().step = 0;
+        Statics.export = true;
+        Statics.exportFile = Gdx.files.external("supersecrettempfile.pcm");
+        Statics.exportFile.delete();
+    }
+
+    private void stopSaving() {
+        Statics.export = false;
+        stage.getRoot().setTouchable(Touchable.enabled);
+        exportSongButton.setChecked(false);
+        try {
+            rawToWave(Statics.exportFile, Gdx.files.external(Statics.saveName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Statics.exportFile.delete();
+    }
+
+    private void rawToWave(final FileHandle rawFile, final FileHandle waveFile) throws IOException {
+
+        byte[] rawData = new byte[(int) rawFile.length()];
+        DataInputStream input = null;
+        try {
+            input = new DataInputStream(rawFile.read());
+            input.read(rawData);
+        } finally {
+            if (input != null) {
+                input.close();
+            }
+        }
+
+        DataOutputStream output = null;
+        try {
+            output = new DataOutputStream(waveFile.write(false));
+            // WAVE header
+            // see http://ccrma.stanford.edu/courses/422/projects/WaveFormat/
+
+
+            int samplerate = 44100;
+            int channels = 2;
+            int bitspersample = 32;
+
+
+            writeString(output, "RIFF"); // chunk id
+            writeInt(output, 36 + rawData.length); // chunk size
+            writeString(output, "WAVE"); // format
+            writeString(output, "fmt "); // subchunk 1 id
+            writeInt(output, 16); // subchunk 1 size
+            writeShort(output, (short) 3); // audio format (1 = PCM)
+            writeShort(output, (short) channels); // number of channels
+            writeInt(output, samplerate); // sample rate
+            writeInt(output, samplerate * channels * bitspersample / 8); // byte rate   == SampleRate * NumChannels * BitsPerSample/8
+            writeShort(output, (short) (channels * bitspersample / 8)); // block align == NumChannels * BitsPerSample/8
+            writeShort(output, (short) bitspersample); // bits per sample
+            writeString(output, "data"); // subchunk 2 id
+            writeInt(output, rawData.length); // subchunk 2 size
+            waveFile.write(rawFile.read(), true);
+        } finally {
+            if (output != null) {
+                output.close();
+            }
+        }
+    }
+
+    private void writeInt(final DataOutputStream output, final int value) throws IOException {
+        output.write(value >> 0);
+        output.write(value >> 8);
+        output.write(value >> 16);
+        output.write(value >> 24);
+    }
+
+    private void writeShort(final DataOutputStream output, final short value) throws IOException {
+        output.write(value >> 0);
+        output.write(value >> 8);
+    }
+
+    private void writeString(final DataOutputStream output, final String value) throws IOException {
+        for (int i = 0; i < value.length(); i++) {
+            output.write(value.charAt(i));
+        }
     }
 
     private String format(int i) {

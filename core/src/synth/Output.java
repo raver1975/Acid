@@ -4,6 +4,9 @@ import com.acid.Statics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 public class Output implements Runnable {
     private static Thread thread = null;
     private static Synthesizer[] tracks;
@@ -137,12 +140,28 @@ public class Output implements Runnable {
                 buffer[i] = (float) (left * volume);
                 buffer[i + 1] = (float) (right * volume);
             }
-            if (ad == null) {
-                ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
+            if (Statics.export) {
+                Statics.exportFile.writeBytes(FloatArray2ByteArray(buffer), true);
+            } else {
+                if (ad == null) {
+                    ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
+                }
+                ad.writeSamples(buffer, 0, BUFFER_SIZE);
             }
-            ad.writeSamples(buffer, 0, BUFFER_SIZE);
         }
         dispose();
+    }
+
+
+    public static byte[] FloatArray2ByteArray(float[] values) {
+        ByteBuffer buffer = ByteBuffer.allocate(4 * values.length);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+
+        for (float value : values) {
+            buffer.putFloat(value);
+        }
+
+        return buffer.array();
     }
 
     public void dispose() {

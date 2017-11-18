@@ -1,5 +1,6 @@
 package com.acid;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import synth.BasslineSynthesizer;
 import synth.Output;
@@ -20,4 +21,7 @@ public class Statics {
 	public static boolean recording=true;
 	public static boolean free=true;
 	public static boolean waveSquare;
+	public static boolean export;
+	public static FileHandle exportFile;
+	public static String saveName;
 }
