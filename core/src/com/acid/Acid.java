@@ -20,8 +20,6 @@ import synth.Output;
 import synth.RhythmSynthesizer;
 
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 
@@ -398,18 +396,17 @@ public class Acid implements ApplicationListener {
             }
 
             private void export(String selected) {
-
-                if (!Gdx.files.external(selected).exists()) {
-                    startSaving(selected);
+                final FileHandle fileHandle=Statics.getFileHandle(selected);
+                if (!fileHandle.exists()) {
+                    startSaving(fileHandle);
                 } else {
-                    final String finalSelected = selected;
                     Dialog dialog = new Dialog("Overwrite " + selected + "?", skin) {
 
                         @Override
                         protected void result(Object object) {
                             boolean yes = (Boolean) object;
                             if (yes) {
-                                startSaving(finalSelected);
+                                startSaving(fileHandle);
                             } else {
                                 return;
                             }
@@ -1223,7 +1220,7 @@ public class Acid implements ApplicationListener {
 
     }
 
-    private void startSaving(String selected) {
+    private void startSaving(FileHandle selected) {
         Statics.saveName = selected;
 
         if (Statics.free) {
@@ -1240,7 +1237,7 @@ public class Acid implements ApplicationListener {
         Statics.output.getSequencer().tick = 0;
         Statics.output.getSequencer().step = 0;
         Statics.export = true;
-        Statics.exportFile = Gdx.files.external("supersecrettempfile.pcm");
+        Statics.exportFile = Statics.getFileHandle("supersecrettempfile.pcm");
         Statics.exportFile.delete();
     }
 
@@ -1249,7 +1246,7 @@ public class Acid implements ApplicationListener {
         stage.getRoot().setTouchable(Touchable.enabled);
         exportSongButton.setChecked(false);
         try {
-            rawToWave(Statics.exportFile, Gdx.files.external(Statics.saveName));
+            rawToWave(Statics.exportFile, Statics.saveName);
         } catch (IOException e) {
             e.printStackTrace();
         }
