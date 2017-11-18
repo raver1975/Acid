@@ -1236,9 +1236,9 @@ public class Acid implements ApplicationListener {
         songPosition = minSongPosition;
         Statics.output.getSequencer().tick = 0;
         Statics.output.getSequencer().step = 0;
-        Statics.export = true;
         Statics.exportFile = Statics.getFileHandle("supersecrettempfile.pcm");
         Statics.exportFile.delete();
+        Statics.export = true;
     }
 
     private void stopSaving() {

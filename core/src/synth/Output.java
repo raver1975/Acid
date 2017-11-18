@@ -141,7 +141,7 @@ public class Output implements Runnable {
                 buffer[i + 1] = (float) (right * volume);
             }
             if (Statics.export) {
-                Statics.exportFile.writeBytes(FloatArray2ByteArray(buffer), true);
+                if (Statics.exportFile!=null)Statics.exportFile.writeBytes(FloatArray2ByteArray(buffer), true);
             } else {
                 if (ad == null) {
                     ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
