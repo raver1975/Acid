@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Array;
+
 import synth.BasslineSynthesizer;
 import synth.Output;
 import synth.RhythmSynthesizer;
@@ -277,13 +278,17 @@ public class Acid implements ApplicationListener {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
                 if (selectSongList.getSelectedIndex() > 0) {
-                    saveSong(selectSongList.getSelected(), skin);
+                    String saveName = selectSongList.getSelected().replaceAll("[^a-zA-Z0-9]", "");
+                    if (saveName.length() == 0) saveName = "blank";
+                    saveSong(saveName, skin);
 
                 } else {
                     Gdx.input.getTextInput(new Input.TextInputListener() {
                         @Override
                         public void input(String text) {
-                            saveSong(text, skin);
+                            String saveName = text.replaceAll("[^a-zA-Z0-9]", "");
+                            if (saveName.length() == 0) saveName = "blank";
+                            saveSong(saveName, skin);
                         }
 
                         @Override
@@ -379,6 +384,9 @@ public class Acid implements ApplicationListener {
                         @Override
                         public void input(String text) {
                             String selected = text.replaceAll("[^a-zA-Z0-9]", "");
+                            if (selected.length() == 0) {
+                                selected = "blank";
+                            }
                             selected += ".wav";
                             export(selected);
                         }
@@ -397,7 +405,7 @@ public class Acid implements ApplicationListener {
             }
 
             private void export(String selected) {
-                final FileHandle fileHandle=Statics.getFileHandle(selected);
+                final FileHandle fileHandle = Statics.getFileHandle(selected);
                 if (!fileHandle.exists()) {
                     startSaving(fileHandle);
                 } else {
@@ -1028,6 +1036,7 @@ public class Acid implements ApplicationListener {
 
 
     private void saveSong(final String name, Skin skin) {
+
         if (!fileList.contains(name)) {
             fileList.add(name);
             try {
@@ -1155,6 +1164,13 @@ public class Acid implements ApplicationListener {
             }
 //            KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer().step));
 
+        if (Statics.output.getSequencer().step % 16 == 0 && prevStep % 16 == 1) {
+            if (!Statics.free) {
+                if (songPosition > minSongPosition) songPosition--;
+                else songPosition = maxSongPosition;
+            }
+        }
+
         if (Statics.output.getSequencer().step % 16 == 0 && prevStep % 16 == 15) {
             int old = songPosition;
             if (!Statics.free) songPosition++;
@@ -1233,7 +1249,7 @@ public class Acid implements ApplicationListener {
             event2.setType(InputEvent.Type.touchUp);
             freeButton.fire(event2);
         }
-        
+
         if (Output.isPaused()) {
             InputEvent event1 = new InputEvent();
             event1.setType(InputEvent.Type.touchDown);
@@ -1244,7 +1260,7 @@ public class Acid implements ApplicationListener {
             pauseButton.fire(event2);
         }
 
-        
+
         stage.getRoot().setTouchable(Touchable.disabled);
         songPosition = minSongPosition;
         Statics.output.getSequencer().tick = 0;
@@ -1259,7 +1275,8 @@ public class Acid implements ApplicationListener {
         stage.getRoot().setTouchable(Touchable.enabled);
         exportSongButton.setChecked(false);
         try {
-            if (Statics.exportFile!=null && Statics.saveName!=null) rawToWave(Statics.exportFile, Statics.saveName);
+            if (Statics.exportFile != null && Statics.saveName != null)
+                rawToWave(Statics.exportFile, Statics.saveName);
         } catch (IOException e) {
             e.printStackTrace();
         }
