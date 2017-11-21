@@ -828,9 +828,9 @@ public class Acid implements ApplicationListener {
         pauseButton.setPosition(100f, 95);
         pauseButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (pauseButton.isChecked()) Output.pause();
+                if (!Output.ispaused()) Output.pause();
                 else Output.resume();
-                pauseButton.setColor(pauseButton.isChecked() ? Color.RED : Color.WHITE);
+                pauseButton.setColor(Output.isPaused() ? Color.RED : Color.WHITE);
                 return true;
             }
         });
