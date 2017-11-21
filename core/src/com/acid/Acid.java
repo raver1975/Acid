@@ -1234,7 +1234,7 @@ public class Acid implements ApplicationListener {
             freeButton.fire(event2);
         }
         
-        if (Statics.pause) {
+        if (pauseButton.isChecked()) {
             InputEvent event1 = new InputEvent();
             event1.setType(InputEvent.Type.touchDown);
             pauseButton.fire(event1);
@@ -1259,7 +1259,7 @@ public class Acid implements ApplicationListener {
         stage.getRoot().setTouchable(Touchable.enabled);
         exportSongButton.setChecked(false);
         try {
-            if (statics.exportFile!=null && statics.saveName!=null) rawToWave(Statics.exportFile, Statics.saveName);
+            if (Statics.exportFile!=null && Statics.saveName!=null) rawToWave(Statics.exportFile, Statics.saveName);
         } catch (IOException e) {
             e.printStackTrace();
         }
