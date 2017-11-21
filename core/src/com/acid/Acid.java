@@ -823,7 +823,7 @@ public class Acid implements ApplicationListener {
 
 
         pauseButton = new TextButton(" || ", skin);
-        pauseButton.setChecked(true);
+        pauseButton.setChecked(false);
         table.addActor(pauseButton);
         pauseButton.setPosition(100f, 95);
         pauseButton.addListener(new InputListener() {
