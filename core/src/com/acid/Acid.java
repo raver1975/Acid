@@ -1165,13 +1165,20 @@ public class Acid implements ApplicationListener {
 //            KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer().step));
 
         if (Statics.output.getSequencer().step % 16 == 0 && prevStep % 16 == 1) {
+            int old = songPosition;
             if (!Statics.free) {
-                if (songPosition > minSongPosition) songPosition--;
-                else songPosition = maxSongPosition;
+                if (songPosition > minSongPosition) {
+                    songPosition--;
+                } else {
+                    songPosition = maxSongPosition;
+                }
             }
+            swapPattern(old, songPosition);
         }
 
-        if (Statics.output.getSequencer().step % 16 == 0 && prevStep % 16 == 15) {
+        if (Statics.output.getSequencer().step % 16 == 0 && prevStep % 16 == 15)
+
+        {
             int old = songPosition;
             if (!Statics.free) songPosition++;
             if (songPosition > maxSongPosition) {
@@ -1207,28 +1214,40 @@ public class Acid implements ApplicationListener {
         maxSongLengthCaption.setColor(ColorHelper.rainbowLight());
 
         maxSongLengthLabel.setColor(ColorHelper.rainbowLight());
-        maxSongLengthLabel.setText(format(maxSongPosition + 1));
+        maxSongLengthLabel.setText(
+
+                format(maxSongPosition + 1));
         minSongLengthLabel.setColor(ColorHelper.rainbowLight());
-        minSongLengthLabel.setText((format(minSongPosition + 1)));
+        minSongLengthLabel.setText((
+
+                format(minSongPosition + 1)));
         songLengthLabel.setColor(ColorHelper.rainbowLight());
-        songLengthLabel.setText(format(songPosition + 1));
+        songLengthLabel.setText(
+
+                format(songPosition + 1));
         stepLabel.setColor(ColorHelper.rainbowLight());
         int step = Statics.output.getSequencer().step % 16 + 1;
         stepLabel.setText(step < 10 ? "0" + step : "" + step);
         stepCaption.setColor(ColorHelper.rainbowLight());
 
         rainbowFade += rainbowFadeDir;
-        while (rainbowFade < 0f || rainbowFade > 1f) {
+        while (rainbowFade < 0f || rainbowFade > 1f)
+
+        {
             rainbowFadeDir = -rainbowFadeDir;
             rainbowFade += rainbowFadeDir;
 //            rainbowFadeDir+= (Math.random()-.5f)/10f;
         }
-        if (drumsSelected && drumsSynthScale < 1f) {
+        if (drumsSelected && drumsSynthScale < 1f)
+
+        {
             drumsSynthScale += .05f;
             drumMatrix.setScale(drumsSynthScale);
             sequenceMatrix.setScale(1.0f - drumsSynthScale);
         }
-        if (!drumsSelected && drumsSynthScale > 0f) {
+        if (!drumsSelected && drumsSynthScale > 0f)
+
+        {
             drumsSynthScale -= .05f;
             drumMatrix.setScale(drumsSynthScale);
             sequenceMatrix.setScale(1.0f - drumsSynthScale);
