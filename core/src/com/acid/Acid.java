@@ -1238,6 +1238,7 @@ public class Acid implements ApplicationListener {
         Statics.output.getSequencer().step = 0;
         Statics.exportFile = Statics.getFileHandle("supersecrettempfile.pcm");
         Statics.exportFile.delete();
+        Statics.pause = false;
         Statics.export = true;
     }
 
@@ -1246,7 +1247,7 @@ public class Acid implements ApplicationListener {
         stage.getRoot().setTouchable(Touchable.enabled);
         exportSongButton.setChecked(false);
         try {
-            rawToWave(Statics.exportFile, Statics.saveName);
+            if (statics.exportFile!=null && statics.saveName!=null) rawToWave(Statics.exportFile, Statics.saveName);
         } catch (IOException e) {
             e.printStackTrace();
         }
