@@ -64,6 +64,7 @@ public class Acid implements ApplicationListener {
     private Label drumDataArrayListLabel;
     private TextButton exportSongButton;
     private TextButton freeButton;
+    private TextButton pauseButton;
 
     public Acid() {
     }
@@ -821,7 +822,7 @@ public class Acid implements ApplicationListener {
         });
 
 
-        final TextButton pauseButton = new TextButton(" || ", skin);
+        pauseButton = new TextButton(" || ", skin);
         pauseButton.setChecked(true);
         table.addActor(pauseButton);
         pauseButton.setPosition(100f, 95);
@@ -1232,13 +1233,24 @@ public class Acid implements ApplicationListener {
             event2.setType(InputEvent.Type.touchUp);
             freeButton.fire(event2);
         }
+        
+        if (Statics.pause) {
+            InputEvent event1 = new InputEvent();
+            event1.setType(InputEvent.Type.touchDown);
+            pauseButton.fire(event1);
+
+            InputEvent event2 = new InputEvent();
+            event2.setType(InputEvent.Type.touchUp);
+            pauseButton.fire(event2);
+        }
+
+        
         stage.getRoot().setTouchable(Touchable.disabled);
         songPosition = minSongPosition;
         Statics.output.getSequencer().tick = 0;
         Statics.output.getSequencer().step = 0;
         Statics.exportFile = Statics.getFileHandle("supersecrettempfile.pcm");
         Statics.exportFile.delete();
-        Statics.pause = false;
         Statics.export = true;
     }
 
