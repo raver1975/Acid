@@ -446,29 +446,99 @@ public class Acid implements ApplicationListener {
         });
 
 
-        TextButton deleteSongButton = new TextButton("Delete", skin);
-        deleteSongButton.setPosition(395, 465);
-        table.addActor(deleteSongButton);
-        deleteSongButton.addListener(new InputListener() {
+        TextButton inbutton = new TextButton("In", skin);
+        inbutton.setPosition(510, 465);
+        table.addActor(inbutton);
+        inbutton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
-                if (selectSongList.getSelectedIndex() > 0) {
-                    Dialog dialog = new Dialog("Delete song " + selectSongList.getSelected() + "?", skin) {
+                Gdx.input.getTextInput(new Input.TextInputListener() {
+                    @Override
+                    public void input(final String text) {
+                        Object o = null;
+                        try {
+                            o = Serializer.fromBase64(text);
+                            if (o == null || !(o instanceof SaveObject)) {
+                                return;
+                            }
+                        } catch (Exception e) {
+                            return;
+                        }
+
+
+                        Dialog dialog = new Dialog("Restore song from clipboard? ", skin) {
+
+                            @Override
+                            protected void result(Object object) {
+                                Boolean yes = (Boolean) object;
+                                if (yes) {
+                                    Object o = null;
+                                    try {
+                                        o = Serializer.fromBase64(text);
+                                        if (o != null && o instanceof SaveObject) {
+                                            boolean free = Statics.free;
+                                            boolean rec = Statics.recording;
+                                            Statics.free = false;
+                                            Statics.recording = false;
+                                            if (o != null) {
+                                                ((SaveObject) o).restore(Acid.this);
+                                            }
+                                            Statics.free = free;
+                                            Statics.recording = rec;
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+
+                            @Override
+                            public Dialog show(Stage stage) {
+                                return super.show(stage);
+                            }
+
+                            @Override
+                            public void cancel() {
+                                super.cancel();
+                            }
+
+                            @Override
+                            public float getPrefHeight() {
+                                return 50f;
+                            }
+                        };
+                        dialog.button("Yes", true);
+                        dialog.button("No", false);
+                        dialog.show(stage);
+
+                    }
+
+
+                    @Override
+                    public void canceled() {
+
+                    }
+                }, "Import Song from clipboard.", Gdx.app.getClipboard().
+
+                        getContents(), "");
+                return true;
+            }
+        });
+
+        TextButton outbutton = new TextButton("Out", skin);
+        outbutton.setPosition(535, 465);
+        table.addActor(outbutton);
+        outbutton.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                try {
+                    String out = Serializer.toBase64(new SaveObject(Acid.this));
+                    Gdx.app.getClipboard().setContents(out);
+                    Dialog dialog = new Dialog("Copied current song to clipboard. ", skin) {
 
                         @Override
                         protected void result(Object object) {
-                            boolean yes = (Boolean) object;
-                            if (yes) {
-                                fileList.remove(selectSongList.getSelected());
-                                try {
-                                    Serializer.save(fileList, "fiielist.ser");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                selectSongList.setItems(new Array<String>(fileList.toArray(new String[]{})));
-                            } else {
-                                return;
-                            }
                         }
 
                         @Override
@@ -486,28 +556,85 @@ public class Acid implements ApplicationListener {
                             return 50f;
                         }
                     };
-                    dialog.button("Yes", true);
-                    dialog.button("No", false);
-                    dialog.key(Input.Keys.ENTER, true);
-                    dialog.key(Input.Keys.ESCAPE, false);
+                    dialog.button("Ok", true);
                     dialog.show(stage);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
                 return true;
             }
         });
 
+        TextButton deleteSongButton = new TextButton("Delete", skin);
+        deleteSongButton.setPosition(395, 465);
+        table.addActor(deleteSongButton);
+        deleteSongButton.addListener(new
+
+                                             InputListener() {
+                                                 public boolean touchDown(InputEvent event, float x, float y,
+                                                                          int pointer, int button) {
+                                                     if (selectSongList.getSelectedIndex() > 0) {
+                                                         Dialog dialog = new Dialog("Delete song " + selectSongList.getSelected() + "?", skin) {
+
+                                                             @Override
+                                                             protected void result(Object object) {
+                                                                 boolean yes = (Boolean) object;
+                                                                 if (yes) {
+                                                                     fileList.remove(selectSongList.getSelected());
+                                                                     try {
+                                                                         Serializer.save(fileList, "fiielist.ser");
+                                                                     } catch (Exception e) {
+                                                                         e.printStackTrace();
+                                                                     }
+                                                                     selectSongList.setItems(new Array<String>(fileList.toArray(new String[]{})));
+                                                                 } else {
+                                                                     return;
+                                                                 }
+                                                             }
+
+                                                             @Override
+                                                             public Dialog show(Stage stage) {
+                                                                 return super.show(stage);
+                                                             }
+
+                                                             @Override
+                                                             public void cancel() {
+                                                                 super.cancel();
+                                                             }
+
+                                                             @Override
+                                                             public float getPrefHeight() {
+                                                                 return 50f;
+                                                             }
+                                                         };
+                                                         dialog.button("Yes", true);
+                                                         dialog.button("No", false);
+                                                         dialog.key(Input.Keys.ENTER, true);
+                                                         dialog.key(Input.Keys.ESCAPE, false);
+                                                         dialog.show(stage);
+                                                     }
+                                                     return true;
+                                                 }
+                                             });
+
         CurrentDrumActor currentDrumActor = new CurrentDrumActor(100, 100);
         currentDrumActor.setPosition(20, 185);
-        currentDrumActor.addListener(new ActorGestureListener() {
+        currentDrumActor.addListener(new
 
-            @Override
-            public void tap(InputEvent event, float stageX, float stageY, int count, int button) {
-                DrumData.popStack();
-            }
-        });
+                                             ActorGestureListener() {
+
+                                                 @Override
+                                                 public void tap(InputEvent event, float stageX, float stageY, int count, int button) {
+                                                     DrumData.popStack();
+                                                 }
+                                             });
         table.addActor(currentDrumActor);
 
-        drumDataArrayListLabel = new Label("", skin);
+        drumDataArrayListLabel = new
+
+                Label("", skin);
         drumDataArrayListLabel.setPosition(10, 180);
         drumDataArrayListLabel.setFontScale(1f);
         table.addActor(drumDataArrayListLabel);
@@ -515,37 +642,45 @@ public class Acid implements ApplicationListener {
         TextButton pushtoDrum = new TextButton(">", skin);
         pushtoDrum.setPosition(110, 195);
         table.addActor(pushtoDrum);
-        pushtoDrum.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
+        pushtoDrum.addListener(new
+
+                                       InputListener() {
+                                           public boolean touchDown(InputEvent event, float x, float y,
+                                                                    int pointer, int button) {
 //                SequencerData.undo();
-                if (DrumData.peekStack() != null) DrumData.peekStack().refresh();
-                return true;
-            }
-        });
+                                               if (DrumData.peekStack() != null) DrumData.peekStack().refresh();
+                                               return true;
+                                           }
+                                       });
         TextButton popFromDrum = new TextButton("<", skin);
         popFromDrum.setPosition(110, 250);
         table.addActor(popFromDrum);
-        popFromDrum.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                DrumData.pushStack(new DrumData());
-                return true;
-            }
-        });
+        popFromDrum.addListener(new
+
+                                        InputListener() {
+                                            public boolean touchDown(InputEvent event, float x, float y,
+                                                                     int pointer, int button) {
+                                                DrumData.pushStack(new DrumData());
+                                                return true;
+                                            }
+                                        });
 
         CurrentKnobsActor currentKnobsActor = new CurrentKnobsActor(80, 70);
         currentKnobsActor.setPosition(460, 200);
         table.addActor(currentKnobsActor);
-        currentKnobsActor.addListener(new ActorGestureListener() {
+        currentKnobsActor.addListener(new
 
-            @Override
-            public void tap(InputEvent event, float stageX, float stageY, int count, int button) {
-                KnobData.popStack();
-            }
-        });
+                                              ActorGestureListener() {
 
-        knobDataArrayListLabel = new Label("", skin);
+                                                  @Override
+                                                  public void tap(InputEvent event, float stageX, float stageY, int count, int button) {
+                                                      KnobData.popStack();
+                                                  }
+                                              });
+
+        knobDataArrayListLabel = new
+
+                Label("", skin);
         knobDataArrayListLabel.setPosition(450, 195);
         knobDataArrayListLabel.setFontScale(1f);
         table.addActor(knobDataArrayListLabel);
@@ -554,41 +689,47 @@ public class Acid implements ApplicationListener {
         TextButton pushtoKnob = new TextButton(" v ", skin);
         pushtoKnob.setPosition(470, 170);
         table.addActor(pushtoKnob);
-        pushtoKnob.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                if (KnobData.peekStack() != null) KnobData.peekStack().refresh();
-                return true;
-            }
-        });
+        pushtoKnob.addListener(new
+
+                                       InputListener() {
+                                           public boolean touchDown(InputEvent event, float x, float y,
+                                                                    int pointer, int button) {
+                                               if (KnobData.peekStack() != null) KnobData.peekStack().refresh();
+                                               return true;
+                                           }
+                                       });
         TextButton popFromKnob = new TextButton(" ^ ", skin);
         popFromKnob.setPosition(510, 170);
         table.addActor(popFromKnob);
-        popFromKnob.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                KnobData.pushStack(KnobData.factory());
-                return true;
-            }
-        });
+        popFromKnob.addListener(new
+
+                                        InputListener() {
+                                            public boolean touchDown(InputEvent event, float x, float y,
+                                                                     int pointer, int button) {
+                                                KnobData.pushStack(KnobData.factory());
+                                                return true;
+                                            }
+                                        });
 
 
         BelowKnobsActor belowKnobsActor = new BelowKnobsActor(80, 70);
         belowKnobsActor.setPosition(460, 100);
-        belowKnobsActor.addListener(new ActorGestureListener() {
+        belowKnobsActor.addListener(new
+
+                                            ActorGestureListener() {
 
 //            @Override
 //            public void tap(InputEvent event,float stageX, float stageY, int count, int button){
 //                DrumData.undo();
 //            }
 
-            @Override
-            public void fling(InputEvent event, float velocityX, float velocityY, int button) {
+                                                @Override
+                                                public void fling(InputEvent event, float velocityX, float velocityY, int button) {
 //                System.out.println("swipe!! " + velocityX + ", " + velocityY);
 //                if (velocityX > 0) KnobData.redo();
 //                if (velocityX < 0) KnobData.undo();
-            }
-        });
+                                                }
+                                            });
         table.addActor(belowKnobsActor);
 //        final Touchpad touch1 = new Touchpad(0, skin);
 //        touch1.setBounds(15, 15, 100, 100);
@@ -618,54 +759,105 @@ public class Acid implements ApplicationListener {
 
         table.setPosition(Gdx.graphics.getWidth() / 2 - 280,
                 Gdx.graphics.getHeight() / 2 - 290);
-        ((OrthographicCamera) stage.getCamera()).zoom -= .30f;
+        ((OrthographicCamera) stage.getCamera()).zoom -= .40f;
         newZoom = ((OrthographicCamera) stage.getCamera()).zoom;
         KnobActor[] mya = new KnobActor[10];
-        mya[0] = new KnobActor("Tune", 0);
+        mya[0] = new
+
+                KnobActor("Tune", 0);
         table.addActor(mya[0]);
-        mya[1] = new KnobActor("Cut", 1);
+        mya[1] = new
+
+                KnobActor("Cut", 1);
         table.addActor(mya[1]);
-        mya[2] = new KnobActor("Res", 2);
+        mya[2] = new
+
+                KnobActor("Res", 2);
         table.addActor(mya[2]);
-        mya[3] = new KnobActor("Env", 3);
+        mya[3] = new
+
+                KnobActor("Env", 3);
         table.addActor(mya[3]);
-        mya[4] = new KnobActor("Dec", 4);
+        mya[4] = new
+
+                KnobActor("Dec", 4);
         table.addActor(mya[4]);
-        mya[5] = new KnobActor("Acc", 5);
+        mya[5] = new
+
+                KnobActor("Acc", 5);
         table.addActor(mya[5]);
-        mya[6] = new KnobActor("bpm", 6);
+        mya[6] = new
+
+                KnobActor("bpm", 6);
         table.addActor(mya[6]);
-        mya[7] = new KnobActor("Vol", 7);
+        mya[7] = new
+
+                KnobActor("Vol", 7);
         table.addActor(mya[7]);
-        mya[8] = new KnobActor("Delay", 8);
+        mya[8] = new
+
+                KnobActor("Delay", 8);
         table.addActor(mya[8]);
-        mya[9] = new KnobActor("Fack", 9);
+        mya[9] = new
+
+                KnobActor("Fack", 9);
         table.addActor(mya[9]);
 
 
         //bottom row of knobs
         int hj = 130;
         int gh = 125;
-        mya[0].setPosition(hj, gh);
-        mya[1].setPosition(hj += 56, gh);
-        mya[2].setPosition(hj += 56, gh);
-        mya[3].setPosition(hj += 56, gh);
-        mya[4].setPosition(hj += 56, gh);
-        mya[5].setPosition(hj += 56, gh);
+        mya[0].
 
-        mya[6].setPosition(40, 454);
-        mya[7].setPosition(85, 454);
+                setPosition(hj, gh);
 
-        mya[8].setPosition(40, 398);
-        mya[9].setPosition(85, 398);
+        mya[1].
+
+                setPosition(hj += 56, gh);
+
+        mya[2].
+
+                setPosition(hj += 56, gh);
+
+        mya[3].
+
+                setPosition(hj += 56, gh);
+
+        mya[4].
+
+                setPosition(hj += 56, gh);
+
+        mya[5].
+
+                setPosition(hj += 56, gh);
+
+        mya[6].
+
+                setPosition(40, 454);
+
+        mya[7].
+
+                setPosition(85, 454);
+
+        mya[8].
+
+                setPosition(40, 398);
+
+        mya[9].
+
+                setPosition(85, 398);
 
 
-        drumMatrix = new DrumActor();
+        drumMatrix = new
+
+                DrumActor();
         table.addActor(drumMatrix);
         drumMatrix.setScale(drumsSynthScale);
         drumMatrix.setPosition(130, 178);
 
-        sequenceMatrix = new SequenceActor();
+        sequenceMatrix = new
+
+                SequenceActor();
         table.addActor(sequenceMatrix);
         sequenceMatrix.setScale(1f - drumsSynthScale);
         sequenceMatrix.setPosition(130, 178);
@@ -674,23 +866,29 @@ public class Acid implements ApplicationListener {
         final TextButton prevMin = new TextButton(" < ", skin);
         table.addActor(prevMin);
         prevMin.setPosition(140, 95);
-        prevMin.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                if (minSongPosition > 0) {
-                    minSongPosition--;
-                }
-                return true;
-            }
-        });
+        prevMin.addListener(new
+
+                                    InputListener() {
+                                        public boolean touchDown(InputEvent event, float x, float y,
+                                                                 int pointer, int button) {
+                                            if (minSongPosition > 0) {
+                                                minSongPosition--;
+                                            }
+                                            return true;
+                                        }
+                                    });
 
 
-        minSongLengthLabel = new Label("", skin);
+        minSongLengthLabel = new
+
+                Label("", skin);
         minSongLengthLabel.setPosition(166, 105);
         minSongLengthLabel.setFontScale(1f);
         table.addActor(minSongLengthLabel);
 
-        minSongLengthCaption = new Label("Start", skin);
+        minSongLengthCaption = new
+
+                Label("Start", skin);
         minSongLengthCaption.setPosition(166, 75);
         minSongLengthCaption.setFontScale(.75f);
         table.addActor(minSongLengthCaption);
@@ -699,35 +897,44 @@ public class Acid implements ApplicationListener {
         final TextButton nextMin = new TextButton(" > ", skin);
         table.addActor(nextMin);
         nextMin.setPosition(195, 95);
-        nextMin.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                if (minSongPosition < maxSongPosition && minSongPosition < 998) minSongPosition++;
+        nextMin.addListener(new
 
-                return true;
-            }
-        });
+                                    InputListener() {
+                                        public boolean touchDown(InputEvent event, float x, float y,
+                                                                 int pointer, int button) {
+                                            if (minSongPosition < maxSongPosition && minSongPosition < 998)
+                                                minSongPosition++;
+
+                                            return true;
+                                        }
+                                    });
 
 
         final TextButton prev = new TextButton(" < ", skin);
         table.addActor(prev);
         prev.setPosition(245, 95);
-        prev.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                if (songPosition > minSongPosition) {
-                    swapPattern(songPosition, --songPosition);
-                }
-                return true;
-            }
-        });
+        prev.addListener(new
 
-        songLengthLabel = new Label("", skin);
+                                 InputListener() {
+                                     public boolean touchDown(InputEvent event, float x, float y,
+                                                              int pointer, int button) {
+                                         if (songPosition > minSongPosition) {
+                                             swapPattern(songPosition, --songPosition);
+                                         }
+                                         return true;
+                                     }
+                                 });
+
+        songLengthLabel = new
+
+                Label("", skin);
         songLengthLabel.setPosition(270, 107);
         songLengthLabel.setFontScale(1.5f);
         table.addActor(songLengthLabel);
 
-        songLengthCaption = new Label("Current", skin);
+        songLengthCaption = new
+
+                Label("Current", skin);
         songLengthCaption.setPosition(268, 75);
         songLengthCaption.setFontScale(.75f);
         table.addActor(songLengthCaption);
@@ -735,34 +942,42 @@ public class Acid implements ApplicationListener {
         final TextButton next = new TextButton(" > ", skin);
         table.addActor(next);
         next.setPosition(313, 95);
-        next.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                if (songPosition == maxSongPosition && songPosition < 998) return true;
-                swapPattern(songPosition, ++songPosition);
-                return true;
-            }
-        });
+        next.addListener(new
+
+                                 InputListener() {
+                                     public boolean touchDown(InputEvent event, float x, float y,
+                                                              int pointer, int button) {
+                                         if (songPosition == maxSongPosition && songPosition < 998) return true;
+                                         swapPattern(songPosition, ++songPosition);
+                                         return true;
+                                     }
+                                 });
 
         final TextButton prevMax = new TextButton(" < ", skin);
         table.addActor(prevMax);
         prevMax.setPosition(363, 95);
-        prevMax.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                if (maxSongPosition > 0 && maxSongPosition > minSongPosition) {
-                    maxSongPosition--;
-                }
-                return true;
-            }
-        });
+        prevMax.addListener(new
 
-        maxSongLengthLabel = new Label("", skin);
+                                    InputListener() {
+                                        public boolean touchDown(InputEvent event, float x, float y,
+                                                                 int pointer, int button) {
+                                            if (maxSongPosition > 0 && maxSongPosition > minSongPosition) {
+                                                maxSongPosition--;
+                                            }
+                                            return true;
+                                        }
+                                    });
+
+        maxSongLengthLabel = new
+
+                Label("", skin);
         maxSongLengthLabel.setPosition(389, 105);
         maxSongLengthLabel.setFontScale(1f);
         table.addActor(maxSongLengthLabel);
 
-        maxSongLengthCaption = new Label("End", skin);
+        maxSongLengthCaption = new
+
+                Label("End", skin);
         maxSongLengthCaption.setPosition(394, 75);
         maxSongLengthCaption.setFontScale(.75f);
         table.addActor(maxSongLengthCaption);
@@ -770,13 +985,15 @@ public class Acid implements ApplicationListener {
         final TextButton nextMax = new TextButton(" > ", skin);
         table.addActor(nextMax);
         nextMax.setPosition(418, 95);
-        nextMax.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                if (maxSongPosition < 998) maxSongPosition++;
-                return true;
-            }
-        });
+        nextMax.addListener(new
+
+                                    InputListener() {
+                                        public boolean touchDown(InputEvent event, float x, float y,
+                                                                 int pointer, int button) {
+                                            if (maxSongPosition < 998) maxSongPosition++;
+                                            return true;
+                                        }
+                                    });
 
 
         final TextButton recButton = new TextButton("Rec", skin);
@@ -784,34 +1001,42 @@ public class Acid implements ApplicationListener {
         recButton.setColor(recButton.isChecked() ? Color.WHITE : Color.RED);
         table.addActor(recButton);
         recButton.setPosition(60f, 95);
-        recButton.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
+        recButton.addListener(new
 
-                                     int pointer, int button) {
-                recButton.setColor(recButton.isChecked() ? Color.RED : Color.WHITE);
-                Statics.recording = recButton.isChecked();
-                return true;
-            }
-        });
+                                      InputListener() {
+                                          public boolean touchDown(InputEvent event, float x, float y,
+
+                                                                   int pointer, int button) {
+                                              recButton.setColor(recButton.isChecked() ? Color.RED : Color.WHITE);
+                                              Statics.recording = recButton.isChecked();
+                                              return true;
+                                          }
+                                      });
 
 
         final TextButton prevStep = new TextButton(" < ", skin);
         table.addActor(prevStep);
         prevStep.setPosition(35f, 145);
-        prevStep.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
+        prevStep.addListener(new
 
-                                     int pointer, int button) {
-                Statics.output.getSequencer().step = (16 + Statics.output.getSequencer().step - 1) % 16;
-                return true;
-            }
-        });
-        stepLabel = new Label("", skin);
+                                     InputListener() {
+                                         public boolean touchDown(InputEvent event, float x, float y,
+
+                                                                  int pointer, int button) {
+                                             Statics.output.getSequencer().step = (16 + Statics.output.getSequencer().step - 1) % 16;
+                                             return true;
+                                         }
+                                     });
+        stepLabel = new
+
+                Label("", skin);
         stepLabel.setPosition(60, 158);
         stepLabel.setFontScale(1.5f);
         table.addActor(stepLabel);
 
-        stepCaption = new Label("step", skin);
+        stepCaption = new
+
+                Label("step", skin);
         stepCaption.setPosition(65, 125);
         stepCaption.setFontScale(.75f);
         table.addActor(stepCaption);
@@ -820,88 +1045,102 @@ public class Acid implements ApplicationListener {
         final TextButton nextStep = new TextButton(" > ", skin);
         table.addActor(nextStep);
         nextStep.setPosition(90f, 145);
-        nextStep.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
+        nextStep.addListener(new
 
-                                     int pointer, int button) {
-                Statics.output.getSequencer().step = (Statics.output.getSequencer().step + 1) % 16;
-                return true;
-            }
-        });
+                                     InputListener() {
+                                         public boolean touchDown(InputEvent event, float x, float y,
+
+                                                                  int pointer, int button) {
+                                             Statics.output.getSequencer().step = (Statics.output.getSequencer().step + 1) % 16;
+                                             return true;
+                                         }
+                                     });
 
 
-        pauseButton = new TextButton(" || ", skin);
+        pauseButton = new
+
+                TextButton(" || ", skin);
         pauseButton.setChecked(false);
         table.addActor(pauseButton);
         pauseButton.setPosition(100f, 95);
-        pauseButton.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (!Output.isPaused()) Output.pause();
-                else Output.resume();
-                pauseButton.setColor(Output.isPaused() ? Color.RED : Color.WHITE);
-                return true;
-            }
-        });
+        pauseButton.addListener(new
 
-        waveButton = new TextButton(" Square ", skin);
+                                        InputListener() {
+                                            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                                                if (!Output.isPaused()) Output.pause();
+                                                else Output.resume();
+                                                pauseButton.setColor(Output.isPaused() ? Color.RED : Color.WHITE);
+                                                return true;
+                                            }
+                                        });
+
+        waveButton = new
+
+                TextButton(" Square ", skin);
         table.addActor(waveButton);
         waveButton.setPosition(520f, 280);
-        waveButton.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                Statics.output.getSequencer().bass.switchWaveform();
-                waveButton.setChecked(Statics.waveSquare);
-                waveButton.setColor(Statics.waveSquare ? Color.WHITE : Color.RED);
-                waveButton.setText(Statics.waveSquare ? " Square " : " Saw ");
-                waveButton.invalidate();
-                return true;
-            }
-        });
+        waveButton.addListener(new
+
+                                       InputListener() {
+                                           public boolean touchDown(InputEvent event, float x, float y,
+                                                                    int pointer, int button) {
+                                               Statics.output.getSequencer().bass.switchWaveform();
+                                               waveButton.setChecked(Statics.waveSquare);
+                                               waveButton.setColor(Statics.waveSquare ? Color.WHITE : Color.RED);
+                                               waveButton.setText(Statics.waveSquare ? " Square " : " Saw ");
+                                               waveButton.invalidate();
+                                               return true;
+                                           }
+                                       });
 
         TextButton randomButton = new TextButton("Random", skin);
         table.addActor(randomButton);
         randomButton.setPosition(470, 340);
-        randomButton.addListener(new InputListener() {
-            //            public void touchUp(InputEvent event, float x, float y,
+        randomButton.addListener(new
+
+                                         InputListener() {
+                                             //            public void touchUp(InputEvent event, float x, float y,
 //                                     int pointer, int button) {
 //                new KnobData();
 //            }
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
+                                             public boolean touchDown(InputEvent event, float x, float y,
+                                                                      int pointer, int button) {
 
-                if (drumsSelected) {
-                    Statics.output.getSequencer().randomizeRhythm();
-                } else {
-                    Statics.output.getSequencer().bass.randomize();
-                    Statics.output.getSequencer().randomizeSequence();
-                    KnobImpl.refill();
+                                                 if (drumsSelected) {
+                                                     Statics.output.getSequencer().randomizeRhythm();
+                                                 } else {
+                                                     Statics.output.getSequencer().bass.randomize();
+                                                     Statics.output.getSequencer().randomizeSequence();
+                                                     KnobImpl.refill();
 
-                }
-                return true;
-            }
-        });
+                                                 }
+                                                 return true;
+                                             }
+                                         });
 
         TextButton clearButton = new TextButton("Clear", skin);
         table.addActor(clearButton);
         clearButton.setPosition(470, 370);
-        clearButton.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                if (drumsSelected) {
-                    for (int i = 0; i < Statics.output.getSequencer().rhythm.length; i++) {
-                        for (int j = 0; j < Statics.output.getSequencer().rhythm[0].length; j++) {
-                            Statics.output.getSequencer().rhythm[i][j] = 0;
-                        }
-                    }
-                } else {
-                    for (int i = 0; i < 16; i++) {
-                        Statics.output.getSequencer().bassline.pause[i] = true;
-                    }
-                }
+        clearButton.addListener(new
 
-                return true;
-            }
-        });
+                                        InputListener() {
+                                            public boolean touchDown(InputEvent event, float x, float y,
+                                                                     int pointer, int button) {
+                                                if (drumsSelected) {
+                                                    for (int i = 0; i < Statics.output.getSequencer().rhythm.length; i++) {
+                                                        for (int j = 0; j < Statics.output.getSequencer().rhythm[0].length; j++) {
+                                                            Statics.output.getSequencer().rhythm[i][j] = 0;
+                                                        }
+                                                    }
+                                                } else {
+                                                    for (int i = 0; i < 16; i++) {
+                                                        Statics.output.getSequencer().bassline.pause[i] = true;
+                                                    }
+                                                }
+
+                                                return true;
+                                            }
+                                        });
 
         final TextButton drumsButton = new TextButton("Drums", skin);
         table.addActor(drumsButton);
@@ -911,22 +1150,28 @@ public class Acid implements ApplicationListener {
         final LightActor drumsLight = new LightActor(5, null, true);
         table.addActor(drumsLight);
         drumsLight.setPosition(455, 318);
-        drumsLight.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                drumsLight.on = !drumsLight.on;
-                Statics.drumsOn = drumsLight.on;
-                return true;
-            }
-        });
+        drumsLight.addListener(new
 
-        BpmLabel = new Label("", skin);
+                                       InputListener() {
+                                           public boolean touchDown(InputEvent event, float x, float y,
+                                                                    int pointer, int button) {
+                                               drumsLight.on = !drumsLight.on;
+                                               Statics.drumsOn = drumsLight.on;
+                                               return true;
+                                           }
+                                       });
+
+        BpmLabel = new
+
+                Label("", skin);
         BpmLabel.setPosition(52, 453);
         BpmLabel.setFontScale(.5f);
         table.addActor(BpmLabel);
 
 
-        if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
+        if (Gdx.app.getType() == Application.ApplicationType.Desktop)
+
+        {
             TextButton zi = new TextButton("Zoom +", skin);
             table.addActor(zi);
             zi.setPosition(470, 430);
@@ -950,6 +1195,7 @@ public class Acid implements ApplicationListener {
                 }
             });
         }
+
         ;
 
         final TextButton synthButton = new TextButton("Synth", skin);
@@ -957,45 +1203,55 @@ public class Acid implements ApplicationListener {
         synthButton.setColor(drumsSelected ? Color.WHITE : Color.RED);
         drumsButton.setColor(drumsSelected ? Color.RED : Color.WHITE);
         synthButton.setPosition(470, 280);
-        synthButton.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                drumsSelected = false;
-                synthButton.setChecked(drumsSelected);
-                synthButton.setColor(drumsSelected ? Color.WHITE : Color.RED);
-                drumsButton.setColor(drumsSelected ? Color.RED : Color.WHITE);
-                return true;
-            }
-        });
-        drumsButton.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                drumsSelected = true;
-                synthButton.setChecked(drumsSelected);
-                synthButton.setColor(drumsSelected ? Color.WHITE : Color.RED);
-                drumsButton.setColor(drumsSelected ? Color.RED : Color.WHITE);
-                return true;
-            }
-        });
+        synthButton.addListener(new
+
+                                        InputListener() {
+                                            public boolean touchDown(InputEvent event, float x, float y,
+                                                                     int pointer, int button) {
+                                                drumsSelected = false;
+                                                synthButton.setChecked(drumsSelected);
+                                                synthButton.setColor(drumsSelected ? Color.WHITE : Color.RED);
+                                                drumsButton.setColor(drumsSelected ? Color.RED : Color.WHITE);
+                                                return true;
+                                            }
+                                        });
+        drumsButton.addListener(new
+
+                                        InputListener() {
+                                            public boolean touchDown(InputEvent event, float x, float y,
+                                                                     int pointer, int button) {
+                                                drumsSelected = true;
+                                                synthButton.setChecked(drumsSelected);
+                                                synthButton.setColor(drumsSelected ? Color.WHITE : Color.RED);
+                                                drumsButton.setColor(drumsSelected ? Color.RED : Color.WHITE);
+                                                return true;
+                                            }
+                                        });
 
 
         final LightActor synthLight = new LightActor(5, null, true);
         table.addActor(synthLight);
         synthLight.setPosition(455, 288);
-        synthLight.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y,
-                                     int pointer, int button) {
-                synthLight.on = !synthLight.on;
-                Statics.synthOn = synthLight.on;
-                return true;
-            }
-        });
+        synthLight.addListener(new
 
-        SequencerData.pushStack(new SequencerData());
-        DrumData.pushStack(new DrumData());
+                                       InputListener() {
+                                           public boolean touchDown(InputEvent event, float x, float y,
+                                                                    int pointer, int button) {
+                                               synthLight.on = !synthLight.on;
+                                               Statics.synthOn = synthLight.on;
+                                               return true;
+                                           }
+                                       });
+
+        SequencerData.pushStack(new
+
+                SequencerData());
+        DrumData.pushStack(new
+
+                DrumData());
         KnobData.pushStack(KnobData.factory());
 
-        newZoom += .10f;
+        newZoom += .30;
     }
 
 
@@ -1136,7 +1392,6 @@ public class Acid implements ApplicationListener {
 
     @Override
     public void render() {
-
         Color c = Color.BLACK;
         Gdx.gl.glClearColor(c.r, c.g, c.b, c.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

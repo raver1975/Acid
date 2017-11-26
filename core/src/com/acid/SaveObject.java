@@ -37,11 +37,12 @@ public class SaveObject implements Serializable {
         acid.sequencerDataArrayList = sequencerDataArrayList;
         acid.drumDataArrayList = drumDataArrayList;
         acid.knobsArrayList = knobsArrayList;
-        acid.swapPattern(songPosition,songPosition);
 
         acid.songPosition = songPosition;
         acid.maxSongPosition = maxSongPosition;
         acid.minSongPosition = minSongPosition;
+
+        acid.swapPattern(songPosition,songPosition);
 
         Statics.output.getSequencer().setBpm(bpm);
         Output.volume=vol;
