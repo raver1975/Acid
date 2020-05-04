@@ -22,6 +22,7 @@ public class Output implements Runnable {
     private static Delay delay;
     private static boolean paused = false;
     private AudioDevice ad;
+    private static boolean newAD;
 
     public static double getVolume() {
         return volume;
@@ -82,10 +83,20 @@ public class Output implements Runnable {
 
     public static void resume() {
         paused = false;
+        newAD = true;
+
+
     }
 
     public void run() {
         while (running) {
+            if (newAD) {
+                newAD = false;
+                try {
+                    ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
+                } catch (Exception e) {
+                }
+            }
             if (paused) {
                 try {
                     Thread.sleep(25L);
@@ -141,7 +152,7 @@ public class Output implements Runnable {
                 buffer[i + 1] = (float) (right * volume);
             }
             if (Statics.export) {
-                if (Statics.exportFile!=null)Statics.exportFile.writeBytes(FloatArray2ByteArray(buffer), true);
+                if (Statics.exportFile != null) Statics.exportFile.writeBytes(FloatArray2ByteArray(buffer), true);
             } else {
                 if (ad == null) {
                     ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
@@ -166,7 +177,10 @@ public class Output implements Runnable {
 
     public void dispose() {
         running = false;
-        //ad.dispose();
+        try {
+            ad.dispose();
+        } catch (Exception e) {
+        }
     }
 
     public Synthesizer getTrack(int i) {
