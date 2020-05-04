@@ -855,14 +855,14 @@ public class Acid implements ApplicationListener {
         minSongLengthCaption = new
 
                 Label("Start", skin);
-        minSongLengthCaption.setPosition(166, 75);
+        minSongLengthCaption.setPosition(168, 75);
         minSongLengthCaption.setFontScale(.75f);
         table.addActor(minSongLengthCaption);
 
 
         final TextButton nextMin = new TextButton(" > ", skin);
         table.addActor(nextMin);
-        nextMin.setPosition(195, 95);
+        nextMin.setPosition(200, 95);
         nextMin.addListener(new
 
                                     InputListener() {
@@ -901,13 +901,13 @@ public class Acid implements ApplicationListener {
         songLengthCaption = new
 
                 Label("Current", skin);
-        songLengthCaption.setPosition(268, 75);
+        songLengthCaption.setPosition(273, 75);
         songLengthCaption.setFontScale(.75f);
         table.addActor(songLengthCaption);
 
         final TextButton next = new TextButton(" > ", skin);
         table.addActor(next);
-        next.setPosition(313, 95);
+        next.setPosition(320, 95);
         next.addListener(new
 
                                  InputListener() {
@@ -950,7 +950,7 @@ public class Acid implements ApplicationListener {
 
         final TextButton nextMax = new TextButton(" > ", skin);
         table.addActor(nextMax);
-        nextMax.setPosition(418, 95);
+        nextMax.setPosition(423, 95);
         nextMax.addListener(new
 
                                     InputListener() {
