@@ -1626,6 +1626,12 @@ public class Acid implements ApplicationListener {
     @Override
     public void pause() {
         Output.pause();
+        try {
+            String out = Serializer.toBase64(new SaveObject(Acid.this));
+            Statics.getFileHandle("supersecrettempfile.txt").writeString(out,false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
