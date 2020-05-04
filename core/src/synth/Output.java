@@ -166,8 +166,7 @@ public class Output implements Runnable {
 
     public void dispose() {
         running = false;
-        ad.dispose();
-
+        //ad.dispose();
     }
 
     public Synthesizer getTrack(int i) {

@@ -375,16 +375,16 @@ public class AcidSequencer {
         }
 
         public int[] evolve(int[] beat, double[] weights) {
-            AcidSequencer.Markov strategies = new AcidSequencer.Markov(null,
+            Markov strategies = new Markov(null,
                     0.0D);
-            strategies.addKid(new AcidSequencer.Markov(new AdditionStrategy(),
+            strategies.addKid(new Markov(new AdditionStrategy(),
                     1.0D));
-            strategies.addKid(new AcidSequencer.Markov(new AccentStrategy(),
+            strategies.addKid(new Markov(new AccentStrategy(),
                     1.0D));
             strategies
-                    .addKid(new AcidSequencer.Markov(new MoveStrategy(), 1.0D));
+                    .addKid(new Markov(new MoveStrategy(), 1.0D));
 
-            AcidSequencer.SyncopationStrategy ss = (AcidSequencer.SyncopationStrategy) strategies
+            SyncopationStrategy ss = (SyncopationStrategy) strategies
                     .getKid().getContent();
             ss.execute(beat, weights);
 
@@ -392,20 +392,20 @@ public class AcidSequencer {
         }
 
         private class AccentStrategy implements
-                AcidSequencer.SyncopationStrategy {
+                SyncopationStrategy {
             private AccentStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                AcidSequencer.Markov m = new AcidSequencer.Markov(null, 0.0D);
+                Markov m = new Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] == 1) {
-                        m.addKid(new AcidSequencer.Markov(i,
+                        m.addKid(new Markov(i,
                                 weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    AcidSequencer.Markov m2 = m.getKid();
+                    Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 2;
                 }
                 return source;
@@ -413,54 +413,54 @@ public class AcidSequencer {
         }
 
         private class RemovalStrategy implements
-                AcidSequencer.SyncopationStrategy {
+                SyncopationStrategy {
             private RemovalStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                AcidSequencer.Markov m = new AcidSequencer.Markov(null, 0.0D);
+                Markov m = new Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] > 0) {
-                        m.addKid(new AcidSequencer.Markov(i,
+                        m.addKid(new Markov(i,
                                 1.0D / weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    AcidSequencer.Markov m2 = m.getKid();
+                    Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 0;
                 }
                 return source;
             }
         }
 
-        private class MoveStrategy implements AcidSequencer.SyncopationStrategy {
+        private class MoveStrategy implements SyncopationStrategy {
             private MoveStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                AcidSequencer.RhythmEvolver.RemovalStrategy remove = new AcidSequencer.RhythmEvolver.RemovalStrategy();
+                RemovalStrategy remove = new RemovalStrategy();
                 source = remove.execute(source, weights);
-                AcidSequencer.RhythmEvolver.AdditionStrategy add = new AcidSequencer.RhythmEvolver.AdditionStrategy();
+                AdditionStrategy add = new AdditionStrategy();
                 source = add.execute(source, weights);
                 return source;
             }
         }
 
         private class AdditionStrategy implements
-                AcidSequencer.SyncopationStrategy {
+                SyncopationStrategy {
             private AdditionStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                AcidSequencer.Markov m = new AcidSequencer.Markov(null, 0.0D);
+                Markov m = new Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] == 0) {
-                        m.addKid(new AcidSequencer.Markov(i,
+                        m.addKid(new Markov(i,
                                 weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    AcidSequencer.Markov m2 = m.getKid();
+                    Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 1;
                 }
                 return source;

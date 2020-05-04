@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -35,8 +36,8 @@ public class Acid implements ApplicationListener {
     static float rainbowFade = 0f;
     private static float rainbowFadeDir = .005f;
     private Label BpmLabel;
-    private com.acid.actors.SequenceActor sequenceMatrix;
-    private com.acid.actors.DrumActor drumMatrix;
+    private SequenceActor sequenceMatrix;
+    private DrumActor drumMatrix;
     private double[] knobs;
     private boolean drumsSelected;
     private float drumsSynthScale = 1.0f;
@@ -194,7 +195,7 @@ public class Acid implements ApplicationListener {
         Statics.output.getSequencer().drums.randomize();
         Statics.output.getSequencer().bass.randomize();
         Table table = new Table(skin);
-        table.setFillParent(true);
+//        table.setFillParent(true);
         stage.addActor(table);
 
         RectangleActor rectangleActor = new RectangleActor(330, 50);
@@ -757,95 +758,60 @@ public class Acid implements ApplicationListener {
 //        touch2.setPosition(20, 300);
 //        table.addActor(touch2);
 
-        table.setPosition(Gdx.graphics.getWidth() / 2 - 280,
-                Gdx.graphics.getHeight() / 2 - 290);
-        ((OrthographicCamera) stage.getCamera()).zoom -= .40f;
-        newZoom = ((OrthographicCamera) stage.getCamera()).zoom;
+        table.setPosition(Gdx.graphics.getWidth() / 2f - 280,
+                Gdx.graphics.getHeight() / 2f - 290);
+//        table.setSize(800,600);
+//        table.setSize(600,600);
+//        ((OrthographicCamera)stage.getCamera()).setToOrtho(false,Gdx.graphics.getHeight(),Gdx.graphics.getWidth());
+
+
+
+
         KnobActor[] mya = new KnobActor[10];
-        mya[0] = new
-
-                KnobActor("Tune", 0);
+        mya[0] = new KnobActor("Tune", 0);
         table.addActor(mya[0]);
-        mya[1] = new
-
-                KnobActor("Cut", 1);
+        mya[1] = new KnobActor("Cut", 1);
         table.addActor(mya[1]);
-        mya[2] = new
-
-                KnobActor("Res", 2);
+        mya[2] = new KnobActor("Res", 2);
         table.addActor(mya[2]);
-        mya[3] = new
-
-                KnobActor("Env", 3);
+        mya[3] = new KnobActor("Env", 3);
         table.addActor(mya[3]);
-        mya[4] = new
-
-                KnobActor("Dec", 4);
+        mya[4] = new KnobActor("Dec", 4);
         table.addActor(mya[4]);
-        mya[5] = new
-
-                KnobActor("Acc", 5);
+        mya[5] = new KnobActor("Acc", 5);
         table.addActor(mya[5]);
-        mya[6] = new
-
-                KnobActor("bpm", 6);
+        mya[6] = new KnobActor("bpm", 6);
         table.addActor(mya[6]);
-        mya[7] = new
-
-                KnobActor("Vol", 7);
+        mya[7] = new KnobActor("Vol", 7);
         table.addActor(mya[7]);
-        mya[8] = new
-
-                KnobActor("Delay", 8);
+        mya[8] = new KnobActor("Delay", 8);
         table.addActor(mya[8]);
-        mya[9] = new
-
-                KnobActor("Fack", 9);
+        mya[9] = new KnobActor("Fack", 9);
         table.addActor(mya[9]);
 
 
         //bottom row of knobs
         int hj = 130;
         int gh = 125;
-        mya[0].
+        mya[0].setPosition(hj, gh);
 
-                setPosition(hj, gh);
+        mya[1].setPosition(hj += 56, gh);
 
-        mya[1].
+        mya[2].setPosition(hj += 56, gh);
 
-                setPosition(hj += 56, gh);
+        mya[3].setPosition(hj += 56, gh);
 
-        mya[2].
+        mya[4].setPosition(hj += 56, gh);
 
-                setPosition(hj += 56, gh);
+        mya[5].setPosition(hj += 56, gh);
 
-        mya[3].
+        mya[6].setPosition(40, 454);
 
-                setPosition(hj += 56, gh);
+        mya[7].setPosition(85, 454);
 
-        mya[4].
+        mya[8].setPosition(40, 398);
 
-                setPosition(hj += 56, gh);
-
-        mya[5].
-
-                setPosition(hj += 56, gh);
-
-        mya[6].
-
-                setPosition(40, 454);
-
-        mya[7].
-
-                setPosition(85, 454);
-
-        mya[8].
-
-                setPosition(40, 398);
-
-        mya[9].
-
-                setPosition(85, 398);
+        mya[9].setPosition(85, 398);
 
 
         drumMatrix = new
@@ -1044,7 +1010,7 @@ public class Acid implements ApplicationListener {
 
         final TextButton nextStep = new TextButton(" > ", skin);
         table.addActor(nextStep);
-        nextStep.setPosition(90f, 145);
+        nextStep.setPosition(98f, 145);
         nextStep.addListener(new
 
                                      InputListener() {
@@ -1169,9 +1135,7 @@ public class Acid implements ApplicationListener {
         table.addActor(BpmLabel);
 
 
-        if (Gdx.app.getType() == Application.ApplicationType.Desktop)
-
-        {
+        if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
             TextButton zi = new TextButton("Zoom +", skin);
             table.addActor(zi);
             zi.setPosition(470, 430);
@@ -1251,7 +1215,25 @@ public class Acid implements ApplicationListener {
                 DrumData());
         KnobData.pushStack(KnobData.factory());
 
-        newZoom += .30;
+
+        while(actorIsVisible(table)) {
+            ((OrthographicCamera) stage.getCamera()).zoom-=.001f;
+            //System.out.println(((OrthographicCamera) stage.getCamera()).zoom);
+            stage.getCamera().update();
+        }
+        while(!actorIsVisible(table)) {
+            ((OrthographicCamera) stage.getCamera()).zoom+=.001f;
+            //System.out.println(((OrthographicCamera) stage.getCamera()).zoom);
+            stage.getCamera().update();
+        }
+        while(actorIsVisible(table)) {
+            ((OrthographicCamera) stage.getCamera()).zoom-=.001f;
+            //System.out.println(((OrthographicCamera) stage.getCamera()).zoom);
+            stage.getCamera().update();
+        }
+
+        newZoom =.75f*((OrthographicCamera)stage.getCamera()).zoom;
+        System.out.println(((OrthographicCamera) stage.getCamera()).zoom);
     }
 
 
@@ -1431,9 +1413,7 @@ public class Acid implements ApplicationListener {
             swapPattern(old, songPosition);
         }
 
-        if (Statics.output.getSequencer().step % 16 == 0 && prevStep % 16 == 15)
-
-        {
+        if (Statics.output.getSequencer().step % 16 == 0 && prevStep % 16 == 15) {
             int old = songPosition;
             if (!Statics.free) songPosition++;
             if (songPosition > maxSongPosition) {
@@ -1486,23 +1466,17 @@ public class Acid implements ApplicationListener {
         stepCaption.setColor(ColorHelper.rainbowLight());
 
         rainbowFade += rainbowFadeDir;
-        while (rainbowFade < 0f || rainbowFade > 1f)
-
-        {
+        while (rainbowFade < 0f || rainbowFade > 1f) {
             rainbowFadeDir = -rainbowFadeDir;
             rainbowFade += rainbowFadeDir;
 //            rainbowFadeDir+= (Math.random()-.5f)/10f;
         }
-        if (drumsSelected && drumsSynthScale < 1f)
-
-        {
+        if (drumsSelected && drumsSynthScale < 1f) {
             drumsSynthScale += .05f;
             drumMatrix.setScale(drumsSynthScale);
             sequenceMatrix.setScale(1.0f - drumsSynthScale);
         }
-        if (!drumsSelected && drumsSynthScale > 0f)
-
-        {
+        if (!drumsSelected && drumsSynthScale > 0f) {
             drumsSynthScale -= .05f;
             drumMatrix.setScale(drumsSynthScale);
             sequenceMatrix.setScale(1.0f - drumsSynthScale);
@@ -1643,4 +1617,27 @@ public class Acid implements ApplicationListener {
         Output.running = false;
         Statics.output.dispose();
     }
+
+    /**
+     * Returns if the actor is visible or not. Useful to implement 2D culling.
+     **/
+    public static boolean actorIsVisible(Actor actor) {
+        Vector2 actorStagePos = actor.localToStageCoordinates(new Vector2(0,0));
+        Vector2 actorStagePosTl = actor.localToStageCoordinates(new Vector2(
+                actor.getWidth(),
+                actor.getHeight()));
+
+        Vector3 actorPixelPos = new Vector3(actorStagePos.x, actorStagePos.y, 0);
+        Vector3 actorPixelPosTl = new Vector3(actorStagePosTl.x, actorStagePosTl.y, 0);
+
+        actorPixelPos = actor.getStage().getCamera().project(actorPixelPos);
+        actorPixelPosTl = actor.getStage().getCamera().project(actorPixelPosTl);
+
+        return !(actorPixelPosTl.x < 0 ||
+                actorPixelPos.x > Gdx.graphics.getWidth() ||
+                actorPixelPosTl.y < 0 ||
+                actorPixelPos.y > Gdx.graphics.getHeight()
+        );
+    }
+
 }

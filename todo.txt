@@ -1,3 +1,0 @@
-save knob settings
-arrange patterns in songs - use matrix Actor space in middle
-clean up left and right ui

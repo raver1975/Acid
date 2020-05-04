@@ -22,7 +22,7 @@
      this.note = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
  
      Harmony mt = new Harmony();
-     int[] arpeggio = mt.arpeggiate(mt.getNotesInChord(0, Harmony.SCALE_ALL[(int)(java.lang.Math.random() * Harmony.SCALE_ALL.length)], 2, 4, 0), 3);
+     int[] arpeggio = mt.arpeggiate(mt.getNotesInChord(0, Harmony.SCALE_ALL[(int)(Math.random() * Harmony.SCALE_ALL.length)], 2, 4, 0), 3);
    }
  
    public void clear()

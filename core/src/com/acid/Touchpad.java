@@ -34,7 +34,7 @@ public class Touchpad extends Widget {
 
 	/** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
 	public Touchpad (float deadzoneRadius, Skin skin) {
-		this(deadzoneRadius, skin.get(Touchpad.TouchpadStyle.class));
+		this(deadzoneRadius, skin.get(TouchpadStyle.class));
 	}
 
 	/** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
