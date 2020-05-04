@@ -10,8 +10,6 @@
             android:label="@string/app_name"
             android:theme="@style/GdxTheme">
         <activity
-
-
                 android:name="com.acid.AndroidLauncher"
                 android:label="@string/app_name"
                 android:screenOrientation="landscape"

@@ -73,7 +73,7 @@ public class Acid implements ApplicationListener {
 
     @Override
     public void create() {
-
+        Output.resume();
         final Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         stage = new Stage();
 
@@ -109,7 +109,7 @@ public class Acid implements ApplicationListener {
 
             @Override
             public boolean pan(float x, float y, float deltaX, float deltaY) {
-                ((OrthographicCamera) stage.getCamera()).translate(-deltaX / 2f, deltaY / 2f);
+                //((OrthographicCamera) stage.getCamera()).translate(-deltaX / 2f, deltaY / 2f);
                 return false;
             }
 
@@ -120,9 +120,7 @@ public class Acid implements ApplicationListener {
 
             @Override
             public boolean zoom(float initialDistance, float distance) {
-                newZoom = (initialDistance / distance) * ((OrthographicCamera) stage.getCamera()).zoom;
-                //                newZoom = (Math.abs(distance-initialDistance))/distance;
-//				((OrthographicCamera) stage.getCamera()).zoom =initialDistance/distance;
+//                newZoom = (initialDistance / distance) * ((OrthographicCamera) stage.getCamera()).zoom;
                 return true;
             }
 
@@ -133,7 +131,7 @@ public class Acid implements ApplicationListener {
 
             @Override
             public void pinchStop() {
-                newZoom = ((OrthographicCamera) stage.getCamera()).zoom;
+//                newZoom = ((OrthographicCamera) stage.getCamera()).zoom;
             }
         };
         GestureDetector gd = new GestureDetector(gl);
@@ -1234,6 +1232,29 @@ public class Acid implements ApplicationListener {
 
         newZoom =.75f*((OrthographicCamera)stage.getCamera()).zoom;
         System.out.println(((OrthographicCamera) stage.getCamera()).zoom);
+
+        FileHandle ff = Statics.getFileHandle("supersecrettempfile.txt");
+       if (ff.exists()){
+           String text=ff.readString();
+           Object o = null;
+           try {
+               o = Serializer.fromBase64(text);
+               if (o != null && o instanceof SaveObject) {
+                   boolean free = Statics.free;
+                   boolean rec = Statics.recording;
+                   Statics.free = false;
+                   Statics.recording = false;
+                   if (o != null) {
+                       ((SaveObject) o).restore(Acid.this);
+                   }
+                   Statics.free = free;
+                   Statics.recording = rec;
+               }
+           } catch (Exception e) {
+               e.printStackTrace();
+           }
+       }
+
     }
 
 
@@ -1365,12 +1386,7 @@ public class Acid implements ApplicationListener {
         }
     }
 
-    @Override
-    public void resume() {
-//		Output.running=true;
-        Output.resume();
 
-    }
 
     @Override
     public void render() {
@@ -1613,9 +1629,23 @@ public class Acid implements ApplicationListener {
     }
 
     @Override
+    public void resume() {
+//		Output.running=true;
+        Output.resume();
+
+    }
+
+    @Override
     public void dispose() {
+        try {
+            String out = Serializer.toBase64(new SaveObject(Acid.this));
+            Statics.getFileHandle("supersecrettempfile.txt").writeString(out,false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Output.running = false;
         Statics.output.dispose();
+
     }
 
     /**

@@ -84,8 +84,6 @@ public class Output implements Runnable {
     public static void resume() {
         paused = false;
         newAD = true;
-
-
     }
 
     public void run() {
