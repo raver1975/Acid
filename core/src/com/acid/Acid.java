@@ -27,6 +27,9 @@ import com.google.gson.JsonParser;
 
 
 //import de.sciss.jump3r.Main;
+//import org.jcodec.api.transcode.TranscodeMain;
+
+import io.nayuki.flac.app.EncodeWavToFlac;
 import jdk.nashorn.internal.parser.JSONParser;
 import synth.BasslineSynthesizer;
 import synth.Output;
@@ -1587,7 +1590,7 @@ public class Acid implements ApplicationListener {
 
             int samplerate = 44100;
             int channels = 2;
-            int bitspersample = 32;
+            int bitspersample = 16;
 
 
             writeString(output, "RIFF"); // chunk id
@@ -1595,7 +1598,8 @@ public class Acid implements ApplicationListener {
             writeString(output, "WAVE"); // format
             writeString(output, "fmt "); // subchunk 1 id
             writeInt(output, 16); // subchunk 1 size
-            writeShort(output, (short) 3); // audio format (1 = PCM)
+            writeShort(output, (short) 1); // audio format (1 = PCM)
+//            writeShort(output, (short) 3); // audio format (1 = PCM)
             writeShort(output, (short) channels); // number of channels
             writeInt(output, samplerate); // sample rate
             writeInt(output, samplerate * channels * bitspersample / 8); // byte rate   == SampleRate * NumChannels * BitsPerSample/8
@@ -1625,18 +1629,19 @@ public class Acid implements ApplicationListener {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-//                    System.out.println("starting mp3 conversion");
-//                    FileHandle mp3Temp=Statics.getFileHandle("mp3temp.mp3");
-//                    try {
-//                        convertWavFileToMp3File(rawFile.file().getAbsolutePath(),mp3Temp.file().getAbsolutePath());
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    System.out.println("finished mp3 conversion");
+                    FileHandle flac=Gdx.files.local(waveFile.nameWithoutExtension()+".flac");
+                    try {
+                        System.out.println("starting flac conversion");
+                        EncodeWavToFlac.flac(waveFile.file(),flac.file());
+                        System.out.println("finished flac conversion");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("error flac conversion");
+                    }
                     System.out.println("starting wav upload");
                     try {
-                        uploadFile(waveFile.readBytes(),waveFile.name());
-//                        upoadFile(mp3Temp.readBytes());
+                        uploadFile(flac.readBytes(),flac.name());
+//                        uploadFile(waveFile.readBytes());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

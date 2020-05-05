@@ -150,7 +150,8 @@ public class Output implements Runnable {
                 buffer[i + 1] = (float) (right * volume);
             }
             if (Statics.export) {
-                if (Statics.exportFile != null) Statics.exportFile.writeBytes(FloatArray2ByteArray(buffer), true);
+                if (Statics.exportFile != null)
+                    Statics.exportFile.writeBytes(FloatArray2ByteArray(buffer), true);
             } else {
                 if (ad == null) {
                     ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
@@ -163,11 +164,12 @@ public class Output implements Runnable {
 
 
     public static byte[] FloatArray2ByteArray(float[] values) {
-        ByteBuffer buffer = ByteBuffer.allocate(4 * values.length);
+        ByteBuffer buffer = ByteBuffer.allocate(2 * values.length);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
-
+        float mult = 32767.0f;
         for (float value : values) {
-            buffer.putFloat(value);
+//            buffer.putFloat(value);
+            buffer.putShort((short) (value * mult));
         }
 
         return buffer.array();

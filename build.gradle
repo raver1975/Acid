@@ -75,6 +75,7 @@ project(":core") {
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation 'com.google.code.gson:gson:2.8.6'
+//        implementation 'com.github.nwaldispuehl:java-lame:master-SNAPSHOT'
 //        compile group: 'de.sciss', name: 'jump3r', version: '1.0.5'
 //        api "com.github.ipfs:java-ipfs-http-client:1.2.3"
 //        implementation 'io.textile:ipfslite:0.1.4'
