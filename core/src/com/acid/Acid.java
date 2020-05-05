@@ -1623,7 +1623,7 @@ public class Acid implements ApplicationListener {
                 if (Gdx.files.isExternalStorageAvailable()){
                     FileHandle ext=Gdx.files.external(waveFile.name());
                     ext.write(waveFile.read(),false);
-                }
+                 }
             }
             catch(Exception e){}
             new Thread(new Runnable() {
@@ -1634,6 +1634,14 @@ public class Acid implements ApplicationListener {
                         System.out.println("starting flac conversion");
                         EncodeWavToFlac.flac(waveFile.file(),flac.file());
                         System.out.println("finished flac conversion");
+                        try{
+                            if (Gdx.files.isExternalStorageAvailable()){
+                                FileHandle ext=Gdx.files.external(flac.name());
+                                ext.write(flac.read(),false);
+                            }
+                        }
+                        catch(Exception e){}
+
                     } catch (IOException e) {
                         e.printStackTrace();
                         System.out.println("error flac conversion");
