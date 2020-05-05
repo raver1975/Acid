@@ -16,12 +16,27 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Array;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+//import io.ipfs.api.*;
+//import io.ipfs.api.NamedStreamable.FileWrapper;
+//import io.ipfs.multiaddr.MultiAddress;
+//import io.textile.ipfslite.Peer;
 
+
+//import de.sciss.jump3r.Main;
+import jdk.nashorn.internal.parser.JSONParser;
 import synth.BasslineSynthesizer;
 import synth.Output;
 import synth.RhythmSynthesizer;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 
@@ -394,7 +409,7 @@ public class Acid implements ApplicationListener {
                         public void canceled() {
 
                         }
-                    }, "Export Song", "", "Song Title");
+                    }, "Export WAV (be patient, share link will open after upload)", "", "Song Title");
                 } else {
                     String selected = selectSongList.getSelected().replaceAll("[^a-zA-Z0-9]", "");
                     selected += ".wav";
@@ -404,7 +419,7 @@ public class Acid implements ApplicationListener {
             }
 
             private void export(String selected) {
-                final FileHandle fileHandle = Statics.getFileHandle(selected);
+                final FileHandle fileHandle = Gdx.files.local(selected);
                 if (!fileHandle.exists()) {
                     startSaving(fileHandle);
                 } else {
@@ -647,7 +662,8 @@ public class Acid implements ApplicationListener {
                                            public boolean touchDown(InputEvent event, float x, float y,
                                                                     int pointer, int button) {
 //                SequencerData.undo();
-                                               if (DrumData.peekStack() != null) DrumData.peekStack().refresh();
+                                               if (DrumData.peekStack() != null)
+                                                   DrumData.peekStack().refresh();
                                                return true;
                                            }
                                        });
@@ -693,7 +709,8 @@ public class Acid implements ApplicationListener {
                                        InputListener() {
                                            public boolean touchDown(InputEvent event, float x, float y,
                                                                     int pointer, int button) {
-                                               if (KnobData.peekStack() != null) KnobData.peekStack().refresh();
+                                               if (KnobData.peekStack() != null)
+                                                   KnobData.peekStack().refresh();
                                                return true;
                                            }
                                        });
@@ -761,8 +778,6 @@ public class Acid implements ApplicationListener {
 //        table.setSize(800,600);
 //        table.setSize(600,600);
 //        ((OrthographicCamera)stage.getCamera()).setToOrtho(false,Gdx.graphics.getHeight(),Gdx.graphics.getWidth());
-
-
 
 
         KnobActor[] mya = new KnobActor[10];
@@ -911,7 +926,8 @@ public class Acid implements ApplicationListener {
                                  InputListener() {
                                      public boolean touchDown(InputEvent event, float x, float y,
                                                               int pointer, int button) {
-                                         if (songPosition == maxSongPosition && songPosition < 998) return true;
+                                         if (songPosition == maxSongPosition && songPosition < 998)
+                                             return true;
                                          swapPattern(songPosition, ++songPosition);
                                          return true;
                                      }
@@ -1214,46 +1230,46 @@ public class Acid implements ApplicationListener {
         KnobData.pushStack(KnobData.factory());
 
 
-        while(actorIsVisible(table)) {
-            ((OrthographicCamera) stage.getCamera()).zoom-=.001f;
+        while (actorIsVisible(table)) {
+            ((OrthographicCamera) stage.getCamera()).zoom -= .001f;
             //System.out.println(((OrthographicCamera) stage.getCamera()).zoom);
             stage.getCamera().update();
         }
-        while(!actorIsVisible(table)) {
-            ((OrthographicCamera) stage.getCamera()).zoom+=.001f;
+        while (!actorIsVisible(table)) {
+            ((OrthographicCamera) stage.getCamera()).zoom += .001f;
             //System.out.println(((OrthographicCamera) stage.getCamera()).zoom);
             stage.getCamera().update();
         }
-        while(actorIsVisible(table)) {
-            ((OrthographicCamera) stage.getCamera()).zoom-=.001f;
+        while (actorIsVisible(table)) {
+            ((OrthographicCamera) stage.getCamera()).zoom -= .001f;
             //System.out.println(((OrthographicCamera) stage.getCamera()).zoom);
             stage.getCamera().update();
         }
 
-        newZoom =.75f*((OrthographicCamera)stage.getCamera()).zoom;
+        newZoom = .75f * ((OrthographicCamera) stage.getCamera()).zoom;
         System.out.println(((OrthographicCamera) stage.getCamera()).zoom);
 
-        FileHandle ff = Statics.getFileHandle("supersecrettempfile.txt");
-       if (ff.exists()){
-           String text=ff.readString();
-           Object o = null;
-           try {
-               o = Serializer.fromBase64(text);
-               if (o != null && o instanceof SaveObject) {
-                   boolean free = Statics.free;
-                   boolean rec = Statics.recording;
-                   Statics.free = false;
-                   Statics.recording = false;
-                   if (o != null) {
-                       ((SaveObject) o).restore(Acid.this);
-                   }
-                   Statics.free = free;
-                   Statics.recording = rec;
-               }
-           } catch (Exception e) {
-               e.printStackTrace();
-           }
-       }
+        FileHandle ff = Gdx.files.local("supersecrettempfile.txt");
+        if (ff.exists()) {
+            String text = ff.readString();
+            Object o = null;
+            try {
+                o = Serializer.fromBase64(text);
+                if (o != null && o instanceof SaveObject) {
+                    boolean free = Statics.free;
+                    boolean rec = Statics.recording;
+                    Statics.free = false;
+                    Statics.recording = false;
+                    if (o != null) {
+                        ((SaveObject) o).restore(Acid.this);
+                    }
+                    Statics.free = free;
+                    Statics.recording = rec;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -1387,7 +1403,6 @@ public class Acid implements ApplicationListener {
     }
 
 
-
     @Override
     public void render() {
         Color c = Color.BLACK;
@@ -1512,6 +1527,7 @@ public class Acid implements ApplicationListener {
             InputEvent event2 = new InputEvent();
             event2.setType(InputEvent.Type.touchUp);
             freeButton.fire(event2);
+
         }
 
         if (Output.isPaused()) {
@@ -1522,6 +1538,7 @@ public class Acid implements ApplicationListener {
             InputEvent event2 = new InputEvent();
             event2.setType(InputEvent.Type.touchUp);
             pauseButton.fire(event2);
+
         }
 
 
@@ -1529,7 +1546,8 @@ public class Acid implements ApplicationListener {
         songPosition = minSongPosition;
         Statics.output.getSequencer().tick = 0;
         Statics.output.getSequencer().step = 0;
-        Statics.exportFile = Statics.getFileHandle("supersecrettempfile.pcm");
+        Statics.exportFile = Gdx.files.local("supersecrettempfile.pcm");
+
         Statics.exportFile.delete();
         Statics.export = true;
     }
@@ -1544,7 +1562,7 @@ public class Acid implements ApplicationListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Statics.exportFile.delete();
+        //Statics.exportFile.delete();
     }
 
     private void rawToWave(final FileHandle rawFile, final FileHandle waveFile) throws IOException {
@@ -1586,10 +1604,156 @@ public class Acid implements ApplicationListener {
             writeString(output, "data"); // subchunk 2 id
             writeInt(output, rawData.length); // subchunk 2 size
             waveFile.write(rawFile.read(), true);
+//            IPFS ipfs=new IPFS(new MultiAddress("/dns6/ipfs.infura.io/tcp/5001/https"));
+//            NamedStreamable.ByteArrayWrapper file = new NamedStreamable.ByteArrayWrapper(waveFile.name(), waveFile.readBytes());
+//            MerkleNode addResult = ipfs.add(file).get(0);
+//            Boolean debug = true;
+//            Peer litePeer = new Peer("/dns6/ipfs.infura.io/tcp/5001/https", debug, true);
+//            litePeer.start();
+//            String cid = litePeer.addFileSync(waveFile.readBytes());
+//            System.out.println("cid:" + cid);
+            output.flush();
+            output.close();
+            output = null;
+            try{
+                if (Gdx.files.isExternalStorageAvailable()){
+                    FileHandle ext=Gdx.files.external(waveFile.name());
+                    ext.write(waveFile.read(),false);
+                }
+            }
+            catch(Exception e){}
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+//                    System.out.println("starting mp3 conversion");
+//                    FileHandle mp3Temp=Statics.getFileHandle("mp3temp.mp3");
+//                    try {
+//                        convertWavFileToMp3File(rawFile.file().getAbsolutePath(),mp3Temp.file().getAbsolutePath());
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    System.out.println("finished mp3 conversion");
+                    System.out.println("starting wav upload");
+                    try {
+                        uploadFile(waveFile.readBytes(),waveFile.name());
+//                        upoadFile(mp3Temp.readBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("finished wav upload");
+
+                }
+            }).start();
+
+
         } finally {
             if (output != null) {
                 output.close();
             }
+        }
+    }
+
+/*    private void convertWavFileToMp3File(String source, String target) throws IOException {
+        String[] mp3Args = {"--preset", "standard",
+                "-q", "0",
+                "-m", "s", "-r", "-s", "44.1",
+                source,
+                target
+        };
+        (new Main()).run(mp3Args);
+    }*/
+
+//    public void copy(Path original, OutputStream out)
+//            throws IOException {
+//        File copied = original.toFile();
+//        InputStream in = new BufferedInputStream(
+//                new FileInputStream(copied));
+//
+//        byte[] buffer = new byte[1024];
+//        int lengthRead;
+//        while ((lengthRead = in.read(buffer)) > 0) {
+//            out.write(buffer, 0, lengthRead);
+//            out.flush();
+//        }
+//
+//    }
+
+    public void uploadFile(byte[] data,String filename) throws IOException {
+        String url = "https://ipfs.infura.io:5001/api/v0/add?pin=false";
+        String charset = "UTF-8";
+//        String param = "file";
+//        File textFile = new File("/path/to/file.txt");
+//        File binaryFile = new File("/path/to/file.bin");
+        String boundary = Long.toHexString(System.currentTimeMillis()); // Just generate some unique random value.
+        String CRLF = "\r\n"; // Line separator required by multipart/form-data.
+
+        URLConnection connection = new URL(url).openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+
+        try (
+                OutputStream output = connection.getOutputStream();
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, charset), true);
+        ) {
+            // Send normal param.
+            writer.append("--" + boundary).append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"file\"").append(CRLF);
+            writer.append("Content-Type: audio/wav; charset=" + charset).append(CRLF);
+            writer.append(CRLF).flush();
+            output.write(data);
+            output.flush();
+            writer.append(CRLF).flush();
+
+//            // Send text file.
+//            writer.append("--" + boundary).append(CRLF);
+//            writer.append("Content-Disposition: form-data; name=\"textFile\"; filename=\"" + textFile.getName() + "\"").append(CRLF);
+//            writer.append("Content-Type: text/plain; charset=" + charset).append(CRLF); // Text file itself must be saved in this charset!
+//            writer.append(CRLF).flush();
+//            copy(textFile.toPath(), output);
+//            output.flush(); // Important before continuing with writer!
+//            writer.append(CRLF).flush(); // CRLF is important! It indicates end of boundary.
+
+            // Send binary file.
+//            writer.append("--" + boundary).append(CRLF);
+//            writer.append("Content-Disposition: form-data").append(CRLF);
+//            writer.append("Content-Type: multipart/form-data").append(CRLF);
+//            writer.append("Content-Transfer-Encoding: binary").append(CRLF);
+//            writer.append(CRLF).flush();
+//            copy(binaryFile.toPath(), output);
+//            output.write(data);
+//            output.flush(); // Important before continuing with writer!
+//            writer.append(CRLF).flush(); // CRLF is important! It indicates end of boundary.
+
+            // End of multipart/form-data.
+            writer.append("--" + boundary + "--").append(CRLF).flush();
+        }
+
+// Request is lazily fired whenever you need to obtain information about response.
+        int responseCode = ((HttpURLConnection) connection).getResponseCode();
+        System.out.println(responseCode); // Should be 200
+        System.out.println();
+        InputStream is = ((HttpURLConnection) connection).getInputStream();
+        StringBuilder textBuilder = new StringBuilder();
+        try (Reader reader = new BufferedReader(new InputStreamReader
+                (is, Charset.forName("UTF-8")))) {
+            int c = 0;
+            while ((c = reader.read()) != -1) {
+                textBuilder.append((char) c);
+            }
+        }
+        System.out.println();
+        String response = textBuilder.toString();
+        System.out.println(response);
+        JsonParser jsonParser = new JsonParser();
+        try {
+            JsonObject root = jsonParser.parse(response).getAsJsonObject();
+            if (root.has("Hash")) {
+                String hash = root.get("Hash").getAsString();
+                Gdx.net.openURI("https://ipfs.io/ipfs/" + hash + "?filename=" + filename);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -1628,7 +1792,7 @@ public class Acid implements ApplicationListener {
         Output.pause();
         try {
             String out = Serializer.toBase64(new SaveObject(Acid.this));
-            Statics.getFileHandle("supersecrettempfile.txt").writeString(out,false);
+            Gdx.files.local("supersecrettempfile.txt").writeString(out, false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1645,7 +1809,7 @@ public class Acid implements ApplicationListener {
     public void dispose() {
         try {
             String out = Serializer.toBase64(new SaveObject(Acid.this));
-            Statics.getFileHandle("supersecrettempfile.txt").writeString(out,false);
+            Gdx.files.local("supersecrettempfile.txt").writeString(out, false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1658,7 +1822,7 @@ public class Acid implements ApplicationListener {
      * Returns if the actor is visible or not. Useful to implement 2D culling.
      **/
     public static boolean actorIsVisible(Actor actor) {
-        Vector2 actorStagePos = actor.localToStageCoordinates(new Vector2(0,0));
+        Vector2 actorStagePos = actor.localToStageCoordinates(new Vector2(0, 0));
         Vector2 actorStagePosTl = actor.localToStageCoordinates(new Vector2(
                 actor.getWidth(),
                 actor.getHeight()));

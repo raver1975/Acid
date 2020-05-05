@@ -26,9 +26,9 @@ public class Statics {
     public static FileHandle exportFile;
     public static FileHandle saveName;
 
-    public static FileHandle getFileHandle(String selected) {
-        if (Gdx.files.isExternalStorageAvailable()) return Gdx.files.external(selected);
-        if (Gdx.files.isLocalStorageAvailable()) return Gdx.files.local(selected);
-        return Gdx.files.internal(selected);
-    }
+//    public static FileHandle getFileHandle(String selected) {
+//        //if (Gdx.files.isExternalStorageAvailable()) return Gdx.files.external(selected);
+//        if (Gdx.files.isLocalStorageAvailable()) return Gdx.files.local(selected);
+//        return null;
+//    }
 }

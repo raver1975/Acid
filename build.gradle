@@ -9,7 +9,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.wisepersist:gwt-gradle-plugin:1.0.9'
-        classpath 'com.android.tools.build:gradle:4.1.0-alpha08'
+        classpath 'com.android.tools.build:gradle:4.0.0-beta05'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.8'
     }
 }
@@ -32,6 +32,8 @@ allprojects {
         mavenCentral()
         jcenter()
         google()
+//        maven { url "https://jitpack.io" }
+//        maven { url 'https://dl.bintray.com/textile/maven' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
@@ -45,7 +47,7 @@ project(":desktop") {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        
+
     }
 }
 
@@ -56,6 +58,7 @@ project(":android") {
 
     dependencies {
         implementation project(":core")
+
         api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
@@ -71,5 +74,9 @@ project(":core") {
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation 'com.google.code.gson:gson:2.8.6'
+//        compile group: 'de.sciss', name: 'jump3r', version: '1.0.5'
+//        api "com.github.ipfs:java-ipfs-http-client:1.2.3"
+//        implementation 'io.textile:ipfslite:0.1.4'
     }
 }
