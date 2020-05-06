@@ -1,8 +1,20 @@
 package com.acid;
 
-import com.acid.actors.*;
-import com.badlogic.gdx.*;
+import com.acid.actors.BelowKnobsActor;
+import com.acid.actors.CurrentDrumActor;
+import com.acid.actors.CurrentKnobsActor;
+import com.acid.actors.CurrentSequencerActor;
+import com.acid.actors.DrumActor;
+import com.acid.actors.KnobActor;
+import com.acid.actors.LightActor;
+import com.acid.actors.RectangleActor;
+import com.acid.actors.SequenceActor;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,47 +24,67 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Array;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+
+import io.nayuki.flac.app.EncodeWavToFlac;
+import synth.BasslineSynthesizer;
+import synth.Output;
+
+import static com.badlogic.gdx.input.GestureDetector.GestureListener;
+
 //import io.ipfs.api.*;
 //import io.ipfs.api.NamedStreamable.FileWrapper;
 //import io.ipfs.multiaddr.MultiAddress;
 //import io.textile.ipfslite.Peer;
-
-
 //import de.sciss.jump3r.Main;
 //import org.jcodec.api.transcode.TranscodeMain;
 
-import io.nayuki.flac.app.EncodeWavToFlac;
-import jdk.nashorn.internal.parser.JSONParser;
-import synth.BasslineSynthesizer;
-import synth.Output;
-import synth.RhythmSynthesizer;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-
-import static com.badlogic.gdx.input.GestureDetector.*;
-
 public class Acid implements ApplicationListener {
 
+    private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
+    static float rainbowFade = 0f;
+    private static float rainbowFadeDir = .005f;
+    ArrayList<SequencerData> sequencerDataArrayList = new ArrayList<SequencerData>();
+    ArrayList<DrumData> drumDataArrayList = new ArrayList<DrumData>();
+    ArrayList<KnobData> knobsArrayList = new ArrayList<KnobData>();
+    int songPosition = 0;
+    int maxSongPosition = 0;
+    int minSongPosition = 0;
     private BitmapFont font;
     private Stage stage;
     private LightActor mutateLight = null;
     private float newZoom;
-    static float rainbowFade = 0f;
-    private static float rainbowFadeDir = .005f;
     private Label BpmLabel;
     private SequenceActor sequenceMatrix;
     private DrumActor drumMatrix;
@@ -60,18 +92,10 @@ public class Acid implements ApplicationListener {
     private boolean drumsSelected;
     private float drumsSynthScale = 1.0f;
     private int prevStep = -1;
-
-    ArrayList<SequencerData> sequencerDataArrayList = new ArrayList<SequencerData>();
-    ArrayList<DrumData> drumDataArrayList = new ArrayList<DrumData>();
-    ArrayList<KnobData> knobsArrayList = new ArrayList<KnobData>();
-    int songPosition = 0;
-    int maxSongPosition = 0;
-    int minSongPosition = 0;
     private Label maxSongLengthLabel;
     private Label songLengthLabel;
     private Label minSongLengthLabel;
     private Label stepLabel;
-
     private Label minSongLengthCaption;
     private Label songLengthCaption;
     private Label maxSongLengthCaption;
@@ -87,6 +111,38 @@ public class Acid implements ApplicationListener {
     private TextButton pauseButton;
 
     public Acid() {
+    }
+
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
+    /**
+     * Returns if the actor is visible or not. Useful to implement 2D culling.
+     **/
+    public static boolean actorIsVisible(Actor actor) {
+        Vector2 actorStagePos = actor.localToStageCoordinates(new Vector2(0, 0));
+        Vector2 actorStagePosTl = actor.localToStageCoordinates(new Vector2(
+                actor.getWidth(),
+                actor.getHeight()));
+
+        Vector3 actorPixelPos = new Vector3(actorStagePos.x, actorStagePos.y, 0);
+        Vector3 actorPixelPosTl = new Vector3(actorStagePosTl.x, actorStagePosTl.y, 0);
+
+        actorPixelPos = actor.getStage().getCamera().project(actorPixelPos);
+        actorPixelPosTl = actor.getStage().getCamera().project(actorPixelPosTl);
+
+        return !(actorPixelPosTl.x < 0 ||
+                actorPixelPos.x > Gdx.graphics.getWidth() ||
+                actorPixelPosTl.y < 0 ||
+                actorPixelPos.y > Gdx.graphics.getHeight()
+        );
     }
 
     @Override
@@ -207,7 +263,7 @@ public class Acid implements ApplicationListener {
         font.getData().setScale(.7f);
         Statics.output.start();
         Statics.synth = (BasslineSynthesizer) Statics.output.getTrack(0);
-        Statics.drums = (RhythmSynthesizer) Statics.output.getTrack(1);
+        Statics.drums = Statics.output.getTrack(1);
         Statics.output.getSequencer().drums.randomize();
         Statics.output.getSequencer().bass.randomize();
         Table table = new Table(skin);
@@ -225,7 +281,8 @@ public class Acid implements ApplicationListener {
             @Override
             public void tap(InputEvent event, float stageX, float stageY, int count, int button) {
 //                SequencerData.undo();
-                SequencerData.popStack();
+                if (SequencerData.peekStack() != null) SequencerData.peekStack().refresh();
+
             }
 
 //            @Override
@@ -241,14 +298,15 @@ public class Acid implements ApplicationListener {
         sequencerDataArrayListLabel.setFontScale(1f);
         table.addActor(sequencerDataArrayListLabel);
 
-        TextButton pushtoSequencer = new TextButton(">", skin);
+        TextButton pushtoSequencer = new TextButton("X", skin);
         pushtoSequencer.setPosition(110, 305);
         table.addActor(pushtoSequencer);
         pushtoSequencer.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
 //                SequencerData.undo();
-                if (SequencerData.peekStack() != null) SequencerData.peekStack().refresh();
+                SequencerData.popStack();
+
                 return true;
             }
         });
@@ -412,7 +470,7 @@ public class Acid implements ApplicationListener {
                         public void canceled() {
 
                         }
-                    }, "Export WAV (be patient, share link will open after upload)", "", "Song Title");
+                    }, "Export WAV and FLAC (be patient, share link will open after upload)", "", "Song Title");
                 } else {
                     String selected = selectSongList.getSelected().replaceAll("[^a-zA-Z0-9]", "");
                     selected += ".wav";
@@ -463,8 +521,8 @@ public class Acid implements ApplicationListener {
         });
 
 
-        TextButton inbutton = new TextButton("In", skin);
-        inbutton.setPosition(510, 465);
+        TextButton inbutton = new TextButton(" In ", skin);
+        inbutton.setPosition(470, 430);
         table.addActor(inbutton);
         inbutton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
@@ -544,7 +602,7 @@ public class Acid implements ApplicationListener {
         });
 
         TextButton outbutton = new TextButton("Out", skin);
-        outbutton.setPosition(535, 465);
+        outbutton.setPosition(505, 430);
         table.addActor(outbutton);
         outbutton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
@@ -644,7 +702,9 @@ public class Acid implements ApplicationListener {
 
                                                  @Override
                                                  public void tap(InputEvent event, float stageX, float stageY, int count, int button) {
-                                                     DrumData.popStack();
+                                                     if (DrumData.peekStack() != null)
+                                                         DrumData.peekStack().refresh();
+
                                                  }
                                              });
         table.addActor(currentDrumActor);
@@ -656,7 +716,7 @@ public class Acid implements ApplicationListener {
         drumDataArrayListLabel.setFontScale(1f);
         table.addActor(drumDataArrayListLabel);
 
-        TextButton pushtoDrum = new TextButton(">", skin);
+        TextButton pushtoDrum = new TextButton("X", skin);
         pushtoDrum.setPosition(110, 195);
         table.addActor(pushtoDrum);
         pushtoDrum.addListener(new
@@ -665,8 +725,7 @@ public class Acid implements ApplicationListener {
                                            public boolean touchDown(InputEvent event, float x, float y,
                                                                     int pointer, int button) {
 //                SequencerData.undo();
-                                               if (DrumData.peekStack() != null)
-                                                   DrumData.peekStack().refresh();
+                                               DrumData.popStack();
                                                return true;
                                            }
                                        });
@@ -679,6 +738,7 @@ public class Acid implements ApplicationListener {
                                             public boolean touchDown(InputEvent event, float x, float y,
                                                                      int pointer, int button) {
                                                 DrumData.pushStack(new DrumData());
+
                                                 return true;
                                             }
                                         });
@@ -686,39 +746,34 @@ public class Acid implements ApplicationListener {
         CurrentKnobsActor currentKnobsActor = new CurrentKnobsActor(80, 70);
         currentKnobsActor.setPosition(460, 200);
         table.addActor(currentKnobsActor);
-        currentKnobsActor.addListener(new
+        currentKnobsActor.addListener(new ActorGestureListener() {
+            @Override
+            public void tap(InputEvent event, float stageX, float stageY, int count, int button) {
+                if (KnobData.peekStack() != null)
+                    KnobData.peekStack().refresh();
+            }
+        });
 
-                                              ActorGestureListener() {
-
-                                                  @Override
-                                                  public void tap(InputEvent event, float stageX, float stageY, int count, int button) {
-                                                      KnobData.popStack();
-                                                  }
-                                              });
-
-        knobDataArrayListLabel = new
-
-                Label("", skin);
+        knobDataArrayListLabel = new Label("", skin);
         knobDataArrayListLabel.setPosition(450, 195);
         knobDataArrayListLabel.setFontScale(1f);
         table.addActor(knobDataArrayListLabel);
 
 
-        TextButton pushtoKnob = new TextButton(" v ", skin);
-        pushtoKnob.setPosition(470, 170);
+        TextButton pushtoKnob = new TextButton(" X ", skin);
+        pushtoKnob.setPosition(510, 168);
         table.addActor(pushtoKnob);
         pushtoKnob.addListener(new
 
                                        InputListener() {
                                            public boolean touchDown(InputEvent event, float x, float y,
                                                                     int pointer, int button) {
-                                               if (KnobData.peekStack() != null)
-                                                   KnobData.peekStack().refresh();
+                                               KnobData.popStack();
                                                return true;
                                            }
                                        });
         TextButton popFromKnob = new TextButton(" ^ ", skin);
-        popFromKnob.setPosition(510, 170);
+        popFromKnob.setPosition(470, 168);
         table.addActor(popFromKnob);
         popFromKnob.addListener(new
 
@@ -732,7 +787,7 @@ public class Acid implements ApplicationListener {
 
 
         BelowKnobsActor belowKnobsActor = new BelowKnobsActor(80, 70);
-        belowKnobsActor.setPosition(460, 100);
+        belowKnobsActor.setPosition(460, 95);
         belowKnobsActor.addListener(new
 
                                             ActorGestureListener() {
@@ -1059,7 +1114,7 @@ public class Acid implements ApplicationListener {
 
         waveButton = new
 
-                TextButton(" Square ", skin);
+                TextButton(" # ", skin);
         table.addActor(waveButton);
         waveButton.setPosition(520f, 280);
         waveButton.addListener(new
@@ -1070,7 +1125,7 @@ public class Acid implements ApplicationListener {
                                                Statics.output.getSequencer().bass.switchWaveform();
                                                waveButton.setChecked(Statics.waveSquare);
                                                waveButton.setColor(Statics.waveSquare ? Color.WHITE : Color.RED);
-                                               waveButton.setText(Statics.waveSquare ? " Square " : " Saw ");
+                                               waveButton.setText(Statics.waveSquare ? " # " : " ^ ");
                                                waveButton.invalidate();
                                                return true;
                                            }
@@ -1192,7 +1247,7 @@ public class Acid implements ApplicationListener {
 
         TextButton githubButton = new TextButton("Luv", skin);
         table.addActor(githubButton);
-        githubButton.setPosition(470, 430);
+        githubButton.setPosition(515, 465);
         githubButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y,
                                      int pointer, int button) {
@@ -1299,7 +1354,6 @@ public class Acid implements ApplicationListener {
 
     }
 
-
     private void loadSong(String name) {
         try {
             byte[] bytesOfMessage = name.getBytes("UTF-8");
@@ -1322,19 +1376,6 @@ public class Acid implements ApplicationListener {
 
 
     }
-
-    private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
-
-    public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
-
 
     private void saveSong(final String name, Skin skin) {
 
@@ -1428,7 +1469,6 @@ public class Acid implements ApplicationListener {
         }
     }
 
-
     @Override
     public void render() {
         Color c = Color.BLACK;
@@ -1484,7 +1524,7 @@ public class Acid implements ApplicationListener {
         prevStep = Statics.output.getSequencer().step;
 
         waveButton.setColor(Statics.waveSquare ? Color.WHITE : Color.RED);
-        waveButton.setText(Statics.waveSquare ? " Square " : " Saw ");
+        waveButton.setText(Statics.waveSquare ? " # " : " ^ ");
 
         sequencerDataArrayListLabel.setColor(ColorHelper.rainbowLight());
         sequencerDataArrayListLabel.setText(SequencerData.sequences.size() + "");
@@ -1591,6 +1631,31 @@ public class Acid implements ApplicationListener {
         //Statics.exportFile.delete();
     }
 
+/*    private void convertWavFileToMp3File(String source, String target) throws IOException {
+        String[] mp3Args = {"--preset", "standard",
+                "-q", "0",
+                "-m", "s", "-r", "-s", "44.1",
+                source,
+                target
+        };
+        (new Main()).run(mp3Args);
+    }*/
+
+//    public void copy(Path original, OutputStream out)
+//            throws IOException {
+//        File copied = original.toFile();
+//        InputStream in = new BufferedInputStream(
+//                new FileInputStream(copied));
+//
+//        byte[] buffer = new byte[1024];
+//        int lengthRead;
+//        while ((lengthRead = in.read(buffer)) > 0) {
+//            out.write(buffer, 0, lengthRead);
+//            out.flush();
+//        }
+//
+//    }
+
     private void rawToWave(final FileHandle rawFile, final FileHandle waveFile) throws IOException {
 
         byte[] rawData = new byte[(int) rawFile.length()];
@@ -1642,28 +1707,28 @@ public class Acid implements ApplicationListener {
             output.flush();
             output.close();
             output = null;
-            try{
-                if (Gdx.files.isExternalStorageAvailable()){
-                    FileHandle ext=Gdx.files.external(waveFile.name());
-                    ext.write(waveFile.read(),false);
-                 }
+            try {
+                if (Gdx.files.isExternalStorageAvailable()) {
+                    FileHandle ext = Gdx.files.external(waveFile.name());
+                    ext.write(waveFile.read(), false);
+                }
+            } catch (Exception e) {
             }
-            catch(Exception e){}
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    FileHandle flac=Gdx.files.local(waveFile.nameWithoutExtension()+".flac");
+                    FileHandle flac = Gdx.files.local(waveFile.nameWithoutExtension() + ".flac");
                     try {
                         System.out.println("starting flac conversion");
-                        EncodeWavToFlac.flac(waveFile.file(),flac.file());
+                        EncodeWavToFlac.flac(waveFile.file(), flac.file());
                         System.out.println("finished flac conversion");
-                        try{
-                            if (Gdx.files.isExternalStorageAvailable()){
-                                FileHandle ext=Gdx.files.external(flac.name());
-                                ext.write(flac.read(),false);
+                        try {
+                            if (Gdx.files.isExternalStorageAvailable()) {
+                                FileHandle ext = Gdx.files.external(flac.name());
+                                ext.write(flac.read(), false);
                             }
+                        } catch (Exception e) {
                         }
-                        catch(Exception e){}
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -1671,7 +1736,7 @@ public class Acid implements ApplicationListener {
                     }
                     System.out.println("starting wav upload");
                     try {
-                        uploadFile(flac.readBytes(),flac.name());
+                        uploadFile(flac.readBytes(), flac.name());
 //                        uploadFile(waveFile.readBytes());
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -1689,32 +1754,7 @@ public class Acid implements ApplicationListener {
         }
     }
 
-/*    private void convertWavFileToMp3File(String source, String target) throws IOException {
-        String[] mp3Args = {"--preset", "standard",
-                "-q", "0",
-                "-m", "s", "-r", "-s", "44.1",
-                source,
-                target
-        };
-        (new Main()).run(mp3Args);
-    }*/
-
-//    public void copy(Path original, OutputStream out)
-//            throws IOException {
-//        File copied = original.toFile();
-//        InputStream in = new BufferedInputStream(
-//                new FileInputStream(copied));
-//
-//        byte[] buffer = new byte[1024];
-//        int lengthRead;
-//        while ((lengthRead = in.read(buffer)) > 0) {
-//            out.write(buffer, 0, lengthRead);
-//            out.flush();
-//        }
-//
-//    }
-
-    public void uploadFile(byte[] data,String filename) throws IOException {
+    public void uploadFile(byte[] data, String filename) throws IOException {
         String url = "https://ipfs.infura.io:5001/api/v0/add?pin=true";
         String charset = "UTF-8";
 //        String param = "file";
@@ -1729,7 +1769,7 @@ public class Acid implements ApplicationListener {
 
         try (
                 OutputStream output = connection.getOutputStream();
-                PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, charset), true);
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, charset), true)
         ) {
             // Send normal param.
             writer.append("--" + boundary).append(CRLF);
@@ -1768,10 +1808,10 @@ public class Acid implements ApplicationListener {
         int responseCode = ((HttpURLConnection) connection).getResponseCode();
         System.out.println(responseCode); // Should be 200
         System.out.println();
-        InputStream is = ((HttpURLConnection) connection).getInputStream();
+        InputStream is = connection.getInputStream();
         StringBuilder textBuilder = new StringBuilder();
         try (Reader reader = new BufferedReader(new InputStreamReader
-                (is, Charset.forName("UTF-8")))) {
+                (is, "UTF-8"))) {
             int c = 0;
             while ((c = reader.read()) != -1) {
                 textBuilder.append((char) c);
@@ -1787,8 +1827,7 @@ public class Acid implements ApplicationListener {
                 String hash = root.get("Hash").getAsString();
                 Gdx.net.openURI("https://ipfs.io/ipfs/" + hash + "?filename=" + filename);
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1852,28 +1891,6 @@ public class Acid implements ApplicationListener {
         Output.running = false;
         Statics.output.dispose();
 
-    }
-
-    /**
-     * Returns if the actor is visible or not. Useful to implement 2D culling.
-     **/
-    public static boolean actorIsVisible(Actor actor) {
-        Vector2 actorStagePos = actor.localToStageCoordinates(new Vector2(0, 0));
-        Vector2 actorStagePosTl = actor.localToStageCoordinates(new Vector2(
-                actor.getWidth(),
-                actor.getHeight()));
-
-        Vector3 actorPixelPos = new Vector3(actorStagePos.x, actorStagePos.y, 0);
-        Vector3 actorPixelPosTl = new Vector3(actorStagePosTl.x, actorStagePosTl.y, 0);
-
-        actorPixelPos = actor.getStage().getCamera().project(actorPixelPos);
-        actorPixelPosTl = actor.getStage().getCamera().project(actorPixelPosTl);
-
-        return !(actorPixelPosTl.x < 0 ||
-                actorPixelPos.x > Gdx.graphics.getWidth() ||
-                actorPixelPosTl.y < 0 ||
-                actorPixelPos.y > Gdx.graphics.getHeight()
-        );
     }
 
 }
