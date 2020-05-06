@@ -1692,7 +1692,7 @@ public class Acid implements ApplicationListener {
 //    }
 
     public void uploadFile(byte[] data,String filename) throws IOException {
-        String url = "https://ipfs.infura.io:5001/api/v0/add?pin=false";
+        String url = "https://ipfs.infura.io:5001/api/v0/add?pin=true";
         String charset = "UTF-8";
 //        String param = "file";
 //        File textFile = new File("/path/to/file.txt");
