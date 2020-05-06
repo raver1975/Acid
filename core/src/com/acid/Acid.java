@@ -219,7 +219,7 @@ public class Acid implements ApplicationListener {
         table.addActor(rectangleActor);
 
         CurrentSequencerActor currentSequencerActor = new CurrentSequencerActor(100, 100);
-        currentSequencerActor.setPosition(20, 295);
+        currentSequencerActor.setPosition(10, 295);
         currentSequencerActor.addListener(new ActorGestureListener() {
 
             @Override
@@ -237,7 +237,7 @@ public class Acid implements ApplicationListener {
         table.addActor(currentSequencerActor);
 
         sequencerDataArrayListLabel = new Label("", skin);
-        sequencerDataArrayListLabel.setPosition(10, 290);
+        sequencerDataArrayListLabel.setPosition(0, 290);
         sequencerDataArrayListLabel.setFontScale(1f);
         table.addActor(sequencerDataArrayListLabel);
 
@@ -637,7 +637,7 @@ public class Acid implements ApplicationListener {
                                              });
 
         CurrentDrumActor currentDrumActor = new CurrentDrumActor(100, 100);
-        currentDrumActor.setPosition(20, 185);
+        currentDrumActor.setPosition(10, 185);
         currentDrumActor.addListener(new
 
                                              ActorGestureListener() {
@@ -652,7 +652,7 @@ public class Acid implements ApplicationListener {
         drumDataArrayListLabel = new
 
                 Label("", skin);
-        drumDataArrayListLabel.setPosition(10, 180);
+        drumDataArrayListLabel.setPosition(0, 180);
         drumDataArrayListLabel.setFontScale(1f);
         table.addActor(drumDataArrayListLabel);
 
@@ -1152,6 +1152,7 @@ public class Acid implements ApplicationListener {
         table.addActor(BpmLabel);
 
 
+/*
         if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
             TextButton zi = new TextButton("Zoom +", skin);
             table.addActor(zi);
@@ -1176,8 +1177,30 @@ public class Acid implements ApplicationListener {
                 }
             });
         }
+*/
 
-        ;
+//        TextButton donateButton = new TextButton("Donate!", skin);
+//        table.addActor(donateButton);
+//        donateButton.setPosition(470, 400);
+//        donateButton.addListener(new InputListener() {
+//            public boolean touchDown(InputEvent event, float x, float y,
+//                                     int pointer, int button) {
+//                Gdx.net.openURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CNP4H9HGEQDEA&source=url");
+//                return true;
+//            }
+//        });
+
+        TextButton githubButton = new TextButton("Luv", skin);
+        table.addActor(githubButton);
+        githubButton.setPosition(470, 430);
+        githubButton.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                Gdx.net.openURI("https://github.com/raver1975/Acid");
+                return true;
+            }
+        });
+
 
         final TextButton synthButton = new TextButton("Synth", skin);
         table.addActor(synthButton);
