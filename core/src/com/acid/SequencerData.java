@@ -58,6 +58,18 @@ public class SequencerData extends InstrumentData {
 //        return new SequencerData();
 //    }
 
+
+    public static void shiftStackRight() {
+        SequencerData rem = sequences.remove(0);
+        sequences.add(sequences.size(),rem);
+    }
+
+    public static void shiftStackLeft() {
+        SequencerData rem = sequences.remove(sequences.size()-1);
+        sequences.add(0,rem);
+    }
+
+
     public void refresh() {
         for (int x1 = 0; x1 < 16; x1++) {
             Statics.output.getSequencer().bassline.note[x1] = note[x1];

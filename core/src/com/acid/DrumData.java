@@ -29,6 +29,17 @@ public class DrumData extends InstrumentData  {
         region.flip(false, true);
     }
 
+    public static void shiftStackRight() {
+        DrumData rem = sequences.remove(0);
+        sequences.add(sequences.size(),rem);
+    }
+
+    public static void shiftStackLeft() {
+        DrumData rem = sequences.remove(sequences.size()-1);
+        sequences.add(0,rem);
+    }
+
+
 //    public static DrumData factory(){
 //        if (currentSequence!=null) {
 //            boolean same = true;
