@@ -46,12 +46,12 @@ public class KnobData extends InstrumentData {
         return new KnobData();
     }
 
-    public static void shiftStackRight() {
+    public static void shiftStackLeft() {
         KnobData rem = sequences.remove(0);
         sequences.add(sequences.size(),rem);
     }
 
-    public static void shiftStackLeft() {
+    public static void shiftStackRight() {
         KnobData rem = sequences.remove(sequences.size()-1);
         sequences.add(0,rem);
     }

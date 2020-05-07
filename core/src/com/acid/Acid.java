@@ -60,7 +60,6 @@ import java.util.ArrayList;
 import io.nayuki.flac.app.EncodeWavToFlac;
 import synth.BasslineSynthesizer;
 import synth.Output;
-import synth.Sequencer;
 
 import static com.badlogic.gdx.input.GestureDetector.GestureListener;
 
@@ -293,24 +292,25 @@ public class Acid implements ApplicationListener {
 //            }
         });
         currentSequencerActor.addListener(new DragListener() {
+            float xi = currentSequencerActor.getX();
             float xs = 0;
 
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
-                xs = currentSequencerActor.getX();
+                xs=xi;
             }
 
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
-                if (SequencerData.sequences.size() > 1){
+                if (SequencerData.sequences.size() > 1) {
                     currentSequencerActor.moveBy(x - currentSequencerActor.getWidth() / 2, 0);
 
-                    if (currentSequencerActor.getX() < xs - currentSequencerActor.getWidth()/4f) {
+                    if (currentSequencerActor.getX() < xs - currentSequencerActor.getWidth() / 4f) {
                         SequencerData.shiftStackLeft();
                         currentSequencerActor.setPosition(xs, currentSequencerActor.getY());
                         cancel();
                     }
-                    if (currentSequencerActor.getX() > xs +  currentSequencerActor.getWidth()/4f) {
+                    if (currentSequencerActor.getX() > xs + currentSequencerActor.getWidth() / 4f) {
                         SequencerData.shiftStackRight();
                         currentSequencerActor.setPosition(xs, currentSequencerActor.getY());
                         cancel();
@@ -320,7 +320,21 @@ public class Acid implements ApplicationListener {
 
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
-                currentSequencerActor.setPosition(xs, currentSequencerActor.getY());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (Math.abs(currentSequencerActor.getX() - xi) > .001f) {
+                            float dir = (currentSequencerActor.getX() - xi) / 4;
+                            currentSequencerActor.moveBy(-dir, 0);
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        currentSequencerActor.setPosition(xi, currentSequencerActor.getY());
+                    }
+                }).start();
             }
 
         });
@@ -427,6 +441,9 @@ public class Acid implements ApplicationListener {
                                 sequencerDataArrayList.clear();
                                 drumDataArrayList.clear();
                                 knobsArrayList.clear();
+                                SequencerData.sequences.clear();
+                                KnobData.sequences.clear();
+                                DrumData.sequences.clear();
                                 Statics.output.getSequencer().randomizeRhythm();
                                 Statics.output.getSequencer().bass.randomize();
                                 Statics.output.getSequencer().randomizeSequence();
@@ -741,24 +758,25 @@ public class Acid implements ApplicationListener {
                                                  }
                                              });
         currentDrumActor.addListener(new DragListener() {
+            float xi = currentDrumActor.getX();
             float xs = 0;
 
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
-                xs = currentDrumActor.getX();
+                xs=xi;
             }
 
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
-                if (DrumData.sequences.size() > 1){
+                if (DrumData.sequences.size() > 1) {
                     currentDrumActor.moveBy(x - currentDrumActor.getWidth() / 2, 0);
 
-                    if (currentDrumActor.getX() < xs - currentDrumActor.getWidth()/4f) {
+                    if (currentDrumActor.getX() < xs - currentDrumActor.getWidth() / 4f) {
                         DrumData.shiftStackLeft();
                         currentDrumActor.setPosition(xs, currentDrumActor.getY());
                         cancel();
                     }
-                    if (currentDrumActor.getX() > xs +  currentDrumActor.getWidth()/4f) {
+                    if (currentDrumActor.getX() > xs + currentDrumActor.getWidth() / 4f) {
                         DrumData.shiftStackRight();
                         currentDrumActor.setPosition(xs, currentDrumActor.getY());
                         cancel();
@@ -768,13 +786,27 @@ public class Acid implements ApplicationListener {
 
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
-                currentDrumActor.setPosition(xs, currentDrumActor.getY());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (Math.abs(currentDrumActor.getX() - xi) > .001f) {
+                            float dir = (currentDrumActor.getX() - xi) / 4;
+                            currentDrumActor.moveBy(-dir, 0);
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        currentDrumActor.setPosition(xi, currentDrumActor.getY());
+                    }
+                }).start();
             }
 
         });
         table.addActor(currentDrumActor);
 
-        drumDataArrayListLabel = new                Label("", skin);
+        drumDataArrayListLabel = new Label("", skin);
         drumDataArrayListLabel.setPosition(-10, 180);
         drumDataArrayListLabel.setFontScale(1f);
         table.addActor(drumDataArrayListLabel);
@@ -817,24 +849,25 @@ public class Acid implements ApplicationListener {
             }
         });
         currentKnobsActor.addListener(new DragListener() {
+            float xi=currentKnobsActor.getX();
             float xs = 0;
 
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
-                xs = currentKnobsActor.getX();
+                xs = xi;
             }
 
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
-                if (KnobData.sequences.size() > 1){
+                if (KnobData.sequences.size() > 1) {
                     currentKnobsActor.moveBy(x - currentKnobsActor.getWidth() / 2, 0);
 
-                    if (currentKnobsActor.getX() < xs - currentKnobsActor.getWidth()/4f) {
+                    if (currentKnobsActor.getX() < xs - currentKnobsActor.getWidth() / 4f) {
                         KnobData.shiftStackLeft();
                         currentKnobsActor.setPosition(xs, currentKnobsActor.getY());
                         cancel();
                     }
-                    if (currentKnobsActor.getX() > xs +  currentKnobsActor.getWidth()/4f) {
+                    if (currentKnobsActor.getX() > xs + currentKnobsActor.getWidth() / 4f) {
                         KnobData.shiftStackRight();
                         currentKnobsActor.setPosition(xs, currentKnobsActor.getY());
                         cancel();
@@ -844,9 +877,22 @@ public class Acid implements ApplicationListener {
 
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
-                currentKnobsActor.setPosition(xs, currentKnobsActor.getY());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (Math.abs(currentKnobsActor.getX() - xi) > .001f) {
+                            float dir = (currentKnobsActor.getX() - xi) / 4;
+                            currentKnobsActor.moveBy(-dir, 0);
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        currentKnobsActor.setPosition(xi, currentKnobsActor.getY());
+                    }
+                }).start();
             }
-
         });
 
         knobDataArrayListLabel = new Label("", skin);
