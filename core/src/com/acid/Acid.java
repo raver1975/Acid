@@ -442,9 +442,9 @@ public class Acid implements ApplicationListener {
                                 sequencerDataArrayList.clear();
                                 drumDataArrayList.clear();
                                 knobsArrayList.clear();
-                                SequencerData.sequences.clear();
-                                KnobData.sequences.clear();
-                                DrumData.sequences.clear();
+//                                SequencerData.sequences.clear();
+//                                KnobData.sequences.clear();
+//                                DrumData.sequences.clear();
                                 Statics.output.getSequencer().randomizeRhythm();
                                 Statics.output.getSequencer().bass.randomize();
                                 Statics.output.getSequencer().randomizeSequence();
