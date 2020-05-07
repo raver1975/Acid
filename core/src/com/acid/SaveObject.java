@@ -42,19 +42,25 @@ public class SaveObject implements Serializable {
 
     public void restore(Acid acid) {
         SequencerData.sequences = new Stack<>();
-        for (InstrumentData data : sequencerStack) {
-            data.refresh();
-            SequencerData.sequences.add(new SequencerData());
+        if (sequencerStack != null) {
+            for (InstrumentData data : sequencerStack) {
+                data.refresh();
+                SequencerData.sequences.add(new SequencerData());
+            }
         }
         DrumData.sequences = new Stack<>();
-        for (InstrumentData data : drumStack) {
-            data.refresh();
-            DrumData.sequences.add(new DrumData());
+        if (drumStack != null) {
+            for (InstrumentData data : drumStack) {
+                data.refresh();
+                DrumData.sequences.add(new DrumData());
+            }
         }
         KnobData.sequences = new Stack<>();
-        for (InstrumentData data : knobStack) {
-            data.refresh();
-            KnobData.sequences.add(new KnobData());
+        if (knobStack != null) {
+            for (InstrumentData data : knobStack) {
+                data.refresh();
+                KnobData.sequences.add(new KnobData());
+            }
         }
         acid.swapPattern(acid.songPosition, acid.songPosition);
         acid.sequencerDataArrayList = sequencerDataArrayList;
@@ -68,7 +74,7 @@ public class SaveObject implements Serializable {
         Output.volume = vol;
         Output.getDelay().setTime(delayTime);
         Output.getDelay().setFeedback(delayFeedback);
-        if (acid.knobsArrayList.size()>0){
+        if (acid.knobsArrayList.size() > 0) {
             acid.knobsArrayList.get(0).refresh();
         }
         KnobData.currentSequence = new KnobData();

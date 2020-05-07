@@ -56,6 +56,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Stack;
 
 import io.nayuki.flac.app.EncodeWavToFlac;
 import synth.BasslineSynthesizer;
@@ -306,12 +307,12 @@ public class Acid implements ApplicationListener {
                     currentSequencerActor.moveBy(x - currentSequencerActor.getWidth() / 2, 0);
 
                     if (currentSequencerActor.getX() < xs - currentSequencerActor.getWidth() / 4f) {
-                        SequencerData.shiftStackLeft();
+                        shiftStackLeft(SequencerData.sequences);
                         currentSequencerActor.setPosition(xs, currentSequencerActor.getY());
                         cancel();
                     }
                     if (currentSequencerActor.getX() > xs + currentSequencerActor.getWidth() / 4f) {
-                        SequencerData.shiftStackRight();
+                        shiftStackRight(SequencerData.sequences);
                         currentSequencerActor.setPosition(xs, currentSequencerActor.getY());
                         cancel();
                     }
@@ -772,12 +773,12 @@ public class Acid implements ApplicationListener {
                     currentDrumActor.moveBy(x - currentDrumActor.getWidth() / 2, 0);
 
                     if (currentDrumActor.getX() < xs - currentDrumActor.getWidth() / 4f) {
-                        DrumData.shiftStackLeft();
+                        shiftStackLeft(DrumData.sequences);
                         currentDrumActor.setPosition(xs, currentDrumActor.getY());
                         cancel();
                     }
                     if (currentDrumActor.getX() > xs + currentDrumActor.getWidth() / 4f) {
-                        DrumData.shiftStackRight();
+                        shiftStackRight(DrumData.sequences);
                         currentDrumActor.setPosition(xs, currentDrumActor.getY());
                         cancel();
                     }
@@ -863,12 +864,12 @@ public class Acid implements ApplicationListener {
                     currentKnobsActor.moveBy(x - currentKnobsActor.getWidth() / 2, 0);
 
                     if (currentKnobsActor.getX() < xs - currentKnobsActor.getWidth() / 4f) {
-                        KnobData.shiftStackLeft();
+                        shiftStackLeft(KnobData.sequences);
                         currentKnobsActor.setPosition(xs, currentKnobsActor.getY());
                         cancel();
                     }
                     if (currentKnobsActor.getX() > xs + currentKnobsActor.getWidth() / 4f) {
-                        KnobData.shiftStackRight();
+                        shiftStackRight(KnobData.sequences);
                         currentKnobsActor.setPosition(xs, currentKnobsActor.getY());
                         cancel();
                     }
@@ -2032,5 +2033,13 @@ public class Acid implements ApplicationListener {
         Statics.output.dispose();
 
     }
+    public void shiftStackLeft(Stack sequences) {
+        Object rem = sequences.remove(0);
+        sequences.add(sequences.size(),rem);
+    }
 
+    public void shiftStackRight(Stack sequences) {
+        Object rem = (InstrumentData) sequences.remove(sequences.size()-1);
+        sequences.add(0,rem);
+    }
 }

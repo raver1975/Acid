@@ -38,16 +38,6 @@ public class SequencerData extends InstrumentData {
         region.flip(false, true);
     }
 
-    public static void shiftStackLeft() {
-        SequencerData rem = sequences.remove(0);
-        sequences.add(sequences.size(), rem);
-    }
-
-    public static void shiftStackRight() {
-        SequencerData rem = sequences.remove(sequences.size() - 1);
-        sequences.add(0, rem);
-    }
-
     public static void render(ShapeRenderer renderer1, float skipx, float skipy) {
         renderer1.begin(ShapeRenderer.ShapeType.Line);
         for (int i = 0; i < 16; i++) {
