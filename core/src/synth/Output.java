@@ -8,37 +8,19 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class Output implements Runnable {
-    private static Thread thread = null;
-    private static Synthesizer[] tracks;
-    private AcidSequencer sequencer;
-
-
+    private static final int BUFFER_SIZE = 2050;
     public static double volume = 1D;
     public static double SAMPLE_RATE = 44100;
-    private static final int BUFFER_SIZE = 2050;
-    private float[] buffer = new float[BUFFER_SIZE];
     public static boolean running = false;
+    private static Thread thread = null;
+    private static Synthesizer[] tracks;
     private static Reverb reverb;
     private static Delay delay;
     private static boolean paused = false;
-    private AudioDevice ad;
     private static boolean newAD;
-
-    public static double getVolume() {
-        return volume;
-    }
-
-    static void setVolume(double value) {
-        volume = value;
-    }
-
-    public static Delay getDelay() {
-        return delay;
-    }
-
-    public static Reverb getReverb() {
-        return reverb;
-    }
+    private AcidSequencer sequencer;
+    private float[] buffer = new float[BUFFER_SIZE];
+    private AudioDevice ad;
 
     public Output() {
         ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
@@ -59,19 +41,21 @@ public class Output implements Runnable {
 
     }
 
-    public void start() {
-        running = true;
-        thread.start();
+    public static double getVolume() {
+        return volume;
     }
 
-    public void stop() {
-        running = false;
+    static void setVolume(double value) {
+        volume = value;
     }
 
-    public boolean isRunning() {
-        return running;
+    public static Delay getDelay() {
+        return delay;
     }
 
+    public static Reverb getReverb() {
+        return reverb;
+    }
 
     public static boolean isPaused() {
         return paused;
@@ -84,6 +68,31 @@ public class Output implements Runnable {
     public static void resume() {
         paused = false;
         newAD = true;
+    }
+
+    public static byte[] FloatArray2ByteArray(float[] values) {
+        ByteBuffer buffer = ByteBuffer.allocate(2 * values.length);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        float mult = 32767.0f;
+        for (float value : values) {
+//            buffer.putFloat(value);
+            buffer.putShort((short) (value * mult));
+        }
+
+        return buffer.array();
+    }
+
+    public void start() {
+        running = true;
+        thread.start();
+    }
+
+    public void stop() {
+        running = false;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 
     public void run() {
@@ -156,23 +165,13 @@ public class Output implements Runnable {
                 if (ad == null) {
                     ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
                 }
-                ad.writeSamples(buffer, 0, BUFFER_SIZE);
+                try {
+                    ad.writeSamples(buffer, 0, BUFFER_SIZE);
+                } catch (Exception e) {
+                }
             }
         }
         dispose();
-    }
-
-
-    public static byte[] FloatArray2ByteArray(float[] values) {
-        ByteBuffer buffer = ByteBuffer.allocate(2 * values.length);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        float mult = 32767.0f;
-        for (float value : values) {
-//            buffer.putFloat(value);
-            buffer.putShort((short) (value * mult));
-        }
-
-        return buffer.array();
     }
 
     public void dispose() {
