@@ -161,6 +161,11 @@ public class Output implements Runnable {
             if (Statics.export) {
                 if (Statics.exportFile != null)
                     Statics.exportFile.writeBytes(FloatArray2ByteArray(buffer), true);
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             } else {
                 if (ad == null) {
                     ad = Gdx.audio.newAudioDevice((int) SAMPLE_RATE, false);
