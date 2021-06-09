@@ -20,8 +20,8 @@ android {
         applicationId "com.klemstinegroup.sunshineblue"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 49
+        versionName "1.4.9"
     }
     buildTypes {
         release {
