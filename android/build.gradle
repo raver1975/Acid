@@ -22,8 +22,8 @@ android {
         applicationId "com.acid"
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 53
-        versionName "1.5.3"
+        versionCode 54
+        versionName "1.5.4"
         ndkVersion "22.1.7171670"
         ndk {
             debugSymbolLevel 'FULL'
@@ -31,7 +31,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
+            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
