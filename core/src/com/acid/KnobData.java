@@ -22,10 +22,7 @@ public class KnobData extends InstrumentData {
     public KnobData() {
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 8; j++) {
-                if (Acid.drumsSelected==0) {
-                    knobs[i][j] = KnobImpl.knobs1[i][j];
-                }
-                else{knobs[i][j] = KnobImpl.knobs2[i][j];};
+                knobs[i][j] = KnobImpl.knobs[i][j];
             }
         }
 
@@ -40,12 +37,7 @@ public class KnobData extends InstrumentData {
             boolean same = true;
             for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 8; j++) {
-                    if (Acid.drumsSelected==0) {
-                        if (currentSequence.knobs[i][j] != KnobImpl.knobs1[i][j]) same = false;
-                    }
-                    else{
-                        if (currentSequence.knobs[i][j] != KnobImpl.knobs2[i][j]) same = false;
-                    }
+                    if (currentSequence.knobs[i][j] != KnobImpl.knobs[i][j]) same = false;
                 }
             }
             if (same) return currentSequence;
@@ -56,15 +48,15 @@ public class KnobData extends InstrumentData {
     public void refresh() {
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 8; j++) {
-                if (Acid.drumsSelected==0) {
-                    KnobImpl.knobs1[i][j] = knobs[i][j];
-                }
-                else{KnobImpl.knobs2[i][j] = knobs[i][j];}
+                KnobImpl.knobs[i][j] = knobs[i][j];
             }
         }
-        KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer1().step));
-        KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer2().step));
-        KnobData.currentSequence=this;
+        if (Acid.drumsSelected == 0) {
+            KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer1().step),true);
+        } else {
+            KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer2().step),false);
+        }
+        KnobData.currentSequence = this;
     }
 
     @Override
@@ -98,7 +90,7 @@ public class KnobData extends InstrumentData {
         render(renderer, skipx, skipy);
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setColor(ColorHelper.rainbowLight());
-            renderer.rect(1, 1, w-1, h-1);
+        renderer.rect(1, 1, w - 1, h - 1);
         renderer.end();
         Pixmap pixmap1 = ScreenUtils.getFrameBufferPixmap(0, 0, w, h);
         Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);
@@ -136,7 +128,7 @@ public class KnobData extends InstrumentData {
     }
 
     public static void pushStack(KnobData sd) {
-        sequences.insert(0,sd);
+        sequences.insert(0, sd);
     }
 
 

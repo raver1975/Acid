@@ -9,16 +9,11 @@ import synth.Output;
  * Created by Paul on 1/8/2017.
  */
 public class KnobImpl {
-    static double[][] knobs1 = new double[16][10];
-    static double[][] knobs2 = new double[16][10];
+    static double[][] knobs = new double[16][10];
 
     static {
         for (int i = 0; i < 16; i++) {
-            if (Acid.drumsSelected == 0) {
-                knobs1[i] = getControls();
-            } else {
-                knobs2[i] = getControls();
-            }
+            knobs[i] = getControls(true);
         }
     }
 
@@ -188,53 +183,33 @@ public class KnobImpl {
         KnobData.factory();
     }
 
-    public static void refill() {
-        double[] contrls = KnobImpl.getControls();
+    public static void refill(boolean oneortwo) {
+        double[] contrls = KnobImpl.getControls(oneortwo);
 
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 6; j++) {
-
-                if (Acid.drumsSelected == 0) {
-                    KnobImpl.knobs1[i][j] = contrls[j];
-                } else {
-                    KnobImpl.knobs2[i][j] = contrls[j];
-                }
+                KnobImpl.knobs[i][j] = contrls[j];
             }
         }
         KnobData.factory();
     }
 
-    public static void setControl(int step, int id) {
+    public static void setControl(int step, int id,boolean oneortwo) {
         if (Statics.free) {
             for (int i = 0; i < 16; i++) {
-                if (Acid.drumsSelected == 0) {
-                    knobs1[i % 16][id] = getControls()[id];
-                } else {
-                    knobs2[i % 16][id] = getControls()[id];
-                }
+                knobs[i % 16][id] = getControls(oneortwo)[id];
             }
         } else {
-            if (Acid.drumsSelected == 0) {
-                knobs1[step % 16][id] = getControls()[id];
-            } else {
-                knobs2[step % 16][id] = getControls()[id];
-            }
+            knobs[step % 16][id] = getControls(oneortwo)[id];
         }
     }
 
     public static double[] getControl(int step) {
-        if (Acid.drumsSelected == 0) {
-            return knobs1[step % 16];
-        } else {
-            return knobs2[step % 16];
-        }
+        return knobs[step % 16];
     }
 
-    public static double[] getControls() {
-        BasslineSynthesizer synth = Statics.synth1;
-        if (Acid.drumsSelected == 1) {
-            synth = Statics.synth2;
-        }
+    public static double[] getControls(boolean oneortwo) {
+        BasslineSynthesizer synth = oneortwo?Statics.synth1:Statics.synth2;
         double[] vals = new double[10];
         vals[0] = synth.tune;
         vals[1] = synth.cutoff.getValue();
@@ -249,11 +224,9 @@ public class KnobImpl {
         return vals;
     }
 
-    public static void setControls(double[] vals) {
-        BasslineSynthesizer synth = Statics.synth1;
-        if (Acid.drumsSelected == 1) {
-            synth = Statics.synth2;
-        }
+    public static void setControls(double[] vals, boolean oneortwo) {
+
+        BasslineSynthesizer synth = oneortwo ? Statics.synth1 : Statics.synth2;
         synth.tune = vals[0];
         synth.cutoff.setValue(vals[1]);
         synth.resonance.setValue(vals[2]);
@@ -264,11 +237,8 @@ public class KnobImpl {
         //Statics.output.volume=vals[7];
     }
 
-    public static void setControls(double vals, int id) {
-        BasslineSynthesizer synth = Statics.synth1;
-        if (Acid.drumsSelected == 1) {
-            synth = Statics.synth2;
-        }
+    public static void setControls(double vals, int id, boolean oneortwo) {
+        BasslineSynthesizer synth = oneortwo ? Statics.synth1 : Statics.synth2;
         if (id == 0) synth.tune = vals;
         if (id == 1) synth.cutoff.setValue(vals);
         if (id == 2) synth.resonance.setValue(vals);
