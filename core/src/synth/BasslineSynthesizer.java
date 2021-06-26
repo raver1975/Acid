@@ -10,6 +10,7 @@ public class BasslineSynthesizer
         implements Synthesizer {
     private static final double[][] WAVETABLE_SAW;
     private static final double[][] WAVETABLE_SQUARE;
+    private final boolean oneortwo;
     private double SAMPLING_FREQUENCY = Output.SAMPLE_RATE * 2.0D;
     private Decimator decimator;
     public double frequency;
@@ -55,7 +56,8 @@ public class BasslineSynthesizer
     private double aux2;
     private double aux2Amt;
 
-    public BasslineSynthesizer() {
+    public BasslineSynthesizer(boolean oneortwo) {
+        this.oneortwo=oneortwo;
         this.decimator = new Decimator();
 
         this.distortion = new Distortion();
@@ -78,16 +80,24 @@ public class BasslineSynthesizer
 
         this.feg = new ADREnvelope();
         this.feg.setSamplingFrequency(this.SAMPLING_FREQUENCY / 16.0D);
-        randomize();
+        randomize(oneortwo);
     }
 
-    public void randomize() {
+    public void randomize(boolean oneortwo) {
         if (Math.random() > 0.5D) {
             this.osc.setWavetable(WAVETABLE_SQUARE);
-            Statics.waveSquare=true;
+            if (oneortwo) {
+                Statics.waveSquare1 = true;
+            } else {
+                Statics.waveSquare2 = true;
+            }
         } else {
             this.osc.setWavetable(WAVETABLE_SAW);
-            Statics.waveSquare=false;
+            if (oneortwo) {
+                Statics.waveSquare1 = false;
+            } else {
+                Statics.waveSquare2 = false;
+            }
         }
         cutoff.setValue(Math.random() * 3866.0D + 100.0D);
         resonance.setValue(Math.random());
@@ -159,11 +169,21 @@ public class BasslineSynthesizer
     public void switchWaveform() {
         if (this.osc.getWavetable() == WAVETABLE_SAW) {
             this.osc.setWavetable(WAVETABLE_SQUARE);
-            Statics.waveSquare = true;
+            if (this.oneortwo) {
+                Statics.waveSquare1 = true;
+            }
+            else{
+                Statics.waveSquare2 = true;
+            }
         }
         else {
             this.osc.setWavetable(WAVETABLE_SAW);
-            Statics.waveSquare=false;
+            if (this.oneortwo) {
+                Statics.waveSquare1 = false;
+            }
+            else{
+                Statics.waveSquare2 = false;
+            }
         }
     }
 

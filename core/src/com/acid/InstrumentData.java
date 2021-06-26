@@ -9,6 +9,7 @@ import java.io.Serializable;
  * Created by Paul on 1/15/2017.
  */
 public abstract class InstrumentData implements Serializable {
+    protected boolean oneortwo;
     transient Pixmap pixmap;
     transient public TextureRegion region;
     abstract public void refresh();

@@ -21,7 +21,7 @@ public class DrumData extends InstrumentData  {
     public DrumData() {
         for (int y1 = 0; y1 < 7; y1++) {
             for (int x1 = 0; x1 < 16; x1++) {
-                rhythm[y1][x1] = Statics.output.getSequencer().rhythm[y1][x1];
+                rhythm[y1][x1] = Statics.output.getSequencer1().rhythm[y1][x1];
             }
         }
         pixmap = drawPixmap(300, 300);
@@ -32,7 +32,7 @@ public class DrumData extends InstrumentData  {
     public void refresh() {
         for (int y1 = 0; y1 < 7; y1++) {
             for (int x1 = 0; x1 < 16; x1++) {
-                Statics.output.getSequencer().rhythm[y1][x1] = rhythm[y1][x1];
+                Statics.output.getSequencer1().rhythm[y1][x1] = rhythm[y1][x1];
             }
         }
     }
@@ -89,10 +89,10 @@ public class DrumData extends InstrumentData  {
     public static void render(ShapeRenderer renderer1, float skipx, float skipy) {
         renderer1.begin(ShapeRenderer.ShapeType.Filled);
         renderer1.setColor(ColorHelper.rainbowLight());
-        for (int r = 0; r < Statics.output.getSequencer().rhythm.length; r++) {
+        for (int r = 0; r < Statics.output.getSequencer1().rhythm.length; r++) {
             renderer1.setColor(ColorHelper.rainbowLight());
             for (int r1 = 0; r1 < 16; r1++) {
-                if (Statics.output.getSequencer().rhythm[r][r1] > 0) {
+                if (Statics.output.getSequencer1().rhythm[r][r1] > 0) {
                     renderer1.rect(r1 * skipx + 2, (r)
                             * skipy + 2, skipx - 4, skipy - 4);
                 }

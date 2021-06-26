@@ -52,7 +52,8 @@ public class KnobData extends InstrumentData {
                 KnobImpl.knobs[i][j] = knobs[i][j];
             }
         }
-        KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer().step));
+        KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer1().step));
+        KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer2().step));
         KnobData.currentSequence=this;
     }
 

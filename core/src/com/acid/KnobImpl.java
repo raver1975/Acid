@@ -107,7 +107,7 @@ public class KnobImpl {
                 break;
             case 6:
 
-                rotation = (float) Statics.output.getSequencer().bpm;
+                rotation = (float) Statics.output.getSequencer1().bpm;
                 break;
             case 7:
                 rotation = (float) Statics.output.getVolume() * 360f;
@@ -126,46 +126,50 @@ public class KnobImpl {
     //    public static int[] knobVals=new int[8];
     public static void touchDragged(int id, float offset) {
         int cc = (int) (127f / 2f - offset);
-
+        BasslineSynthesizer synth=Statics.synth1;
+        if (Acid.drumsSelected==1){
+            synth=Statics.synth2;
+        }
         switch (id) {
             case 0:
                 // tune
-                Statics.synth.controlChange(33, cc);
+                synth.controlChange(33, cc);
                 break;
             case 1:
                 //cutoff
-                Statics.synth.controlChange(34, cc);
+                synth.controlChange(34, cc);
                 break;
 
             case 2:
                 //resonance
-                Statics.synth.controlChange(35, cc);
+                synth.controlChange(35, cc);
                 break;
 
             case 3:
                 //envelope
-                Statics.synth.controlChange(36, cc);
+                synth.controlChange(36, cc);
                 break;
 
             case 4:
                 //decay
-                Statics.synth.controlChange(37, cc);
+                synth.controlChange(37, cc);
                 break;
 
             case 5:
                 //accent
-                Statics.synth.controlChange(38, cc);
+                synth.controlChange(38, cc);
                 break;
             case 6:
                 //bpm
                 if (cc >= -100 & cc <= 260) {
-                    Statics.output.getSequencer().setBpm(cc + 100);
+                    Statics.output.getSequencer1().setBpm(cc + 100);
+                    Statics.output.getSequencer2().setBpm(cc + 100);
 //                    knobVals[id]=cc+100;
                 }
                 break;
             case 7:
                 //volume
-                Statics.synth.controlChange(39, cc);
+                synth.controlChange(39, cc);
                 break;
             case 8:
                 //Delay time
@@ -203,14 +207,18 @@ public class KnobImpl {
     }
 
     public static double[] getControls() {
+        BasslineSynthesizer synth=Statics.synth1;
+        if (Acid.drumsSelected==1){
+            synth=Statics.synth2;
+        }
         double[] vals = new double[10];
-        vals[0] = Statics.synth.tune;
-        vals[1] = Statics.synth.cutoff.getValue();
-        vals[2] = Statics.synth.resonance.getValue();
-        vals[3] = Statics.synth.envMod;
-        vals[4] = Statics.synth.decay;
-        vals[5] = Statics.synth.accent;
-        vals[6] = Statics.output.getSequencer().bpm;
+        vals[0] = synth.tune;
+        vals[1] = synth.cutoff.getValue();
+        vals[2] = synth.resonance.getValue();
+        vals[3] = synth.envMod;
+        vals[4] = synth.decay;
+        vals[5] = synth.accent;
+        vals[6] = Statics.output.getSequencer1().bpm;
         vals[7] = Output.volume;
         vals[8] = Output.getDelay().getTime();
         vals[9] = Output.getDelay().getFeedback();
@@ -218,23 +226,31 @@ public class KnobImpl {
     }
 
     public static void setControls(double[] vals) {
-        Statics.synth.tune = vals[0];
-        Statics.synth.cutoff.setValue(vals[1]);
-        Statics.synth.resonance.setValue(vals[2]);
-        Statics.synth.envMod = vals[3];
-        Statics.synth.decay = vals[4];
-        Statics.synth.accent = vals[5];
+        BasslineSynthesizer synth=Statics.synth1;
+        if (Acid.drumsSelected==1){
+            synth=Statics.synth2;
+        }
+        synth.tune = vals[0];
+        synth.cutoff.setValue(vals[1]);
+        synth.resonance.setValue(vals[2]);
+        synth.envMod = vals[3];
+        synth.decay = vals[4];
+        synth.accent = vals[5];
         //Statics.output.getSequencer().setBpm(vals[6]);
         //Statics.output.volume=vals[7];
     }
 
     public static void setControls(double vals, int id) {
-        if (id == 0) Statics.synth.tune = vals;
-        if (id == 1) Statics.synth.cutoff.setValue(vals);
-        if (id == 2) Statics.synth.resonance.setValue(vals);
-        if (id == 3) Statics.synth.envMod = vals;
-        if (id == 4) Statics.synth.decay = vals;
-        if (id == 5) Statics.synth.accent = vals;
+        BasslineSynthesizer synth=Statics.synth1;
+        if (Acid.drumsSelected==1){
+            synth=Statics.synth2;
+        }
+        if (id == 0) synth.tune = vals;
+        if (id == 1) synth.cutoff.setValue(vals);
+        if (id == 2) synth.resonance.setValue(vals);
+        if (id == 3) synth.envMod = vals;
+        if (id == 4) synth.decay = vals;
+        if (id == 5) synth.accent = vals;
         //Statics.output.getSequencer().setBpm(vals[6]);
         //Statics.output.volume=vals[7];
     }
