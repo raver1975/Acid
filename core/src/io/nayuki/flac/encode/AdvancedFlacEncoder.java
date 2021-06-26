@@ -22,9 +22,9 @@
 package io.nayuki.flac.encode;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+
+import com.badlogic.gdx.utils.Array;
 import io.nayuki.flac.common.StreamInfo;
 
 
@@ -74,7 +74,7 @@ public final class AdvancedFlacEncoder {
 		info.maxBlockSize = 0;
 		info.minFrameSize = 0;
 		info.maxFrameSize = 0;
-		List<Integer> blockSizes = new ArrayList<>();
+		Array<Integer> blockSizes = new Array<>();
 		for (int i = 0; i < bestEncoders.length; ) {
 			FrameEncoder enc = bestEncoders[i];
 			int pos = i * baseSize;

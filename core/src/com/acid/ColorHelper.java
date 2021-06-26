@@ -1,8 +1,8 @@
 package com.acid;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Array;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -107,10 +107,13 @@ public class ColorHelper {
      * @param localMap
      */
     private static void initList(final HashMap<Integer, Color> localMap) {
-        List<Integer> list = new ArrayList<Integer>(localMap.keySet());
-        Collections.sort(list);
+        Array<Integer> list = new Array<Integer>();
+        for (int temp:localMap.keySet()) {
+            list.add(temp);
+        }
+        list.sort();
         Integer min = list.get(0);
-        Integer max = list.get(list.size() - 1);
+        Integer max = list.get(list.size - 1);
         factor = max + 1;
     }
 

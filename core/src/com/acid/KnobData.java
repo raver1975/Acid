@@ -8,9 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-
-import java.util.Stack;
 
 /**
  * Created by Paul on 1/10/2017.
@@ -123,21 +122,21 @@ public class KnobData extends InstrumentData {
         renderer1.end();
     }
 
-    static Stack<KnobData> sequences = new Stack<KnobData>();
+    static Array<KnobData> sequences = new Array<>();
 
     public static KnobData peekStack() {
-        if (sequences.empty()) return null;
-        KnobData peek = sequences.peek();
+        if (sequences.isEmpty()) return null;
+        KnobData peek = sequences.get(0);
         return peek;
     }
 
     public static KnobData popStack() {
-        if (sequences.empty()) return null;
-        return sequences.pop();
+        if (sequences.isEmpty()) return null;
+        return sequences.removeIndex(0);
     }
 
     public static void pushStack(KnobData sd) {
-        sequences.push(sd);
+        sequences.insert(0,sd);
     }
 
 

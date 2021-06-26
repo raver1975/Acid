@@ -1,7 +1,8 @@
 package com.acid;
-import java.util.ArrayList;
 
-class Channel { 
+import com.badlogic.gdx.utils.Array;
+
+class Channel {
 
 	String name;
 	int drawColor;
@@ -10,7 +11,7 @@ class Channel {
 	boolean relative;
 	int maxValue;
 	int minValue;
-	ArrayList points;
+	Array points;
 	boolean allowGlobal;
 		
 
@@ -20,7 +21,7 @@ class Channel {
 		drawColor = _drawColor;
 		description = _description;
 		allowGlobal = true;
-		points = new ArrayList();
+		points = new Array();
 	}
 	
 	
@@ -37,8 +38,8 @@ class Channel {
 	}
 	
 	int getLatestPoint() {
-		if(points.size() > 0) {
-			return (Integer) points.get(points.size() - 1);
+		if(points.size > 0) {
+			return (Integer) points.get(points.size - 1);
 		}
 		else {
 			return -1;

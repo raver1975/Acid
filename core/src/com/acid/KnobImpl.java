@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import synth.BasslineSynthesizer;
 import synth.Output;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by Paul on 1/8/2017.
@@ -16,10 +14,9 @@ public class KnobImpl {
 
     static {
         for (int i = 0; i < 16; i++) {
-            if (Acid.drumsSelected==0) {
+            if (Acid.drumsSelected == 0) {
                 knobs1[i] = getControls();
-            }
-            else{
+            } else {
                 knobs2[i] = getControls();
             }
         }
@@ -68,7 +65,7 @@ public class KnobImpl {
                 break;
             case 8:
 
-                rotation = (float)val/44100f * 360f;
+                rotation = (float) val / 44100f * 360f;
 
                 break;
             case 9:
@@ -81,7 +78,10 @@ public class KnobImpl {
 
     public static float getRotation(int id) {
         float rotation = 0f;
-        int track=Acid.drumsSelected;
+        int track = Acid.drumsSelected;
+        if (track == 2) {
+            track = 0;
+        }
         switch (id) {
             case 0:
                 rotation = (int) (((((BasslineSynthesizer) Statics.output
@@ -120,7 +120,7 @@ public class KnobImpl {
                 rotation = (float) Statics.output.getVolume() * 360f;
                 break;
             case 8:
-                rotation = (float) Output.getDelay().getTime()/44100f * 360f;
+                rotation = (float) Output.getDelay().getTime() / 44100f * 360f;
                 break;
             case 9:
                 rotation = (float) Output.getDelay().getFeedback() * 360f;
@@ -133,9 +133,9 @@ public class KnobImpl {
     //    public static int[] knobVals=new int[8];
     public static void touchDragged(int id, float offset) {
         int cc = (int) (127f / 2f - offset);
-        BasslineSynthesizer synth=Statics.synth1;
-        if (Acid.drumsSelected==1){
-            synth=Statics.synth2;
+        BasslineSynthesizer synth = Statics.synth1;
+        if (Acid.drumsSelected == 1) {
+            synth = Statics.synth2;
         }
         switch (id) {
             case 0:
@@ -194,10 +194,9 @@ public class KnobImpl {
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 6; j++) {
 
-                if (Acid.drumsSelected==0) {
+                if (Acid.drumsSelected == 0) {
                     KnobImpl.knobs1[i][j] = contrls[j];
-                }
-                else{
+                } else {
                     KnobImpl.knobs2[i][j] = contrls[j];
                 }
             }
@@ -208,32 +207,33 @@ public class KnobImpl {
     public static void setControl(int step, int id) {
         if (Statics.free) {
             for (int i = 0; i < 16; i++) {
-                if (Acid.drumsSelected==0) {
+                if (Acid.drumsSelected == 0) {
                     knobs1[i % 16][id] = getControls()[id];
+                } else {
+                    knobs2[i % 16][id] = getControls()[id];
                 }
-                else{knobs2[i % 16][id] = getControls()[id];}
             }
         } else {
-            if (Acid.drumsSelected==0) {
+            if (Acid.drumsSelected == 0) {
                 knobs1[step % 16][id] = getControls()[id];
+            } else {
+                knobs2[step % 16][id] = getControls()[id];
             }
-            else{knobs2[step % 16][id] = getControls()[id];}
         }
     }
 
     public static double[] getControl(int step) {
-        if (Acid.drumsSelected==0) {
+        if (Acid.drumsSelected == 0) {
             return knobs1[step % 16];
-        }
-        else{
+        } else {
             return knobs2[step % 16];
         }
     }
 
     public static double[] getControls() {
-        BasslineSynthesizer synth=Statics.synth1;
-        if (Acid.drumsSelected==1){
-            synth=Statics.synth2;
+        BasslineSynthesizer synth = Statics.synth1;
+        if (Acid.drumsSelected == 1) {
+            synth = Statics.synth2;
         }
         double[] vals = new double[10];
         vals[0] = synth.tune;
@@ -250,9 +250,9 @@ public class KnobImpl {
     }
 
     public static void setControls(double[] vals) {
-        BasslineSynthesizer synth=Statics.synth1;
-        if (Acid.drumsSelected==1){
-            synth=Statics.synth2;
+        BasslineSynthesizer synth = Statics.synth1;
+        if (Acid.drumsSelected == 1) {
+            synth = Statics.synth2;
         }
         synth.tune = vals[0];
         synth.cutoff.setValue(vals[1]);
@@ -265,9 +265,9 @@ public class KnobImpl {
     }
 
     public static void setControls(double vals, int id) {
-        BasslineSynthesizer synth=Statics.synth1;
-        if (Acid.drumsSelected==1){
-            synth=Statics.synth2;
+        BasslineSynthesizer synth = Statics.synth1;
+        if (Acid.drumsSelected == 1) {
+            synth = Statics.synth2;
         }
         if (id == 0) synth.tune = vals;
         if (id == 1) synth.cutoff.setValue(vals);
@@ -288,7 +288,7 @@ public class KnobImpl {
         if (id == idd) {
             max = Math.max(max, val);
             min = Math.min(min, val);
-           // System.out.println("knob:id=" + id + "\tval=" + val + "\tmin=" + min + "\tmax=" + max);
+            // System.out.println("knob:id=" + id + "\tval=" + val + "\tmin=" + min + "\tmax=" + max);
         }
         float dx = 0;
         float dy = 0;
