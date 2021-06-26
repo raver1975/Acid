@@ -919,81 +919,34 @@ public class Acid implements ApplicationListener {
         TextButton pushtoKnob = new TextButton(" X ", skin);
         pushtoKnob.setPosition(510, 158);
         table.addActor(pushtoKnob);
-        pushtoKnob.addListener(new
-
-                                       InputListener() {
-                                           public boolean touchDown(InputEvent event, float x, float y,
-                                                                    int pointer, int button) {
-                                               KnobData.popStack();
-                                               return true;
-                                           }
-                                       });
+        pushtoKnob.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                KnobData.popStack();
+                return true;
+            }
+        });
         TextButton popFromKnob = new TextButton(" ^ ", skin);
         popFromKnob.setPosition(470, 158);
         table.addActor(popFromKnob);
-        popFromKnob.addListener(new
-
-                                        InputListener() {
-                                            public boolean touchDown(InputEvent event, float x, float y,
-                                                                     int pointer, int button) {
-                                                KnobData.pushStack(KnobData.factory());
-                                                return true;
-                                            }
-                                        });
+        popFromKnob.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                KnobData.pushStack(KnobData.factory());
+                return true;
+            }
+        });
 
 
         BelowKnobsActor belowKnobsActor = new BelowKnobsActor(80, 60);
         belowKnobsActor.setPosition(460, 95);
-        belowKnobsActor.addListener(new
+        belowKnobsActor.addListener(new ActorGestureListener() {
 
-                                            ActorGestureListener() {
-
-//            @Override
-//            public void tap(InputEvent event,float stageX, float stageY, int count, int button){
-//                DrumData.undo();
-//            }
-
-                                                @Override
-                                                public void fling(InputEvent event, float velocityX, float velocityY, int button) {
-//                System.out.println("swipe!! " + velocityX + ", " + velocityY);
-//                if (velocityX > 0) KnobData.redo();
-//                if (velocityX < 0) KnobData.undo();
-                                                }
-                                            });
+            @Override
+            public void fling(InputEvent event, float velocityX, float velocityY, int button) {
+            }
+        });
         table.addActor(belowKnobsActor);
-//        final Touchpad touch1 = new Touchpad(0, skin);
-//        touch1.setBounds(15, 15, 100, 100);
-//        touch1.addListener(new ChangeListener() {
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//                Statics.synth.controlChange(35, (int) (touch1.getKnobX()));
-//                Statics.synth.controlChange(34, (int) (touch1.getKnobY()));
-//
-//            }
-//        });
-//        touch1.setPosition(20, 190);
-//        table.addActor(touch1);
-
-//        final Touchpad touch2 = new Touchpad(0, skin);
-//        touch2.setBounds(15, 15, 100, 100);
-//        touch2.addListener(new ChangeListener() {
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//                Statics.synth.controlChange(36, (int) (touch2.getKnobX()));
-//                Statics.synth.controlChange(37, (int) (touch2.getKnobY()));
-//
-//            }
-//        });
-//        touch2.setPosition(20, 300);
-//        table.addActor(touch2);
-
         table.setPosition(Gdx.graphics.getWidth() / 2f - 275,
                 Gdx.graphics.getHeight() / 2f - 290);
-//        table.setSize(800,600);
-//        table.setSize(600,600);
-//        ((OrthographicCamera)stage.getCamera()).setToOrtho(false,Gdx.graphics.getHeight(),Gdx.graphics.getWidth());
-
-
         KnobActor[] mya = new KnobActor[10];
         mya[0] = new KnobActor("Tune", 0);
         table.addActor(mya[0]);
@@ -1655,13 +1608,13 @@ public class Acid implements ApplicationListener {
         waveButton2.setText(Statics.waveSquare2 ? " # " : " ^ ");
 
         sequencerDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        sequencerDataArrayListLabel.setText((SequencerData.sequences.size+(sequencerDataCounter[0] % SequencerData.sequences.size)) + "/" + SequencerData.sequences.size + "");
+        sequencerDataArrayListLabel.setText((((SequencerData.sequences.size + sequencerDataCounter[0]) % SequencerData.sequences.size) +1)+ "/" + SequencerData.sequences.size + "");
 
         drumDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        drumDataArrayListLabel.setText((DrumData.sequences.size+(drumDataCounter[0] % DrumData.sequences.size)) + "/" + DrumData.sequences.size + "");
+        drumDataArrayListLabel.setText((((DrumData.sequences.size + drumDataCounter[0]) % DrumData.sequences.size) +1)+ "/" + DrumData.sequences.size + "");
 
         knobDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        knobDataArrayListLabel.setText((KnobData.sequences.size+(knobDataCounter[0] % KnobData.sequences.size)) + "/" + KnobData.sequences.size + "");
+        knobDataArrayListLabel.setText((((KnobData.sequences.size + knobDataCounter[0] )% KnobData.sequences.size) +1)+ "/" + KnobData.sequences.size + "");
 
         BpmLabel.setText((int) Statics.output.getSequencer1().bpm + "");
 
@@ -2024,12 +1977,12 @@ public class Acid implements ApplicationListener {
     public void shiftStackLeft(Array sequences, Integer[] cnt) {
         Object rem = sequences.removeIndex(0);
         sequences.add(rem);
-        cnt[0]--;
+        cnt[0]++;
     }
 
     public void shiftStackRight(Array sequences, Integer[] cnt) {
         Object rem = sequences.removeIndex(sequences.size - 1);
         sequences.insert(0, rem);
-        cnt[0]++;
+        cnt[0]--;
     }
 }
