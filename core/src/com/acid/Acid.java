@@ -76,7 +76,7 @@ public class Acid implements ApplicationListener {
     private static float rainbowFadeDir = .005f;
     Array<SequencerData> sequencerDataArrayList = new Array<SequencerData>();
     Array<DrumData> drumDataArrayList = new Array<DrumData>();
-    Array<KnobData> knobsArrayList= new Array<KnobData>();
+    Array<KnobData> knobsArrayList = new Array<KnobData>();
     boolean oneortwo = true;
     int songPosition = 0;
     int maxSongPosition = 0;
@@ -110,6 +110,9 @@ public class Acid implements ApplicationListener {
     private TextButton exportSongButton;
     private TextButton freeButton;
     private TextButton pauseButton;
+    private Integer[] sequencerDataCounter = new Integer[]{0};
+    private Integer[] knobDataCounter = new Integer[]{0};
+    private Integer[] drumDataCounter = new Integer[]{0};
 
     public Acid() {
     }
@@ -315,12 +318,12 @@ public class Acid implements ApplicationListener {
                     currentSequencerActor.moveBy(x - currentSequencerActor.getWidth() / 2, 0);
 
                     if (currentSequencerActor.getX() < xs - currentSequencerActor.getWidth() / 4f) {
-                        shiftStackLeft(SequencerData.sequences);
+                        shiftStackLeft(SequencerData.sequences, sequencerDataCounter);
                         currentSequencerActor.setPosition(xs, currentSequencerActor.getY());
                         cancel();
                     }
                     if (currentSequencerActor.getX() > xs + currentSequencerActor.getWidth() / 4f) {
-                        shiftStackRight(SequencerData.sequences);
+                        shiftStackRight(SequencerData.sequences, sequencerDataCounter);
                         currentSequencerActor.setPosition(xs, currentSequencerActor.getY());
                         cancel();
                     }
@@ -380,7 +383,7 @@ public class Acid implements ApplicationListener {
 
 //        Gdx.files.local("filelist.ser").delete();
         try {
-            Object o = Serializer.load(Array.class,"filelist.ser");
+            Object o = Serializer.load(Array.class, "filelist.ser");
             if (o != null && o instanceof Array) fileList = (Array<String>) o;
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -719,7 +722,7 @@ public class Acid implements ApplicationListener {
                                                              protected void result(Object object) {
                                                                  boolean yes = (Boolean) object;
                                                                  if (yes) {
-                                                                     fileList.removeValue(selectSongList.getSelected(),false);
+                                                                     fileList.removeValue(selectSongList.getSelected(), false);
                                                                      try {
                                                                          Serializer.save(fileList, "fiielist.ser");
                                                                      } catch (Exception e) {
@@ -784,12 +787,12 @@ public class Acid implements ApplicationListener {
                     currentDrumActor.moveBy(x - currentDrumActor.getWidth() / 2, 0);
 
                     if (currentDrumActor.getX() < xs - currentDrumActor.getWidth() / 4f) {
-                        shiftStackLeft(DrumData.sequences);
+                        shiftStackLeft(DrumData.sequences, drumDataCounter);
                         currentDrumActor.setPosition(xs, currentDrumActor.getY());
                         cancel();
                     }
                     if (currentDrumActor.getX() > xs + currentDrumActor.getWidth() / 4f) {
-                        shiftStackRight(DrumData.sequences);
+                        shiftStackRight(DrumData.sequences, drumDataCounter);
                         currentDrumActor.setPosition(xs, currentDrumActor.getY());
                         cancel();
                     }
@@ -875,12 +878,12 @@ public class Acid implements ApplicationListener {
                     currentKnobsActor.moveBy(x - currentKnobsActor.getWidth() / 2, 0);
 
                     if (currentKnobsActor.getX() < xs - currentKnobsActor.getWidth() / 4f) {
-                        shiftStackLeft(KnobData.sequences);
+                        shiftStackLeft(KnobData.sequences, knobDataCounter);
                         currentKnobsActor.setPosition(xs, currentKnobsActor.getY());
                         cancel();
                     }
                     if (currentKnobsActor.getX() > xs + currentKnobsActor.getWidth() / 4f) {
-                        shiftStackRight(KnobData.sequences);
+                        shiftStackRight(KnobData.sequences, knobDataCounter);
                         currentKnobsActor.setPosition(xs, currentKnobsActor.getY());
                         cancel();
                     }
@@ -908,13 +911,13 @@ public class Acid implements ApplicationListener {
         });
 
         knobDataArrayListLabel = new Label("", skin);
-        knobDataArrayListLabel.setPosition(450, 195);
+        knobDataArrayListLabel.setPosition(455, 192);
         knobDataArrayListLabel.setFontScale(1f);
         table.addActor(knobDataArrayListLabel);
 
 
         TextButton pushtoKnob = new TextButton(" X ", skin);
-        pushtoKnob.setPosition(510, 168);
+        pushtoKnob.setPosition(510, 158);
         table.addActor(pushtoKnob);
         pushtoKnob.addListener(new
 
@@ -926,7 +929,7 @@ public class Acid implements ApplicationListener {
                                            }
                                        });
         TextButton popFromKnob = new TextButton(" ^ ", skin);
-        popFromKnob.setPosition(470, 168);
+        popFromKnob.setPosition(470, 158);
         table.addActor(popFromKnob);
         popFromKnob.addListener(new
 
@@ -939,7 +942,7 @@ public class Acid implements ApplicationListener {
                                         });
 
 
-        BelowKnobsActor belowKnobsActor = new BelowKnobsActor(80, 70);
+        BelowKnobsActor belowKnobsActor = new BelowKnobsActor(80, 60);
         belowKnobsActor.setPosition(460, 95);
         belowKnobsActor.addListener(new
 
@@ -1466,7 +1469,7 @@ public class Acid implements ApplicationListener {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] thedigest = md.digest(bytesOfMessage);
             String loadfilename = bytesToHex(thedigest);
-            Object o = Serializer.load(SaveObject.class,loadfilename);
+            Object o = Serializer.load(SaveObject.class, loadfilename);
             boolean free = Statics.free;
             boolean rec = Statics.recording;
             Statics.free = false;
@@ -1485,7 +1488,7 @@ public class Acid implements ApplicationListener {
 
     private void saveSong(final String name, Skin skin) {
 
-        if (!fileList.contains(name,false)) {
+        if (!fileList.contains(name, false)) {
             fileList.add(name);
             try {
                 Serializer.save(fileList, "filelist.ser");
@@ -1557,7 +1560,7 @@ public class Acid implements ApplicationListener {
             knobsArrayList.add(KnobData.currentSequence);
         }
         if (Statics.recording) {
-            if (sequencerDataArrayList.size> curr) sequencerDataArrayList.removeIndex(curr);
+            if (sequencerDataArrayList.size > curr) sequencerDataArrayList.removeIndex(curr);
             if (drumDataArrayList.size > curr) drumDataArrayList.removeIndex(curr);
             if (knobsArrayList.size > curr) knobsArrayList.removeIndex(curr);
             sequencerDataArrayList.insert(curr, new SequencerData());
@@ -1652,13 +1655,13 @@ public class Acid implements ApplicationListener {
         waveButton2.setText(Statics.waveSquare2 ? " # " : " ^ ");
 
         sequencerDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        sequencerDataArrayListLabel.setText(SequencerData.sequences.size + "");
+        sequencerDataArrayListLabel.setText((SequencerData.sequences.size+(sequencerDataCounter[0] % SequencerData.sequences.size)) + "/" + SequencerData.sequences.size + "");
 
         drumDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        drumDataArrayListLabel.setText(DrumData.sequences.size+ "");
+        drumDataArrayListLabel.setText((DrumData.sequences.size+(drumDataCounter[0] % DrumData.sequences.size)) + "/" + DrumData.sequences.size + "");
 
         knobDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        knobDataArrayListLabel.setText(KnobData.sequences.size + "");
+        knobDataArrayListLabel.setText((KnobData.sequences.size+(knobDataCounter[0] % KnobData.sequences.size)) + "/" + KnobData.sequences.size + "");
 
         BpmLabel.setText((int) Statics.output.getSequencer1().bpm + "");
 
@@ -2018,13 +2021,15 @@ public class Acid implements ApplicationListener {
 
     }
 
-    public void shiftStackLeft(Array sequences) {
+    public void shiftStackLeft(Array sequences, Integer[] cnt) {
         Object rem = sequences.removeIndex(0);
         sequences.add(rem);
+        cnt[0]--;
     }
 
-    public void shiftStackRight(Array sequences) {
-        Object rem = (InstrumentData) sequences.removeIndex(sequences.size- 1);
-        sequences.add(0, rem);
+    public void shiftStackRight(Array sequences, Integer[] cnt) {
+        Object rem = sequences.removeIndex(sequences.size - 1);
+        sequences.insert(0, rem);
+        cnt[0]++;
     }
 }
