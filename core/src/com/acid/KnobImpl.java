@@ -11,11 +11,17 @@ import java.util.Arrays;
  * Created by Paul on 1/8/2017.
  */
 public class KnobImpl {
-    static double[][] knobs = new double[16][10];
+    static double[][] knobs1 = new double[16][10];
+    static double[][] knobs2 = new double[16][10];
 
     static {
         for (int i = 0; i < 16; i++) {
-            knobs[i] = getControls();
+            if (Acid.drumsSelected==0) {
+                knobs1[i] = getControls();
+            }
+            else{
+                knobs2[i] = getControls();
+            }
         }
     }
 
@@ -75,35 +81,36 @@ public class KnobImpl {
 
     public static float getRotation(int id) {
         float rotation = 0f;
+        int track=Acid.drumsSelected;
         switch (id) {
             case 0:
                 rotation = (int) (((((BasslineSynthesizer) Statics.output
-                        .getTrack(0)).tune - .5f) * 400.0) / 1.5f);
+                        .getTrack(track)).tune - .5f) * 400.0) / 1.5f);
 
                 break;
             case 1:
-                rotation = (float) ((((BasslineSynthesizer) Statics.output.getTrack(0)).cutoff
+                rotation = (float) ((((BasslineSynthesizer) Statics.output.getTrack(track)).cutoff
                         .getValue() - 1200) * 5.0f) / 50f;
                 break;
 
             case 2:
-                rotation = (float) (((BasslineSynthesizer) Statics.output.getTrack(0)).resonance
+                rotation = (float) (((BasslineSynthesizer) Statics.output.getTrack(track)).resonance
                         .getValue() * 500f) - 100f;
                 break;
 
             case 3:
                 rotation = (int) ((((BasslineSynthesizer) Statics.output
-                        .getTrack(0)).envMod * 500) - 100);
+                        .getTrack(track)).envMod * 500) - 100);
                 break;
 
             case 4:
                 rotation = (float) ((((20 - ((BasslineSynthesizer) Statics.output
-                        .getTrack(0)).decay)) * 640) / 20.0f) - 100f;
+                        .getTrack(track)).decay)) * 640) / 20.0f) - 100f;
                 break;
 
             case 5:
                 //accent
-                rotation = (float) ((BasslineSynthesizer) Statics.output.getTrack(0)).accent * 360f;
+                rotation = (float) ((BasslineSynthesizer) Statics.output.getTrack(track)).accent * 360f;
                 break;
             case 6:
 
@@ -186,7 +193,13 @@ public class KnobImpl {
 
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 6; j++) {
-                KnobImpl.knobs[i][j] = contrls[j];
+
+                if (Acid.drumsSelected==0) {
+                    KnobImpl.knobs1[i][j] = contrls[j];
+                }
+                else{
+                    KnobImpl.knobs2[i][j] = contrls[j];
+                }
             }
         }
         KnobData.factory();
@@ -195,15 +208,26 @@ public class KnobImpl {
     public static void setControl(int step, int id) {
         if (Statics.free) {
             for (int i = 0; i < 16; i++) {
-                knobs[i % 16][id] = getControls()[id];
+                if (Acid.drumsSelected==0) {
+                    knobs1[i % 16][id] = getControls()[id];
+                }
+                else{knobs2[i % 16][id] = getControls()[id];}
             }
         } else {
-            knobs[step % 16][id] = getControls()[id];
+            if (Acid.drumsSelected==0) {
+                knobs1[step % 16][id] = getControls()[id];
+            }
+            else{knobs2[step % 16][id] = getControls()[id];}
         }
     }
 
     public static double[] getControl(int step) {
-        return knobs[step % 16];
+        if (Acid.drumsSelected==0) {
+            return knobs1[step % 16];
+        }
+        else{
+            return knobs2[step % 16];
+        }
     }
 
     public static double[] getControls() {

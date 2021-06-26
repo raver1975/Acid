@@ -23,7 +23,10 @@ public class KnobData extends InstrumentData {
     public KnobData() {
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 8; j++) {
-                knobs[i][j] = KnobImpl.knobs[i][j];
+                if (Acid.drumsSelected==0) {
+                    knobs[i][j] = KnobImpl.knobs1[i][j];
+                }
+                else{knobs[i][j] = KnobImpl.knobs2[i][j];};
             }
         }
 
@@ -38,7 +41,12 @@ public class KnobData extends InstrumentData {
             boolean same = true;
             for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 8; j++) {
-                    if (currentSequence.knobs[i][j] != KnobImpl.knobs[i][j]) same = false;
+                    if (Acid.drumsSelected==0) {
+                        if (currentSequence.knobs[i][j] != KnobImpl.knobs1[i][j]) same = false;
+                    }
+                    else{
+                        if (currentSequence.knobs[i][j] != KnobImpl.knobs2[i][j]) same = false;
+                    }
                 }
             }
             if (same) return currentSequence;
@@ -49,7 +57,10 @@ public class KnobData extends InstrumentData {
     public void refresh() {
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 8; j++) {
-                KnobImpl.knobs[i][j] = knobs[i][j];
+                if (Acid.drumsSelected==0) {
+                    KnobImpl.knobs1[i][j] = knobs[i][j];
+                }
+                else{KnobImpl.knobs2[i][j] = knobs[i][j];}
             }
         }
         KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer1().step));
