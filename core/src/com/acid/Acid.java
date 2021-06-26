@@ -1608,13 +1608,13 @@ public class Acid implements ApplicationListener {
         waveButton2.setText(Statics.waveSquare2 ? " # " : " ^ ");
 
         sequencerDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        sequencerDataArrayListLabel.setText((((SequencerData.sequences.size + sequencerDataCounter[0]) % SequencerData.sequences.size) +1)+ "/" + SequencerData.sequences.size + "");
+        sequencerDataArrayListLabel.setText((((SequencerData.sequences.size + sequencerDataCounter[0]) % SequencerData.sequences.size) + 1) + "/" + SequencerData.sequences.size + "");
 
         drumDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        drumDataArrayListLabel.setText((((DrumData.sequences.size + drumDataCounter[0]) % DrumData.sequences.size) +1)+ "/" + DrumData.sequences.size + "");
+        drumDataArrayListLabel.setText((((DrumData.sequences.size + drumDataCounter[0]) % DrumData.sequences.size) + 1) + "/" + DrumData.sequences.size + "");
 
         knobDataArrayListLabel.setColor(ColorHelper.rainbowLight());
-        knobDataArrayListLabel.setText((((KnobData.sequences.size + knobDataCounter[0] )% KnobData.sequences.size) +1)+ "/" + KnobData.sequences.size + "");
+        knobDataArrayListLabel.setText((((KnobData.sequences.size + knobDataCounter[0]) % KnobData.sequences.size) + 1) + "/" + KnobData.sequences.size + "");
 
         BpmLabel.setText((int) Statics.output.getSequencer1().bpm + "");
 
@@ -1791,10 +1791,14 @@ public class Acid implements ApplicationListener {
             output.close();
             output = null;
             try {
+                FileHandle ext = null;
                 if (Gdx.files.isExternalStorageAvailable()) {
-                    FileHandle ext = Gdx.files.external(waveFile.name());
-                    ext.write(waveFile.read(), false);
+                    ext = Gdx.files.external(waveFile.name());
+                } else {
+                    ext = Gdx.files.local(waveFile.name());
                 }
+                ext.write(waveFile.read(), false);
+
             } catch (Exception e) {
             }
             new Thread(new Runnable() {
@@ -1806,10 +1810,14 @@ public class Acid implements ApplicationListener {
                         EncodeWavToFlac.flac(waveFile.file(), flac.file());
                         System.out.println("finished flac conversion");
                         try {
+                            FileHandle ext = null;
                             if (Gdx.files.isExternalStorageAvailable()) {
-                                FileHandle ext = Gdx.files.external(flac.name());
-                                ext.write(flac.read(), false);
+                                ext = Gdx.files.external(flac.name());
+                            } else {
+                                ext = Gdx.files.local(flac.name());
                             }
+                            ext.write(flac.read(), false);
+
                         } catch (Exception e) {
                         }
 
