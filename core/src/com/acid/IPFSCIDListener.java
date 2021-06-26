@@ -1,4 +1,4 @@
-package com.klemstinegroup.sunshineblue.engine.util;
+package com.acid;
 
 public interface IPFSCIDListener {
     void cid(String cid);

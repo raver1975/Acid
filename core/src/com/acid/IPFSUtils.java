@@ -1,16 +1,14 @@
-package com.klemstinegroup.sunshineblue.engine.util;
+package com.acid;
 
-import ar.com.hjg.pngj.ImageInfo;
-import ar.com.hjg.pngj.PngWriter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.net.HttpStatus;
-import com.badlogic.gdx.utils.*;
-import com.klemstinegroup.sunshineblue.SunshineBlue;
-import com.klemstinegroup.sunshineblue.engine.Statics;
+import com.badlogic.gdx.utils.ByteArray;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 
 import java.io.ByteArrayInputStream;
 
@@ -49,7 +47,7 @@ public class IPFSUtils {
         Gdx.net.sendHttpRequest(request, listener);
     }*/
 
-    public static void uploadFile(byte[] data, IPFSCIDListener listen) {
+    public static void uploadFile(byte[] data, final IPFSCIDListener listen) {
         Gdx.app.log("upload", data.length + " bytes uploading");
         String url = "https://ipfs.infura.io:5001/api/v0/add";
         String boundary = "12345678901234567890"; // Just generate some unique random value.
@@ -100,7 +98,7 @@ public class IPFSUtils {
         Gdx.net.sendHttpRequest(request, listener);
     }
 
-    public static void writePng(Pixmap pixmap, MemoryFileHandle mfh, IPFSCIDListener listener) {
+    /*public static void writePng(Pixmap pixmap, MemoryFileHandle mfh, IPFSCIDListener listener) {
 //                MemoryFileHandle mfh = new MemoryFileHandle();
         if (mfh == null) mfh = new MemoryFileHandle();
         ImageInfo imi = new ImageInfo(pixmap.getWidth(), pixmap.getHeight(), 8, true);
@@ -122,17 +120,17 @@ public class IPFSUtils {
         if (listener != null) {
             uploadFile(mfh.readBytes(), listener);
         }
-    }
+    }*/
 
 
-    public static void openIPFSViewer(String cid, boolean gif) {
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                Gdx.net.openURI(Statics.IPFSGateway + (gif ? Statics.IPFSMediaViewerGIF : Statics.IPFSMediaViewerPNG) + "?url=" + cid);
-            }
-        });
-    }
+//    public static void openIPFSViewer(String cid, boolean gif) {
+//        Gdx.app.postRunnable(new Runnable() {
+//            @Override
+//            public void run() {
+//                Gdx.net.openURI(Statics.IPFSGateway + (gif ? Statics.IPFSMediaViewerGIF : Statics.IPFSMediaViewerPNG) + "?url=" + cid);
+//            }
+//        });
+//    }
 
     public static void downloadFromIPFS(String url, final IPFSFileListener responseListener) {
         Gdx.app.log("ur;", url);
@@ -166,7 +164,7 @@ public class IPFSUtils {
         });
     }
 
-    public static void uploadPngtoIPFS(Pixmap pixmap, IPFSCIDListener listener) {
+    /*public static void uploadPngtoIPFS(Pixmap pixmap, IPFSCIDListener listener) {
         MemoryFileHandle mfh = new MemoryFileHandle();
         IPFSUtils.writePng(pixmap, mfh, null);
         SunshineBlue.nativeNet.uploadIPFS(mfh.readBytes(), new IPFSCIDListener() {
@@ -180,6 +178,6 @@ public class IPFSUtils {
 
             }
         });
-    }
+    }*/
 
 }

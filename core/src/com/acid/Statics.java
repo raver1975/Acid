@@ -9,7 +9,7 @@ import synth.Synthesizer;
 
 public class Statics {
 
-
+    public static String IPFSGateway = "https://ipfs.io/ipfs/";
     public static boolean drumsOn = true;
     public static boolean synthOn1= true;
     public static boolean synthOn2= true;
