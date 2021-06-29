@@ -34,13 +34,15 @@ public class KnobData extends InstrumentData {
 
     public static KnobData factory() {
         if (currentSequence != null) {
-            boolean same = true;
+            top:
             for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 8; j++) {
-                    if (currentSequence.knobs[i][j] != KnobImpl.knobs[i][j]) same = false;
+                    if (currentSequence.knobs[i][j] != KnobImpl.knobs[i][j]) {
+                        return new KnobData();
+                    }
                 }
             }
-            if (same) return currentSequence;
+            return currentSequence;
         }
         return new KnobData();
     }
@@ -52,9 +54,9 @@ public class KnobData extends InstrumentData {
             }
         }
         if (Acid.drumsSelected == 0) {
-            KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer1().step),true);
+            KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer1().step), true);
         } else {
-            KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer2().step),false);
+            KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer2().step), false);
         }
         KnobData.currentSequence = this;
     }

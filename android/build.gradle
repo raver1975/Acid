@@ -19,11 +19,11 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "com.acid"
+        applicationId "com.acid2"
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 54
-        versionName "1.5.4"
+        versionCode 200
+        versionName "2.0.0"
         ndkVersion "22.1.7171670"
         ndk {
             debugSymbolLevel 'FULL'
