@@ -28,37 +28,38 @@ public class AcidSequencer {
         randomizeSequence();
     }
 
-    public void randomizeRhythm(){
+    public void randomizeRhythm() {
         this.rhythm = createRhythm(this.patternLength);
     }
+
     public void randomizeSequence() {
 //        if (!Statics.drumsSelected) {
-            double[] basicCoeffs = {0.5D, 0.5D, 0.5D, 0.5D};
-            double[] bassCoeffs = new double[16];
-            boolean preferBassDrum = Math.random() > 0.5D;
-            boolean preferSnareDrum = Math.random() > 0.5D;
-            if ((!preferBassDrum) && (!preferSnareDrum)) {
-                preferBassDrum = preferSnareDrum = true;
-            }
-            for (int i = 0; i < this.rhythm[0].length; i++) {
-                bassCoeffs[i] = basicCoeffs[(i % 4)];
+        double[] basicCoeffs = {0.5D, 0.5D, 0.5D, 0.5D};
+        double[] bassCoeffs = new double[16];
+        boolean preferBassDrum = Math.random() > 0.5D;
+        boolean preferSnareDrum = Math.random() > 0.5D;
+        if ((!preferBassDrum) && (!preferSnareDrum)) {
+            preferBassDrum = preferSnareDrum = true;
+        }
+        for (int i = 0; i < this.rhythm[0].length; i++) {
+            bassCoeffs[i] = basicCoeffs[(i % 4)];
 
-                if (((this.rhythm[0][i] > 0) && (preferBassDrum))
-                        || ((preferSnareDrum) && ((this.rhythm[1][i] > 0) || (this.rhythm[4][i] > 0))))
-                    bassCoeffs[i] *= 4.0D;
-                if (this.rhythm[3][i] > 0)
-                    bassCoeffs[i] *= 2.0D;
-                if (this.rhythm[4][i] > 0) {
-                    bassCoeffs[i] *= 2.0D;
-                }
+            if (((this.rhythm[0][i] > 0) && (preferBassDrum))
+                    || ((preferSnareDrum) && ((this.rhythm[1][i] > 0) || (this.rhythm[4][i] > 0))))
+                bassCoeffs[i] *= 4.0D;
+            if (this.rhythm[3][i] > 0)
+                bassCoeffs[i] *= 2.0D;
+            if (this.rhythm[4][i] > 0) {
+                bassCoeffs[i] *= 2.0D;
             }
+        }
 
-            Markov markov = new Markov(null, 0.0D);
-            markov.addKid(new Markov(Harmony.SCALE_MELODIC_MINOR, 2.0D));
-            markov.addKid(new Markov(Harmony.SCALE_MAJOR, 1.0D));
-            markov.addKid(new Markov(Harmony.SCALE_HUNGARIAN_MINOR, 0.5D));
-            this.bassline = createBassline(this.patternLength,
-                    (int[]) (int[]) markov.getKid().getContent(), bassCoeffs);
+        Markov markov = new Markov(null, 0.0D);
+        markov.addKid(new Markov(Harmony.SCALE_MELODIC_MINOR, 2.0D));
+        markov.addKid(new Markov(Harmony.SCALE_MAJOR, 1.0D));
+        markov.addKid(new Markov(Harmony.SCALE_HUNGARIAN_MINOR, 0.5D));
+        this.bassline = createBassline(this.patternLength,
+                (int[]) (int[]) markov.getKid().getContent(), bassCoeffs);
 //			this.bass.randomize();
 //        } else {
 
@@ -73,9 +74,9 @@ public class AcidSequencer {
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 3, 2.0D));
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 4, 1.0D));
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 8, 1.0D));
-        Output.getDelay().setFeedback(Math.random() * 0.75D + 0.2D);
-        Output.getDelay().setTime(
-                (Integer) delayTimes.getKid().getContent());
+//        Output.getDelay().setFeedback(Math.random() * 0.75D + 0.2D);
+//        Output.getDelay().setTime(
+//                (Integer) delayTimes.getKid().getContent());
     }
 
     public void tick() {
@@ -83,17 +84,8 @@ public class AcidSequencer {
             if (this.sixteenth_note) {
                 if ((this.bassline.pause[this.step] == false)
                         && (this.bassline.note[this.step] != -1)) {
-                    this.bass
-                            .noteOn(this.bassline.note[this.step]
-                                            + 36
-                                            + (this.bassline.isTransUp(this.step) ? 12
-                                            : 0)
-                                            - (this.bassline.isTransDown(this.step) ? 12
-                                            : 0),
-                                    this.bassline.accent[this.step] != false ? 127
-                                            : 80);
+                    this.bass.noteOn(this.bassline.note[this.step] + 36 + (this.bassline.isTransUp(this.step) ? 12 : 0) - (this.bassline.isTransDown(this.step) ? 12 : 0), this.bassline.accent[this.step] != false ? 127 : 80);
                 }
-
                 for (int ch = 0; ch < this.rhythm.length; ch++) {
                     if (this.rhythm[ch][this.step] != 0) {
                         int vol = 255;

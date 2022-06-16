@@ -8,9 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-
-import java.util.Stack;
 
 /**
  * Created by Paul on 1/10/2017.
@@ -35,13 +34,15 @@ public class KnobData extends InstrumentData {
 
     public static KnobData factory() {
         if (currentSequence != null) {
-            boolean same = true;
+            top:
             for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 8; j++) {
-                    if (currentSequence.knobs[i][j] != KnobImpl.knobs[i][j]) same = false;
+                    if (currentSequence.knobs[i][j] != KnobImpl.knobs[i][j]) {
+                        return new KnobData();
+                    }
                 }
             }
-            if (same) return currentSequence;
+            return currentSequence;
         }
         return new KnobData();
     }
@@ -52,8 +53,12 @@ public class KnobData extends InstrumentData {
                 KnobImpl.knobs[i][j] = knobs[i][j];
             }
         }
-        KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer().step));
-        KnobData.currentSequence=this;
+        if (Acid.drumsSelected == 0) {
+            KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer1().step), true);
+        } else {
+            KnobImpl.setControls(KnobImpl.getControl(Statics.output.getSequencer2().step), false);
+        }
+        KnobData.currentSequence = this;
     }
 
     @Override
@@ -87,7 +92,7 @@ public class KnobData extends InstrumentData {
         render(renderer, skipx, skipy);
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setColor(ColorHelper.rainbowLight());
-            renderer.rect(1, 1, w-1, h-1);
+        renderer.rect(1, 1, w - 1, h - 1);
         renderer.end();
         Pixmap pixmap1 = ScreenUtils.getFrameBufferPixmap(0, 0, w, h);
         Pixmap pixmap = new Pixmap((int) w, (int) h, Pixmap.Format.RGBA8888);
@@ -111,21 +116,21 @@ public class KnobData extends InstrumentData {
         renderer1.end();
     }
 
-    static Stack<KnobData> sequences = new Stack<KnobData>();
+    static Array<KnobData> sequences = new Array<>();
 
     public static KnobData peekStack() {
-        if (sequences.empty()) return null;
-        KnobData peek = sequences.peek();
+        if (sequences.isEmpty()) return null;
+        KnobData peek = sequences.get(0);
         return peek;
     }
 
     public static KnobData popStack() {
-        if (sequences.empty()) return null;
-        return sequences.pop();
+        if (sequences.isEmpty()) return null;
+        return sequences.removeIndex(0);
     }
 
     public static void pushStack(KnobData sd) {
-        sequences.push(sd);
+        sequences.insert(0, sd);
     }
 
 

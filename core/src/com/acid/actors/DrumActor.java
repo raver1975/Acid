@@ -29,9 +29,9 @@ public class DrumActor extends Actor {
                                      int pointer, int button) {
                 int x1 = (int) (x / ((getWidth() / 16)));
                 int y1 = (int) (y / (getHeight() / 7));
-                notePause = Statics.output.getSequencer().bassline.pause[x1];
-                noteSlide = Statics.output.getSequencer().bassline.slide[x1];
-                noteAccent = Statics.output.getSequencer().bassline.accent[x1];
+                notePause = Statics.output.getSequencer1().bassline.pause[x1];
+                noteSlide = Statics.output.getSequencer1().bassline.slide[x1];
+                noteAccent = Statics.output.getSequencer1().bassline.accent[x1];
                 ttouch(x1, y1);
                 return true;
             }
@@ -55,10 +55,10 @@ public class DrumActor extends Actor {
 
     public void ttouch(int x1, int y1) {
         if (x1 < 16 && x1 > -1 && y1 >= 0 && y1 < 7) {
-            if (Statics.output.getSequencer().rhythm[y1][x1] > 0) {
-                Statics.output.getSequencer().rhythm[y1][x1] = 0;
+            if (Statics.output.getSequencer1().rhythm[y1][x1] > 0) {
+                Statics.output.getSequencer1().rhythm[y1][x1] = 0;
             } else
-                Statics.output.getSequencer().rhythm[y1][x1] = 127;
+                Statics.output.getSequencer1().rhythm[y1][x1] = 127;
         }
 
         x2 = x1;
@@ -90,8 +90,8 @@ public class DrumActor extends Actor {
         Statics.renderer.begin(ShapeType.Line);
         Statics.renderer.setColor(ColorHelper.rainbow());
         Statics.renderer.line(
-                (Statics.output.getSequencer().step) % 16 * skipx, 0,
-                (Statics.output.getSequencer().step) % 16 * skipx, getHeight());
+                (Statics.output.getSequencer1().step) % 16 * skipx, 0,
+                (Statics.output.getSequencer1().step) % 16 * skipx, getHeight());
         Statics.renderer.end();
 
         Statics.renderer.begin(ShapeType.Line);

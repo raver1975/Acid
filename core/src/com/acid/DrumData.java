@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.Stack;
@@ -15,13 +16,13 @@ import java.util.Stack;
 /**
  * Created by Paul on 1/10/2017.
  */
-public class DrumData extends InstrumentData  {
+public class DrumData extends InstrumentData {
     private final int[][] rhythm = new int[7][16];
 
     public DrumData() {
         for (int y1 = 0; y1 < 7; y1++) {
             for (int x1 = 0; x1 < 16; x1++) {
-                rhythm[y1][x1] = Statics.output.getSequencer().rhythm[y1][x1];
+                rhythm[y1][x1] = Statics.output.getSequencer1().rhythm[y1][x1];
             }
         }
         pixmap = drawPixmap(300, 300);
@@ -32,7 +33,7 @@ public class DrumData extends InstrumentData  {
     public void refresh() {
         for (int y1 = 0; y1 < 7; y1++) {
             for (int x1 = 0; x1 < 16; x1++) {
-                Statics.output.getSequencer().rhythm[y1][x1] = rhythm[y1][x1];
+                Statics.output.getSequencer1().rhythm[y1][x1] = rhythm[y1][x1];
             }
         }
     }
@@ -70,8 +71,8 @@ public class DrumData extends InstrumentData  {
         render(renderer, skipx, skipy);
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setColor(ColorHelper.rainbowInverse());
-        for (int i=0;i<5;i++) {
-            renderer.rect(i, i, w-i*2, h-i*2);
+        for (int i = 0; i < 5; i++) {
+            renderer.rect(i, i, w - i * 2, h - i * 2);
         }
         renderer.end();
 
@@ -89,10 +90,10 @@ public class DrumData extends InstrumentData  {
     public static void render(ShapeRenderer renderer1, float skipx, float skipy) {
         renderer1.begin(ShapeRenderer.ShapeType.Filled);
         renderer1.setColor(ColorHelper.rainbowLight());
-        for (int r = 0; r < Statics.output.getSequencer().rhythm.length; r++) {
+        for (int r = 0; r < Statics.output.getSequencer1().rhythm.length; r++) {
             renderer1.setColor(ColorHelper.rainbowLight());
             for (int r1 = 0; r1 < 16; r1++) {
-                if (Statics.output.getSequencer().rhythm[r][r1] > 0) {
+                if (Statics.output.getSequencer1().rhythm[r][r1] > 0) {
                     renderer1.rect(r1 * skipx + 2, (r)
                             * skipy + 2, skipx - 4, skipy - 4);
                 }
@@ -101,21 +102,21 @@ public class DrumData extends InstrumentData  {
         renderer1.end();
     }
 
-    static Stack<DrumData> sequences = new Stack<DrumData>();
+    static Array<DrumData> sequences = new Array<DrumData>();
 
     public static DrumData peekStack() {
-        if (sequences.empty()) return null;
+        if (sequences.isEmpty()) return null;
         DrumData peek = sequences.peek();
         return peek;
     }
 
     public static DrumData popStack() {
-        if (sequences.empty()) return null;
+        if (sequences.isEmpty()) return null;
         return sequences.pop();
     }
 
     public static void pushStack(DrumData sd) {
-        sequences.push(sd);
+        sequences.insert(0, sd);
     }
 
 

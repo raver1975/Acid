@@ -8,7 +8,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import synth.AcidSequencer;
+import synth.Output;
 
 import java.util.Stack;
 
@@ -16,63 +19,72 @@ import java.util.Stack;
  * Created by Paul on 1/10/2017.
  */
 public class SequencerData extends InstrumentData {
-    static Stack<SequencerData> sequences = new Stack<SequencerData>();
+    static Array<SequencerData> sequences = new Array<>();
     private final byte[] note = new byte[16];
     private final boolean[] pause = new boolean[16];
     private final boolean[] slide = new boolean[16];
-//    public SequencerData parent;
-//    public SequencerData child;
-//    public static SequencerData currentSequence;
     private final boolean[] accent = new boolean[16];
+//    private final byte[] note2 = new byte[16];
+//    private final boolean[] pause2 = new boolean[16];
+//    private final boolean[] slide2 = new boolean[16];
+//    private final boolean[] accent2 = new boolean[16];
 
     public SequencerData() {
-
         for (int x1 = 0; x1 < 16; x1++) {
-            note[x1] = Statics.output.getSequencer().bassline.note[x1];
-            pause[x1] = Statics.output.getSequencer().bassline.pause[x1];
-            slide[x1] = Statics.output.getSequencer().bassline.slide[x1];
-            accent[x1] = Statics.output.getSequencer().bassline.accent[x1];
+            if (Acid.drumsSelected == 0) {
+                note[x1] = Statics.output.getSequencer1().bassline.note[x1];
+                pause[x1] = Statics.output.getSequencer1().bassline.pause[x1];
+                slide[x1] = Statics.output.getSequencer1().bassline.slide[x1];
+                accent[x1] = Statics.output.getSequencer1().bassline.accent[x1];
+            } else {
+                note[x1] = Statics.output.getSequencer2().bassline.note[x1];
+                pause[x1] = Statics.output.getSequencer2().bassline.pause[x1];
+                slide[x1] = Statics.output.getSequencer2().bassline.slide[x1];
+                accent[x1] = Statics.output.getSequencer2().bassline.accent[x1];
+            }
         }
+
         pixmap = drawPixmap(300, 300);
         region = new TextureRegion(new Texture(pixmap));
         region.flip(false, true);
     }
 
     public static void render(ShapeRenderer renderer1, float skipx, float skipy) {
+        AcidSequencer sequencer = Acid.drumsSelected == 0 ? Statics.output.getSequencer1() : Statics.output.getSequencer2();
         renderer1.begin(ShapeRenderer.ShapeType.Line);
         for (int i = 0; i < 16; i++) {
-            if (Statics.output.getSequencer().bassline.pause[i]) {
+            if (sequencer.bassline.pause[i]) {
                 continue;
             }
-            if (Statics.output.getSequencer().bassline.accent[i]) {
+            if (sequencer.bassline.accent[i]) {
                 renderer1.setColor(ColorHelper.rainbowInverse());
             } else {
 
                 renderer1.setColor(ColorHelper.rainbowLight());
             }
-            if (Statics.output.getSequencer().bassline.slide[i]) {
+            if (sequencer.bassline.slide[i]) {
                 if (i < 15) {
                     renderer1
                             .line((i) * skipx + skipx / 2,
-                                    (Statics.output.getSequencer().bassline.note[i] + 16)
+                                    (sequencer.bassline.note[i] + 16)
                                             * skipy + skipy / 2,
                                     (i + 1) * skipx + skipx / 2,
-                                    (Statics.output.getSequencer().bassline.note[(i + 1) % 16] + 16)
+                                    (sequencer.bassline.note[(i + 1) % 16] + 16)
                                             * skipy + skipy / 2);
                 } else {
                     renderer1
                             .line((i) * skipx + skipx / 2,
-                                    (Statics.output.getSequencer().bassline.note[i] + 16)
+                                    (sequencer.bassline.note[i] + 16)
                                             * skipy + skipy / 2,
                                     (i + 1) * skipx,
-                                    (Statics.output.getSequencer().bassline.note[(i + 1) % 16] + 16)
+                                    (sequencer.bassline.note[(i + 1) % 16] + 16)
                                             * skipy + skipy / 2);
                     renderer1
                             .line(skipx / 2,
-                                    (Statics.output.getSequencer().bassline.note[0] + 16)
+                                    (sequencer.bassline.note[0] + 16)
                                             * skipy + skipy / 2,
                                     0,
-                                    (Statics.output.getSequencer().bassline.note[15] + 16)
+                                    (sequencer.bassline.note[15] + 16)
                                             * skipy + skipy / 2);
                 }
             }
@@ -81,54 +93,61 @@ public class SequencerData extends InstrumentData {
 
         renderer1.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i < 16; i++) {
-            if (Statics.output.getSequencer().bassline.pause[i]) {
+            if (sequencer.bassline.pause[i]) {
                 continue;
             }
-            if (Statics.output.getSequencer().bassline.accent[i]) {
+            if (sequencer.bassline.accent[i]) {
                 renderer1.setColor(ColorHelper.rainbowInverse());
             } else {
                 renderer1.setColor(ColorHelper.rainbowLight());
             }
 
-            if (Statics.output.getSequencer().bassline.accent[i]) {
-//                    if (i==0||!Statics.output.getSequencer().bassline.slide[i-1])
+            if (sequencer.bassline.accent[i]) {
+//                    if (i==0||!sequencer.bassline.slide[i-1])
                 float cx = Math.min(skipx, skipy);
                 renderer1
                         .rect(
                                 i * skipx + ((skipx - cx) / 2),
-                                (Statics.output.getSequencer().bassline.note[i] + 16)
+                                (sequencer.bassline.note[i] + 16)
                                         * skipy, cx,
                                 cx);
-//                        renderer1.circle(i * skipx + skipx / 2, (Statics.output.getSequencer().bassline.note[i] + 16) * skipy + skipy / 2, Math.min(skipx, skipy) / 2);
+//                        renderer1.circle(i * skipx + skipx / 2, (sequencer.bassline.note[i] + 16) * skipy + skipy / 2, Math.min(skipx, skipy) / 2);
 
             } else {
-                renderer1.circle(i * skipx + skipx / 2, (Statics.output.getSequencer().bassline.note[i] + 16) * skipy + skipy / 2, Math.min(skipx, skipy) / 2);
+                renderer1.circle(i * skipx + skipx / 2, (sequencer.bassline.note[i] + 16) * skipy + skipy / 2, Math.min(skipx, skipy) / 2);
             }
         }
         renderer1.end();
     }
 
     public static SequencerData peekStack() {
-        if (sequences.empty()) return null;
+        if (sequences.isEmpty()) return null;
         SequencerData peek = sequences.peek();
         return peek;
     }
 
     public static SequencerData popStack() {
-        if (sequences.empty()) return null;
+        if (sequences.isEmpty()) return null;
         return sequences.pop();
     }
 
     public static void pushStack(SequencerData sd) {
-        sequences.push(sd);
+        sequences.insert(0, sd);
     }
 
     public void refresh() {
         for (int x1 = 0; x1 < 16; x1++) {
-            Statics.output.getSequencer().bassline.note[x1] = note[x1];
-            Statics.output.getSequencer().bassline.pause[x1] = pause[x1];
-            Statics.output.getSequencer().bassline.slide[x1] = slide[x1];
-            Statics.output.getSequencer().bassline.accent[x1] = accent[x1];
+            if (Acid.drumsSelected == 0) {
+                Statics.output.getSequencer1().bassline.note[x1] = note[x1];
+                Statics.output.getSequencer1().bassline.pause[x1] = pause[x1];
+                Statics.output.getSequencer1().bassline.slide[x1] = slide[x1];
+                Statics.output.getSequencer1().bassline.accent[x1] = accent[x1];
+            } else {
+                Statics.output.getSequencer2().bassline.note[x1] = note[x1];
+                Statics.output.getSequencer2().bassline.pause[x1] = pause[x1];
+                Statics.output.getSequencer2().bassline.slide[x1] = slide[x1];
+                Statics.output.getSequencer2().bassline.accent[x1] = accent[x1];
+            }
         }
     }
 

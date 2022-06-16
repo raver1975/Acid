@@ -52,9 +52,9 @@ public class KnobActor extends Actor {
             public void touchDragged(InputEvent event, float x, float y,
                                      int pointer) {
                 // (ShapeRenderingActor.this).rotate((distx - x));
-               // ccpos = (int) ((int) ((KnobImpl.getRotation(id) * (127f / 360f) + 127 + 127 / 2) % 127) - 0);
+                // ccpos = (int) ((int) ((KnobImpl.getRotation(id) * (127f / 360f) + 127 + 127 / 2) % 127) - 0);
 
-                KnobImpl.touchDragged(id,(distx - x) + (disty - y));
+                KnobImpl.touchDragged(id, (distx - x) + (disty - y));
             }
         });
     }
@@ -67,11 +67,6 @@ public class KnobActor extends Actor {
         font.setColor(ColorHelper.rainbow());
         GlyphLayout gl1 = new GlyphLayout(font, name);
         font.draw(batch, name, this.getX() + xc - gl1.width / 2, this.getY() + this.getHeight() - gl1.height);
-
-//        String bot=(int)(KnobImpl.percent(id)*100) + "%";
-//        GlyphLayout gl2 = new GlyphLayout(font, bot);
-//        font.draw(batch, bot, this.getX() + xc - gl2.width / 2, this.getY() + 23 - gl2.height);
-
         batch.end();
 
         Statics.renderer.setProjectionMatrix(batch.getProjectionMatrix());
@@ -81,11 +76,6 @@ public class KnobActor extends Actor {
         Statics.renderer.begin(ShapeType.Filled);
         Statics.renderer.setColor(ColorHelper.rainbow());
         for (float i = 0, ic = 0; i < Math.PI * 2; ic++, i += Math.PI / 8) {
-//            if (ic % 4 == 2) Statics.renderer.setColor(Color.LIGHT_GRAY);
-//            else if (ic % 4 == 2) Statics.renderer.setColor(Color.YELLOW);
-//            else if (ic % 4 == 1) Statics.renderer.setColor(Color.RED);
-//            else if (ic % 4 == 3) Statics.renderer.setColor(Color.CYAN);
-
             float x1, x2, y1, y2;
             x1 = MathUtils.cos(i) * 12f + xc;
             y1 = MathUtils.sin(i) * 12f + yc;
@@ -93,31 +83,17 @@ public class KnobActor extends Actor {
             y2 = MathUtils.sin(i) * 16f + yc;
             Statics.renderer.line(x1, y1, x2, y2);
         }
-        Statics.renderer.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(id,KnobImpl.getRotation(id))));
-        Statics.renderer.arc(xc, yc, 13, 180-KnobImpl.percent(id,KnobImpl.getRotation(id))*360,KnobImpl.percent(id,KnobImpl.getRotation(id))*360 );
+        Statics.renderer.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(id, KnobImpl.getRotation(id))));
+        Statics.renderer.arc(xc, yc, 13, 180 - KnobImpl.percent(id, KnobImpl.getRotation(id)) * 360, KnobImpl.percent(id, KnobImpl.getRotation(id)) * 360);
         Statics.renderer.setColor(Color.DARK_GRAY);
         Statics.renderer.circle(xc, yc, 10, 20);
-//        Statics.renderer.end();
-//
-//        Statics.renderer.begin(ShapeType.Line);
-//        Statics.renderer.setColor(Color.BLACK);
-//        Statics.renderer.circle(xc, yc, 10, 20);
-//        Statics.renderer.end();
-//
-//        Statics.renderer.begin(ShapeType.Filled);
-//        Statics.renderer.setColor(Color.RED);
-        Statics.renderer.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(id,KnobImpl.getRotation(id))));
+        Statics.renderer.setColor(ColorHelper.numberToColorPercentage(KnobImpl.percent(id, KnobImpl.getRotation(id))));
         for (float i = 2; i < 12; i += 2) {
-
             Statics.renderer.circle(xc + MathUtils.cosDeg(rotation) * -i,
                     yc + MathUtils.sinDeg(rotation) * i, 2, 5);
         }
-
-
         Statics.renderer.end();
-
         batch.begin();
-
     }
 
 }
