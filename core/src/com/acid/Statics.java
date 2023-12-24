@@ -1,6 +1,5 @@
 package com.acid;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import synth.BasslineSynthesizer;
@@ -14,6 +13,9 @@ public class Statics {
     public static boolean synthOn = true;
 
     public static ShapeRenderer renderer;
+    public static String sdcard;
+    public static FileHandle exportConvertedWav;
+    public static FileHandle exportConvertedFlac;
 
     static BasslineSynthesizer synth;
     public static Synthesizer drums;

@@ -9,12 +9,8 @@ import com.acid.actors.KnobActor;
 import com.acid.actors.LightActor;
 import com.acid.actors.RectangleActor;
 import com.acid.actors.SequenceActor;
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -38,22 +34,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.*;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -111,6 +93,9 @@ public class Acid implements ApplicationListener {
     private TextButton freeButton;
     private TextButton pauseButton;
 
+    public Acid(SDCard androidSDCard) {
+        Statics.sdcard=androidSDCard.getPath();
+    }
     public Acid() {
     }
 
@@ -229,7 +214,6 @@ public class Acid implements ApplicationListener {
                 return true;
             }
 
-
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 return false;
@@ -237,6 +221,11 @@ public class Acid implements ApplicationListener {
 
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                return false;
+            }
+
+            @Override
+            public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
                 return false;
             }
 
@@ -522,7 +511,7 @@ public class Acid implements ApplicationListener {
                         public void canceled() {
 
                         }
-                    }, "Export WAV and FLAC (be patient, share link will open after upload)", "", "Song Title");
+                    }, "Export WAV and FLAC to Music Directory on SDCARD", "", "Song Title");
                 } else {
                     String selected = selectSongList.getSelected().replaceAll("[^a-zA-Z0-9]", "");
                     selected += ".wav";
@@ -1754,8 +1743,12 @@ public class Acid implements ApplicationListener {
         songPosition = minSongPosition;
         Statics.output.getSequencer().tick = 0;
         Statics.output.getSequencer().step = 0;
-        Statics.exportFile = Gdx.files.local("supersecrettempfile.pcm");
-
+//        Statics.exportFile = Gdx.files.local("supersecrettempfile.pcm");
+        Statics.exportFile = Gdx.files.getFileHandle(Statics.sdcard+ File.separator+"Music"+ File.separator+"Temporary"+Statics.saveName, FileType.Absolute);
+        Statics.exportConvertedWav = Gdx.files.getFileHandle(Statics.sdcard+ File.separator+"Music"+ File.separator+Statics.saveName, FileType.Absolute);
+        Statics.exportConvertedFlac = Gdx.files.getFileHandle(Statics.sdcard+ File.separator+"Music"+ File.separator+Statics.saveName.toString().substring(0,Statics.saveName.toString().length()-4)+".flac", FileType.Absolute);
+//        Statics.exportFile = Gdx.files.getFileHandle(Gdx.files.getExternalStoragePath()+ File.separator+Statics.saveName, FileType.Absolute);
+        Gdx.app.log("update",Statics.exportFile.toString());
         Statics.exportFile.delete();
         Statics.export = true;
     }
@@ -1766,7 +1759,7 @@ public class Acid implements ApplicationListener {
         exportSongButton.setChecked(false);
         try {
             if (Statics.exportFile != null && Statics.saveName != null)
-                rawToWave(Statics.exportFile, Statics.saveName);
+                rawToWave(Statics.exportFile, Statics.exportConvertedWav);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1859,7 +1852,7 @@ public class Acid implements ApplicationListener {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    FileHandle flac = Gdx.files.local(waveFile.nameWithoutExtension() + ".flac");
+                    FileHandle flac = Statics.exportConvertedFlac;
                     try {
                         System.out.println("starting flac conversion");
                         EncodeWavToFlac.flac(waveFile.file(), flac.file());
@@ -1877,12 +1870,12 @@ public class Acid implements ApplicationListener {
                         System.out.println("error flac conversion");
                     }
                     System.out.println("starting wav upload");
-                    try {
-                        uploadFile(flac.readBytes(), flac.name());
-//                        uploadFile(waveFile.readBytes());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        uploadFile(flac.readBytes(), flac.name());
+////                        uploadFile(waveFile.readBytes());
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
                     System.out.println("finished wav upload");
 
                 }
@@ -1894,9 +1887,10 @@ public class Acid implements ApplicationListener {
                 output.close();
             }
         }
+        Statics.exportFile.delete();
     }
 
-    public void uploadFile(byte[] data, String filename) throws IOException {
+  /*  public void uploadFile(byte[] data, String filename) throws IOException {
         String url = "https://ipfs.infura.io:5001/api/v0/add?pin=true";
         String charset = "UTF-8";
 //        String param = "file";
@@ -1972,7 +1966,7 @@ public class Acid implements ApplicationListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     private void writeInt(final DataOutputStream output, final int value) throws IOException {
         output.write(value >> 0);

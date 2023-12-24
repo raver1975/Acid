@@ -42,6 +42,6 @@ public class AndroidLauncher extends AndroidApplication {
             }
         }
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new Acid(), config);
+        initialize(new Acid(new AndroidSDCard()), config);
     }
 }

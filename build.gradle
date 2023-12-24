@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.wisepersist:gwt-gradle-plugin:1.1.12'
-        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath 'com.android.tools.build:gradle:7.2.0'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.8'
     }
 }
@@ -19,7 +19,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = "Acid"
-        gdxVersion = '1.10.0'
+        gdxVersion = '1.12.1'
         roboVMVersion = '2.3.8'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'

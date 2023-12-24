@@ -2,7 +2,7 @@
 android {
 
     buildToolsVersion "30.0.3"
-    compileSdkVersion 30
+    compileSdkVersion 33
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -21,9 +21,9 @@ android {
     defaultConfig {
         applicationId "com.acid"
         minSdkVersion 16
-        targetSdkVersion 30
-        versionCode 54
-        versionName "1.5.4"
+        targetSdkVersion 33
+        versionCode 56
+        versionName "1.5.6"
         ndkVersion "22.1.7171670"
         ndk {
             debugSymbolLevel 'FULL'
@@ -32,7 +32,6 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
